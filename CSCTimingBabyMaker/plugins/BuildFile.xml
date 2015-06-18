@@ -1,0 +1,13 @@
+<use name="FWCore/Framework"/>
+<use name="FWCore/PluginManager"/>
+<use name="FWCore/ParameterSet"/>
+<use name="DataFormats/TrackingRecHit"/>
+<use name="DataFormats/TrackReco"/>
+<use name="DataFormats/CSCRecHit"/>
+<use name="DataFormats/MuonReco"/>
+<use name="CondFormats/DataRecord"/>
+<use name="CondFormats/CSCObjects"/>
+<use name="CalibMuon/CSCCalibration"/>
+<use name="RecoLocalMuon/CSCRecHitD"/>
+<flags EDM_PLUGIN="1"/>
+<flags   CXXFLAGS="-g -O0"/>
