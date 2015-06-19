@@ -32,10 +32,10 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 100
 
 
 # Standard configs
-# process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1) )
-process.options = cms.untracked.PSet( SkipEvent = cms.untracked.vstring('ProductNotFound') )
-process.options = cms.untracked.PSet(SkipEvent = cms.untracked.vstring('LogicError'))
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
+# process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1) )
+# process.options = cms.untracked.PSet( SkipEvent = cms.untracked.vstring('ProductNotFound') )
+# process.options = cms.untracked.PSet(SkipEvent = cms.untracked.vstring('LogicError'))
 
 
 process.source = cms.Source("PoolSource",
