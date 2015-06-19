@@ -2,3 +2,9 @@
 *.root
 *~
 __init__.py
+*.txt
+*.pdf
+*.png
+*.eps
+*.gdb_history
+*.display.screen

@@ -15,6 +15,7 @@
 #include "CondFormats/CSCObjects/interface/CSCChamberTimeCorrections.h"
 #include "CalibMuon/CSCCalibration/interface/CSCIndexerRecord.h"
 #include "CalibMuon/CSCCalibration/interface/CSCIndexerBase.h"
+#include "FWCore/Common/interface/TriggerNames.h"
 
 // #include "FWCore/Common/interface/TriggerNames.h"
 // #include "DataFormats/Common/interface/TriggerResults.h"
@@ -41,6 +42,8 @@ CSCTimingBabyMaker::CSCTimingBabyMaker(const edm::ParameterSet& iConfig) :
     mu_token  = consumes<reco::MuonCollection>(iConfig.getParameter<edm::InputTag>("muonTag"));
     vtx_token = consumes<reco::VertexCollection>(iConfig.getParameter<edm::InputTag>("vtxTag"));
     trk_token = consumes<reco::TrackCollection>(iConfig.getParameter<edm::InputTag>("trkTag"));
+    bs_token  = consumes<reco::BeamSpot>(iConfig.getParameter<edm::InputTag>("bsTag"));
+    trgResults_token = consumes<edm::TriggerResults>(iConfig.getParameter<edm::InputTag>("trgResTag"));
 
     //
     // event level quantities
@@ -64,6 +67,8 @@ CSCTimingBabyMaker::CSCTimingBabyMaker(const edm::ParameterSet& iConfig) :
 
     produces<std::vector<double> > ("dz").setBranchAlias("dz");
     produces<std::vector<double> > ("d0").setBranchAlias("d0");
+    produces<std::vector<double> > ("dzbs").setBranchAlias("dz_bs");
+    produces<std::vector<double> > ("d0bs").setBranchAlias("d0_bs");
     produces<std::vector<double> > ("gfitchi2").setBranchAlias("gfit_chi2");
     produces<std::vector<double> > ("gfitndof").setBranchAlias("gfit_ndof");
     produces<std::vector<double> > ("maxOpeningAngleTrack").setBranchAlias("maxOpeningAngleTrack");
@@ -131,12 +136,6 @@ CSCTimingBabyMaker::CSCTimingBabyMaker(const edm::ParameterSet& iConfig) :
     produces<std::vector<std::vector<std::vector<std::vector<int> > > > >    ("newcfebcabledelay"    ).setBranchAlias("new_cfeb_cable_delay"  );
     produces<std::vector<std::vector<std::vector<std::vector<double> > > > > ("newcfebCorr"          ).setBranchAlias("new_cfebCorr"          );
     produces<std::vector<std::vector<std::vector<std::vector<double> > > > > ("newchipCorr"          ).setBranchAlias("new_chipCorr"          );
-
-    // produces<std::vector<int> >    ("chip"              ).setBranchAlias("chip"              );
-    // produces<std::vector<double> > ("chipCorr"          ).setBranchAlias("chipCorr"          );
-
-    // add new values for ME1/1
-    // produces<std::vector<double> > ("newchipCorr"          ).setBranchAlias("new_chipCorr"          );
 }
 
 
@@ -179,6 +178,8 @@ CSCTimingBabyMaker::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
     std::auto_ptr<std::vector<double> > dz (new std::vector<double>);
     std::auto_ptr<std::vector<double> > d0 (new std::vector<double>);
+    std::auto_ptr<std::vector<double> > dz_bs (new std::vector<double>);
+    std::auto_ptr<std::vector<double> > d0_bs (new std::vector<double>);
     std::auto_ptr<std::vector<double> > gfit_chi2 (new std::vector<double>);
     std::auto_ptr<std::vector<double> > gfit_ndof (new std::vector<double>);
     std::auto_ptr<std::vector<double> > maxOpeningAngleTrack (new std::vector<double>);
@@ -247,20 +248,17 @@ CSCTimingBabyMaker::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
     std::auto_ptr<std::vector<std::vector<std::vector<std::vector<double> > > > > new_cfebCorr          (new std::vector<std::vector<std::vector<std::vector<double> > > > );
     std::auto_ptr<std::vector<std::vector<std::vector<std::vector<double> > > > > new_chipCorr          (new std::vector<std::vector<std::vector<std::vector<double> > > > );    
 
-    // std::auto_ptr<std::vector<int> >    chip             (new std::vector<int>    );    
-    // std::auto_ptr<std::vector<double> > chipCorr         (new std::vector<double> );
-    
-    // add new values for ME1/1
-    // std::auto_ptr<std::vector<double> > new_chipCorr         (new std::vector<double> );
-
-    // edm::Handle<edm::TriggerResults> trig_h;
-    // iEvent.getByLabel(edm::InputTag("TriggerResults"), trig_h);
-    // edm::TriggerNames trigNames = iEvent.triggerNames(*trig_h);
-    // std::vector<std::string> vtrigNames = trigNames.triggerNames();
-    // std::cout << std::endl;
-    // for (auto name : vtrigNames)
-    //     std::cout << name << std::endl;
-    // std::cout << std::endl;
+    // edm::Handle<edm::TriggerResults> trigResults_h;
+    // iEvent.getByToken(trgResults_token, trigResults_h);
+    // if (trigResults_h.isValid())
+    // {
+    //     edm::TriggerNames trigNames = iEvent.triggerNames(*trigResults_h);
+    //     std::vector<std::string> vtrigNames = trigNames.triggerNames();
+    //     std::cout << std::endl;
+    //     for (auto name : vtrigNames)
+    //         std::cout << name << std::endl;
+    //     std::cout << std::endl;
+    // }
     
     //
     // load chamber timing corrections
@@ -281,6 +279,7 @@ CSCTimingBabyMaker::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
     *lumi   = iEvent.luminosityBlock();
     *evt    = iEvent.id().event();
     *csc_status = false;
+    *detector_status = false;
     
     edm::Handle<DcsStatusCollection> dcsHandle;
     iEvent.getByLabel("scalersRawToDigi", dcsHandle);
@@ -301,10 +300,11 @@ CSCTimingBabyMaker::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
     iEvent.getByToken(vtx_token, vtx_h);
     const reco::VertexCollection *vtx_coll = vtx_h.product();
     reco::Vertex vtx = vtx_coll->front();
-    if (vtx.isFake()) return;
-    if (vtx.ndof() < 4) return;
-    if (vtx.position().Rho() > 2) return;
-    if (fabs(vtx.position().Z()) > 24) return;
+    if (!isGoodVertex(vtx)) return;
+
+    edm::Handle<reco::BeamSpot> bs_h;
+    iEvent.getByToken(bs_token, bs_h);
+    if (!bs_h.isValid()) return;
 
     edm::Handle<reco::TrackCollection> trks_h;
     iEvent.getByToken(trk_token, trks_h);
@@ -714,21 +714,29 @@ CSCTimingBabyMaker::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
         {
             dz ->push_back(  siTrack->dz(vtx.position()));
             d0 ->push_back( siTrack->dxy(vtx.position()));
+            dz_bs ->push_back(  siTrack->dz(bs_h->position()));
+            d0_bs ->push_back( siTrack->dxy(bs_h->position()));
         }
         else if (globalTrack.isNonnull())
         {
-            d0 ->push_back( globalTrack->dxy(vtx.position()));
-            dz ->push_back( globalTrack->dz(vtx.position()));
+            d0 ->push_back(globalTrack->dxy(vtx.position()));
+            dz ->push_back(globalTrack->dz(vtx.position()));
+            dz_bs ->push_back(globalTrack->dz(bs_h->position()));
+            d0_bs ->push_back(globalTrack->dxy(bs_h->position()));
         }
         else if (staTrack.isNonnull())
         {
-            d0 ->push_back( staTrack->dxy(vtx.position()));
-            dz ->push_back( staTrack->dz(vtx.position()));
+            d0 ->push_back(staTrack->dxy(vtx.position()));
+            dz ->push_back(staTrack->dz(vtx.position()));
+            dz_bs ->push_back(staTrack->dz(bs_h->position()));
+            d0_bs ->push_back(staTrack->dxy(bs_h->position()));
         }
         else
         {
             d0->push_back(-9999.);
             dz->push_back(-9999.);
+            d0_bs->push_back(-9999.);
+            dz_bs->push_back(-9999.);
         }
 
         if (globalTrack.isNonnull())
@@ -840,6 +848,8 @@ CSCTimingBabyMaker::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
     iEvent.put(p4                          , "p4"                          );
     iEvent.put(dz                          , "dz"                          );
     iEvent.put(d0                          , "d0"                          );
+    iEvent.put(dz_bs                       , "dzbs"                        );
+    iEvent.put(d0_bs                       , "d0bs"                        );
     iEvent.put(gfit_chi2                   , "gfitchi2"                    );
     iEvent.put(gfit_ndof                   , "gfitndof"                    );
     iEvent.put(maxOpeningAngleTrack        , "maxOpeningAngleTrack"        );
@@ -883,26 +893,18 @@ CSCTimingBabyMaker::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
     iEvent.put(new_chipCorr                , "newchipCorr"                 );
     iEvent.put(twire                       , "twire"                       );
     iEvent.put(anode_bx_offset             , "anodebxoffset"               );
-    
-/*    
-      CSCRecHit2DExtra rhExtra = rhIter->getCSCRecHitExtra();
-      chip     ->push_back(rhExtra.getChip()            );
-      chipCorr ->push_back(rhExtra.getChipCorrection()  );
+}
 
-      // store new values for ME1/1
-      if (id.station() == 1 && (id.ring() == 1 || id.ring() == 4))
-      {
-      new_chipCorr ->push_back(-52.41); // don't yet have these values for ME1/1 so use average value of chip correction from all other chambers
-      }
-      else
-      {
-      new_chipCorr          ->push_back(chipCorr->back()          );
-      }
-      }
-*/
-// iEvent.put(chip                  , "chip"               );    
-// iEvent.put(chipCorr              , "chipCorr"           );
-// iEvent.put(new_chipCorr          , "newchipCorr"        );
+//
+// implement good vertex selection
+//
+bool CSCTimingBabyMaker::isGoodVertex (const reco::Vertex& vertex)
+{
+    if (vertex.isFake()) return false;
+    if (vertex.ndof() < 4) return false;
+    if (vertex.position().Rho() > 2) return false;
+    if (fabs(vertex.position().Z()) > 24) return false;
+    return true;
 }
 
 //

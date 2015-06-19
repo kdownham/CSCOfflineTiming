@@ -33,6 +33,8 @@
 #include "DataFormats/MuonReco/interface/MuonFwd.h"
 #include "DataFormats/VertexReco/interface/VertexFwd.h"
 #include "DataFormats/TrackReco/interface/TrackFwd.h"
+#include "DataFormats/BeamSpot/interface/BeamSpot.h"
+#include "DataFormats/Common/interface/TriggerResults.h"
 
 #include "DataFormats/MuonDetId/interface/CSCDetId.h"
 
@@ -63,6 +65,7 @@ private:
     //virtual void endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) override;
 
     // member functions to get updated skew clear cable length/delays for ME1/1 chambers
+    bool isGoodVertex (const reco::Vertex& vertex);
     static int getSkewClearCableLengthForME11 (const CSCDetId &id);
     static int getSkewClearCableDelayForME11 (const CSCDetId &id);
 
@@ -76,6 +79,8 @@ private:
     edm::EDGetTokenT<reco::MuonCollection> mu_token;
     edm::EDGetTokenT<reco::VertexCollection> vtx_token;
     edm::EDGetTokenT<reco::TrackCollection> trk_token;
+    edm::EDGetTokenT<reco::BeamSpot> bs_token;
+    edm::EDGetTokenT<edm::TriggerResults> trgResults_token;
 
     static const unsigned int ME11P_SKEWCLEAR_CABLE_LENGTHS[36]; // length in centimeters
     static const unsigned int ME11M_SKEWCLEAR_CABLE_LENGTHS[36]; // length in centimeters

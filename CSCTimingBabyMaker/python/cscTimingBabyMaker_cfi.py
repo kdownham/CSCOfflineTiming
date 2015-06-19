@@ -8,4 +8,6 @@ cscTimingBabyMaker = cms.EDProducer('CSCTimingBabyMaker',
                                     muonTag = cms.InputTag('muons'),
                                     vtxTag = cms.InputTag('offlinePrimaryVertices'),
                                     trkTag = cms.InputTag('generalTracks'),
+                                    bsTag = cms.InputTag('offlineBeamSpot'),
+                                    trgResTag = cms.InputTag('TriggerResults','','RECO'),
                                     verbose = cms.bool(False))

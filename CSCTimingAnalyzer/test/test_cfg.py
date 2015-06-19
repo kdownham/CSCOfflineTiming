@@ -2,19 +2,28 @@ import FWCore.ParameterSet.Config as cms
 
 process = cms.Process("CSCTIMINGANALYSIS")
 
-applyGoodRunList = cms.bool(True)
+applyGoodRunList = cms.bool(False)
 
 process.load("FWCore.MessageService.MessageLogger_cfi")
-process.MessageLogger.cerr.FwkReport.reportEvery = 1000
+process.MessageLogger.cerr.FwkReport.reportEvery = 100000
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 
 process.source = cms.Source("PoolSource",
                             # replace 'myfile.root' with the source file you want to use
                             fileNames = cms.untracked.vstring(
-                                'file:/home/users/fgolf/csc/CMSSW_7_4_5/src/CSCOfflineTiming/CSCTimingBabyMaker/test/test.root'
-                            )
+                                # 'file:/home/users/fgolf/csc/CMSSW_7_4_5_timing/src/CSCOfflineTiming/CSCTimingBabyMaker/test/test.root'
+                                '/store/user/fgolf/csc/timing/offline/SingleMu/v1/150619_013559/0000/csc_singleMu_zeroT_1.root',
+                                '/store/user/fgolf/csc/timing/offline/SingleMu/v1/150619_013559/0000/csc_singleMu_zeroT_2.root',
+                                '/store/user/fgolf/csc/timing/offline/SingleMu/v1/150619_013559/0000/csc_singleMu_zeroT_3.root',
+                                '/store/user/fgolf/csc/timing/offline/SingleMu/v1/150619_013559/0000/csc_singleMu_zeroT_4.root',
+                                '/store/user/fgolf/csc/timing/offline/SingleMu/v1/150619_013559/0000/csc_singleMu_zeroT_5.root',
+                                '/store/user/fgolf/csc/timing/offline/SingleMu/v1/150619_013559/0000/csc_singleMu_zeroT_6.root',
+                                '/store/user/fgolf/csc/timing/offline/SingleMu/v1/150619_013559/0000/csc_singleMu_zeroT_7.root',
+                                '/store/user/fgolf/csc/timing/offline/SingleMu/v1/150619_013559/0000/csc_singleMu_zeroT_8.root')
 )
+
+# process.options = cms.untracked.PSet( SkipEvent = cms.untracked.vstring('ProductNotFound') )
 
 import FWCore.PythonUtilities.LumiList as LumiList
 import FWCore.ParameterSet.Types as CfgTypes
@@ -27,12 +36,14 @@ if applyGoodRunList:
 
 process.load("CSCOfflineTiming.CSCTimingAnalyzer.cscTimingAnalyzer_cfi")
 process.cscTimingAnalyzer.makeChamberTimingCorrectionValueHists = cms.untracked.bool(True)
-process.cscTimingAnalyzer.makePlotsPerChamber = cms.bool(True)
+process.cscTimingAnalyzer.makePlotsPerChamber = cms.untracked.bool(True)
 process.cscTimingAnalyzer.verbose = cms.untracked.bool(False)
 process.cscTimingAnalyzer.debug = cms.untracked.bool(False)
-process.cscTimingAnalyzer.applyUpdatedME11corrections = cms.bool(True)
-process.cscTimingAnalyzer.min_pt = cms.double(0)
-process.cscTimingAnalyzer.max_dz = cms.double(1)
+process.cscTimingAnalyzer.applyUpdatedME11corrections = cms.untracked.bool(True)
+process.cscTimingAnalyzer.min_pt = cms.untracked.double(0)
+process.cscTimingAnalyzer.max_dz = cms.untracked.double(999)
+process.cscTimingAnalyzer.printTimeCorrectionParametersToFile = cms.untracked.bool(True)
+process.cscTimingAnalyzer.writeTimeCorrectionParametersToTree = cms.untracked.bool(True)
 
 applyUpdatedME11correctionsName = '_updateME11corrections'
 # min_pt_name = '_minPt' + str(process.cscTimingAnalyzer.min_pt)
@@ -50,7 +61,7 @@ if process.cscTimingAnalyzer.applyUpdatedME11corrections:
 #     otufileName = outfileName + max_dz_name
 
 outfileName = outfileName + fileExtension
-print outfileName
+# print outfileName
 
 process.cscTimingAnalyzer.outfileName = cms.untracked.string(outfileName)
 

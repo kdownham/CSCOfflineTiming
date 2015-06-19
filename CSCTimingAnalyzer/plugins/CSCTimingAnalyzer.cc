@@ -42,12 +42,14 @@ CSCTimingAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
 {
     loadBranches(iEvent);
 
+    if (!run_h.isValid()) return;
+
     getVars();
     if (verbose_)
         printf("\n\nrun, lumi, evt, csc_status: %d, %d, %llu, %d\n\n", run, lumi, evt, csc_status); 
 
     if (checkCSCstatus_ && !csc_status) return;
-    if (checkCSCstatus_ && !(csc_status & (detector_status & (0xF << 24)))) return;
+    if (checkDCSstatus_ && !(csc_status & (detector_status & (0xF << 24)))) return;
 
     size_t nMuons = p4_h->size();
     for (size_t nmu = 0; nmu < nMuons; nmu++)
