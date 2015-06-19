@@ -44,6 +44,8 @@ process.cscTimingAnalyzer.min_pt = cms.untracked.double(0)
 process.cscTimingAnalyzer.max_dz = cms.untracked.double(999)
 process.cscTimingAnalyzer.printTimeCorrectionParametersToFile = cms.untracked.bool(True)
 process.cscTimingAnalyzer.writeTimeCorrectionParametersToTree = cms.untracked.bool(True)
+process.cscTimingAnalyzer.checkCSCstatus = cms.untracked.bool(True)
+process.cscTimingAnalyzer.checkDCSstatus = cms.untracked.bool(True)
 
 applyUpdatedME11correctionsName = '_updateME11corrections'
 # min_pt_name = '_minPt' + str(process.cscTimingAnalyzer.min_pt)
