@@ -57,6 +57,7 @@ CSCTimingAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
             printf("\n\tMuon %zd: eta = %4.2f, is_global = %d, numMatchedStations = %d, numMatchedCSCsegments = %d\n", nmu, p4.eta(), is_global, numMatchedStations, numMatchedCSCsegments);
 
         if (p4.pt() < min_pt_) continue;
+        if (!CSCTimingAnalyzer::isPOGmuonTight()) continue;
 
         size_t nChambers = numCSCsegmentsInChamber_h->at(nmu).size();
         for (size_t nch = 0; nch < nChambers; nch++)
