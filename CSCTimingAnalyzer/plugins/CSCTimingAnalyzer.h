@@ -94,6 +94,7 @@ private:
     void writeTimingParametersToTree (std::string filename);
     void setTimingParamBabyBranches (TTree* tree);
     void setTimingParamValues (const CSCDetId& id);
+    bool isPOGmuonTight ();
 
     // outfile where histograms are written
     TFile *outfile_;
@@ -109,6 +110,11 @@ private:
     bool writeTimeCorrectionParametersToTree_;
     bool verbose_;
     bool debug_;
+    bool applyUpdatedME11corrections_;
+    bool checkCSCstatus_;
+    bool checkDCSstatus_;
+    double min_pt_;
+    double max_dz_;
     
     std::string outfileName_;
     std::string timeParamFileName_;

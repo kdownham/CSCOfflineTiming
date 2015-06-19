@@ -12,6 +12,11 @@ CSCTimingAnalyzer::CSCTimingAnalyzer(const edm::ParameterSet& iConfig)
     writeTimeCorrectionParametersToTree_   = iConfig.getUntrackedParameter<bool>("writeTimeCorrectionParametersToTree"   , false);
     verbose_                               = iConfig.getUntrackedParameter<bool>("verbose"                               , false);
     debug_                                 = iConfig.getUntrackedParameter<bool>("debug"                                 , false);
+    applyUpdatedME11corrections_           = iConfig.getUntrackedParameter<bool>("applyUpdatedME11corrections"           , false);
+    checkCSCstatus_                        = iConfig.getUntrackedParameter<bool>("checkCSCstatus"                        , false);
+    checkDCSstatus_                        = iConfig.getUntrackedParameter<bool>("checkDCSstatus"                        , false);
+    min_pt_                                = iConfig.getUntrackedParameter<double>("min_pt"                              , 10.  );
+    max_dz_                                = iConfig.getUntrackedParameter<double>("max_dz"                              , 0.5  );
     outfileName_                           = iConfig.getUntrackedParameter<std::string>("outfileName", "histos.root");
     timeParamFileName_                     = iConfig.getUntrackedParameter<std::string>("timeParamFileName", "cscTimingParameters.root");
 
@@ -41,12 +46,17 @@ CSCTimingAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
     if (verbose_)
         printf("\n\nrun, lumi, evt, csc_status: %d, %d, %llu, %d\n\n", run, lumi, evt, csc_status); 
 
+    if (checkCSCstatus_ && !csc_status) return;
+    if (checkCSCstatus_ && !(csc_status & (detector_status & (0xF << 24)))) return;
+
     size_t nMuons = p4_h->size();
     for (size_t nmu = 0; nmu < nMuons; nmu++)
     {
         getVars(nmu);
         if (verbose_)
             printf("\n\tMuon %zd: eta = %4.2f, is_global = %d, numMatchedStations = %d, numMatchedCSCsegments = %d\n", nmu, p4.eta(), is_global, numMatchedStations, numMatchedCSCsegments);
+
+        if (p4.pt() < min_pt_) continue;
 
         size_t nChambers = numCSCsegmentsInChamber_h->at(nmu).size();
         for (size_t nch = 0; nch < nChambers; nch++)
@@ -62,6 +72,9 @@ CSCTimingAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
                 if (verbose_)
                     printf("\t\t\tsegment %zd: isSegmentAndTrackArbitrated = %d, numRecHitsInSegment = %d\n", nseg, isSegmentAndTrackArbitrated, numRecHitsInSegment);
 
+                // only use arbitrated segments
+                if (!isSegmentAndTrackArbitrated) continue;
+
                 size_t nRecHits = station_h->at(nmu).at(nch).at(nseg).size();
                 for (size_t nrh = 0; nrh < nRecHits; nrh++)
                 {
@@ -72,75 +85,45 @@ CSCTimingAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
                         printf("\t\t\t\t\tnstrips = %d, chipCorr = %4.2f, cfebDelay = %4.2f, skewClearDelay = %4.2f, heuristic = %4.2f\n", nstrips, chipCorr, cfebCableDelay, skewClearDelay, chamberCorr-cfebCableDelay-skewClearDelay);
                         printf("\t\t\t\t\tnstrips = %d, new_chipCorr = %4.2f, new_cfebDelay = %4.2f, new_skewClearDelay = %4.2f, heuristic = %4.2f\n", nstrips, new_chipCorr, new_cfebCableDelay, new_skewClearDelay, chamberCorr-cfebCableDelay-skewClearDelay);
                     }
-                }
-            }
-        }
-    }
 
-/*    
-    size_t nRecHits = station_h->size();
-    for (size_t nrh = 0; nrh < nRecHits; nrh++)
-    {
-        getVars(nrh);
+                    if (makeChamberTimingCorrectionValueHists_ || printTimeCorrectionParametersToFile_ || writeTimeCorrectionParametersToTree_)
+                        fillMaps(CSCDetId(endcap, station, ring, chamber));
 
-        // if (!status_) continue;
+                    CSCDetId id(endcap, station, ring, chamber, layer);
+                    double rhtime_corr = rhtime;
 
-        if (onlyCruzetData_ && run_ > 238340) continue;
-        if (onlyCraftData_ && run_ < 238361) continue;
-        
-        bool fill_chamber_maps = (makeChamberTimingCorrectionValueHists_ | printTimeCorrectionParametersToFile_ | writeTimeCorrectionParametersToTree_);
-        CSCDetId detid(endcap_, station_, ring_, chamber_, fill_chamber_maps ? 1 : layer_);
-        CSCDetId detid_with_layer(endcap_, station_, ring_, chamber_, layer_);
+                    if (applyUpdatedME11corrections_ && station == 1 && (ring == 1 || ring == 4))
+                    {
+                        // use average chip correction
+                        rhtime_corr += (new_chipCorr - chipCorr);
+                        
+                        // update CFEB cable delay
+                        rhtime_corr += (new_cfebCableDelay - cfebCableDelay);
 
-        if (fill_chamber_maps)
-            fillMaps(detid);
+                        // update skewclear delay
+                        rhtime_corr += (new_skewClearDelay - skewClearDelay);
+                    }
 
-        double rh_time = rhtime_;
-        double rh_time_corr = 0.;
-        if (station_ == 1 && (ring_ == 1 || ring_ == 4) && (run_ <= 237595 || run_ >= 238335))
-        {
-            if (useAvgChipSpeedCorrForME11_)
-                rh_time_corr += (new_chipCorr_ - chipCorr_);
-            if (flipPhaseForME11_ && run_ <= 237595)
-                rh_time_corr += (new_phaseCorr_ - phaseCorr_);
-            if (setCfebCableDelayToZeroForME11_)
-                rh_time_corr += (new_cfebCableDelay_ - cfebCableDelay_);
-            if (useNewSkewClearDelaysForME11_)
-                rh_time_corr += (new_skewClearDelay_ - skewClearDelay_);
-        }
+                    rhtime_corr /= 50.;
 
-        if (applyNoChipCorrections_)
-            rh_time_corr -= chipCorr_;
+                    // fill histogram
+                    histos_->fill1DHistByType(rhtime_corr, "hRHTiming", "recHit Timing", id, 200, -10, 10, "recHits");
+                    histos_->fill1DHistByType(twire, "hAnodeTiming", "anode Timing", id, 200, -10, 10, "recHits");
+                    if (makePlotsPerChamber_)
+                    {
+                        histos_->fill1DHistByChamber(rhtime_corr, "hRHTiming", "recHit Timing", id, 200, -10, 10, "recHitsByChamber");
+                        histos_->fill1DHistByChamber(twire, "hAnodeTiming", "anode Timing", id, 200, -10, 10, "recHitsByChamber");
+                    }
+                    if (makePlotsPerLayer_)
+                    {
+                        histos_->fill1DHistByLayer(rhtime_corr, "hRHTiming", "recHit Timing", id, 200, -10, 10, "recHitsByLayer");
+                    }
+                } // loop over rechits
+            } // loop over segments
+        } // loop over chambers
+    } // loop over muons
 
-        if (applyNoCfebCableDelay_)
-            rh_time_corr -= cfebCableDelay_;
-
-        if (applyNoSkewClearDelay_)
-            rh_time_corr -= skewClearDelay_;
-        
-        rh_time += rh_time_corr;
-        rh_time /= 50.;
-
-        // fill histogram
-        histos_->fill1DHistByType(rh_time, "hRHTiming", "recHit Timing", detid, 200, -10, 10, "recHits");
-        histos_->fill1DHistByType(tofCorr_, "hTOF", "muon TOF", detid, 300, 15, 45, "tofValues");
-        histos_->fill1DHistByType(yCorr_, "hYCorr", "pulse propagation delay", detid, 100, -2, 2, "yCorrValues");
-        if (makePlotsPerChamber_)
-        {
-            histos_->fill1DHistByChamber(rh_time, "hRHTiming", "recHit Timing", detid, 200, -10, 10, "recHitsByChamber");
-            histos_->fill1DHistByChamber(tofCorr_, "hTOF", "muon TOF", detid, 300, 15, 45, "tofValuesByChamber");
-            histos_->fill1DHistByChamber(yCorr_, "hYCorr", "pulse propagation delay", detid, 100, -2, 2, "yCorrValuesByChamber");
-        }
-        if (makePlotsPerLayer_)
-        {
-            histos_->fill1DHistByLayer(rh_time, "hRHTiming", "recHit Timing", detid_with_layer, 200, -10, 10, "recHitsByLayer");
-            histos_->fill1DHistByLayer(tofCorr_, "hTOF", "muon TOF", detid_with_layer, 300, 15, 45, "tofValuesByLayer");
-            histos_->fill1DHistByLayer(yCorr_, "hYCorr", "pulse propagation delay", detid_with_layer, 100, -2, 2, "yCorrValuesByLayer");
-        }
-    }
-
-    histos_->fill1DHist(nRecHits, "hRHnrechits", "recHits per event (all chambers)", 151, -0.5, 150.5, "recHits");  
-*/  
+    // histos_->fill1DHist(nRecHits, "hRHnrechits", "recHits per event (all chambers)", 151, -0.5, 150.5, "recHits");    
 }
 
 void CSCTimingAnalyzer::fillMaps (CSCDetId id)
@@ -674,6 +657,20 @@ void CSCTimingAnalyzer::initVars ()
     new_cfebCorr                = -999;
     new_chipCorr                = -999;
     return;
+}
+
+bool CSCTimingAnalyzer::isPOGmuonTight ()
+{
+    if (!is_global) return false;
+    // if (!is_pf) return false;
+    if (gfit_chi2/gfit_ndof > 10.) return false;
+    if (gfit_validSTAhits == 0) return false;
+    if (numMatchedStations <= 1) return false;
+    if (fabs(d0) > 0.2) return false;
+    if (fabs(dz) > max_dz_) return false;
+    if (valid_pixelHits == 0) return false;;
+    if (valid_siLayers <= 5) return false;
+    return true;
 }
 
 // ------------ method fills 'descriptions' with the allowed parameters for the module  ------------

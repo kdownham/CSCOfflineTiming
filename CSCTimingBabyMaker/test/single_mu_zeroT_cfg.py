@@ -2,11 +2,11 @@ import FWCore.ParameterSet.Config as cms
 
 process = cms.Process("CSCTIMING")
 
-process.load("Configuration/StandardSequences/Geometry_cff")
-process.load("Configuration/StandardSequences/MagneticField_cff")
-process.load("Configuration/StandardSequences/FrontierConditions_GlobalTag_cff")
+process.load("Configuration.Geometry.GeometryIdeal_cff")
+process.load("Configuration.StandardSequences.MagneticField_cff")
+process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
 process.load('FWCore.MessageService.MessageLogger_cfi')
-process.load("Configuration/StandardSequences/RawToDigi_Data_cff")
+process.load("Configuration.StandardSequences.RawToDigi_Data_cff")
 process.load("Configuration.StandardSequences.Reconstruction_cff")
 process.load('Configuration.StandardSequences.EndOfProcess_cff')
 
@@ -18,22 +18,13 @@ process.CSCGeometryESModule.useGangedStripsInME1a = cms.bool(False)
 process.CSCIndexerESProducer.AlgoName=cms.string("CSCIndexerPostls1")
 process.CSCChannelMapperESProducer.AlgoName=cms.string("CSCChannelMapperPostls1")
 
-# automatically name the output file correctly and uniquely
-baseFileName = 'csc_singleMu_zeroT'
-fileExtension = '.root'
-outfileName = baseFileName
-
-outfileName = outfileName+fileExtension
-outfileName = 'test.root'
-
-
 #process.MessageLogger.cerr.threshold = 'ERROR'
 process.MessageLogger.cerr.FwkReport.reportEvery = 100
 
 
 # Standard configs
-#process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
+# process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
 process.options = cms.untracked.PSet( SkipEvent = cms.untracked.vstring('ProductNotFound') )
 process.options = cms.untracked.PSet(SkipEvent = cms.untracked.vstring('LogicError'))
 
@@ -44,6 +35,19 @@ process.source = cms.Source("PoolSource",
 )
 
 process.load('CSCOfflineTiming.CSCTimingBabyMaker.cscTimingBabyMaker_cfi')
+process.cscTimingAnalyzer.applyUpdatedME11corrections = cms.bool(True)
+process.cscTimingAnalyzer.makeChamberTimingCorrectionValueHists = cms.bool(True)
+process.cscTimingAnalyzer.makePlotsPerChamber = cms.bool(True)
+process.cscTimingAnalyzer.min_pt = cms.double(0.)
+process.cscTimingAnalyzer.max_dz = cms.double(1.)
+
+# automatically name the output file correctly and uniquely
+baseFileName = 'csc_singleMu_zeroT'
+fileExtension = '.root'
+outfileName = baseFileName
+
+outfileName = outfileName+fileExtension
+outfileName = 'test.root'
 
 # From RAW
 process.p = cms.Path(process.cscTimingBabyMaker)
