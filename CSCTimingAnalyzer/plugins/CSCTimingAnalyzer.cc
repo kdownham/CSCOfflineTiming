@@ -15,10 +15,15 @@ CSCTimingAnalyzer::CSCTimingAnalyzer(const edm::ParameterSet& iConfig)
     applyUpdatedME11corrections_           = iConfig.getUntrackedParameter<bool>("applyUpdatedME11corrections"           , false);
     checkCSCstatus_                        = iConfig.getUntrackedParameter<bool>("checkCSCstatus"                        , false);
     checkDCSstatus_                        = iConfig.getUntrackedParameter<bool>("checkDCSstatus"                        , false);
+    removeHeuristicCorrection_             = iConfig.getUntrackedParameter<bool>("removeHeuristicCorrection"             , false);
+    applyNewHeuristicCorrectionByRing_     = iConfig.getUntrackedParameter<bool>("applyNewHeuristicCorrectionByRing"     , false);
+    applyNewHeuristicCorrectionByChamber_  = iConfig.getUntrackedParameter<bool>("applyNewHeuristicCorrectionByChamber"  , false);
     min_pt_                                = iConfig.getUntrackedParameter<double>("min_pt"                              , 10.  );
     max_dz_                                = iConfig.getUntrackedParameter<double>("max_dz"                              , 0.5  );
     outfileName_                           = iConfig.getUntrackedParameter<std::string>("outfileName", "histos.root");
     timeParamFileName_                     = iConfig.getUntrackedParameter<std::string>("timeParamFileName", "cscTimingParameters.root");
+    fileForHeuristicCorrByRing_            = iConfig.getParameter<std::string>("fileForHeuristicCorrByRing");
+    fileForHeuristicCorrByChamber_         = iConfig.getParameter<std::string>("fileForHeuristicCorrByChamber");
 
     histos_  = new CSCValHists();
     outfile_ = new TFile(outfileName_.c_str(), "RECREATE");
@@ -60,6 +65,7 @@ CSCTimingAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
 
         if (p4.pt() < min_pt_) continue;
         if (!CSCTimingAnalyzer::isPOGmuonTight()) continue;
+        bool isGoodMuWithArbitratedSegment = false;
 
         size_t nChambers = numCSCsegmentsInChamber_h->at(nmu).size();
         for (size_t nch = 0; nch < nChambers; nch++)
@@ -69,6 +75,11 @@ CSCTimingAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
                 printf("\t\tchamber %zd: numCSCsegmentsInChamber = %d\n", nch, numCSCsegmentsInChamber);
 
             size_t nSegments = numRecHitsInSegment_h->at(nmu).at(nch).size();
+            if (nSegments > 0)
+            {
+                histos_->fill1DHist(std::min(std::max(distToChamberEdge,-59.9),9.9), "hChamberEdgeDist", "muon quality", 140, -60, 10, "Muons");
+                histos_->fill1DHist(std::min(std::max(distToChamberEdge/distToChamberEdgeErr,-2.99),0.99), "hChamberEdgeSigmas", "muon quality", 40, -3, 1, "Muons");
+            }
             for (size_t nseg = 0; nseg < nSegments; nseg++)
             {
                 getVars(nmu, nch, nseg);
@@ -77,8 +88,10 @@ CSCTimingAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
 
                 // only use arbitrated segments
                 if (!isSegmentAndTrackArbitrated) continue;
+                isGoodMuWithArbitratedSegment = true;                
 
                 size_t nRecHits = station_h->at(nmu).at(nch).at(nseg).size();
+                histos_->fill1DHist(numRecHitsInSegment, "hNumRHinSegment", "segment quality", 10, -0.5, 9.5, "Muons");
                 for (size_t nrh = 0; nrh < nRecHits; nrh++)
                 {
                     getVars(nmu,nch,nseg,nrh);
@@ -95,35 +108,126 @@ CSCTimingAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
                     CSCDetId id(endcap, station, ring, chamber, layer);
                     double rhtime_corr = rhtime;
 
-                    if (applyUpdatedME11corrections_ && station == 1 && (ring == 1 || ring == 4))
+                    if (station == 1 && (ring == 1 || ring == 4))
                     {
-                        // use average chip correction
-                        rhtime_corr += (new_chipCorr - chipCorr);
-                        
-                        // update CFEB cable delay
-                        rhtime_corr += (new_cfebCableDelay - cfebCableDelay);
+                        if (applyUpdatedME11corrections_)
+                        {
+                            // use average chip correction
+                            rhtime_corr += (new_chipCorr - chipCorr);
+                            
+                            // update CFEB cable delay
+                            rhtime_corr += (new_cfebCableDelay - cfebCableDelay);
+                            
+                            // update skewclear delay
+                            rhtime_corr += (new_skewClearDelay - skewClearDelay);
+                            
+                            if (removeHeuristicCorrection_)
+                                rhtime_corr -= (new_chamberCorr - new_cfebCableDelay - new_skewClearDelay);
+                            else if (applyNewHeuristicCorrectionByRing_)
+                            {
+                                rhtime_corr -= (new_chamberCorr - new_cfebCableDelay - new_skewClearDelay); // first remove old hueristic correction
+                                rhtime_corr += m_new_heuristicCorr[CSCDetId(endcap,station,ring,0)]; // now apply new hueristic correction
+                            }
+                            else if (applyNewHeuristicCorrectionByChamber_)
+                            {
+                                rhtime_corr -= (new_chamberCorr - new_cfebCableDelay - new_skewClearDelay); // first remove old hueristic correction
+                                rhtime_corr += m_new_heuristicCorr[CSCDetId(endcap,station,ring,chamber)]; // now apply new hueristic correction
+                            }
+                        }
+                        else if (removeHeuristicCorrection_)
+                        {
 
-                        // update skewclear delay
-                        rhtime_corr += (new_skewClearDelay - skewClearDelay);
+                            rhtime_corr -= (chamberCorr - cfebCableDelay - skewClearDelay);
+                        }
+                        else if (applyNewHeuristicCorrectionByRing_)
+                        {
+                                rhtime_corr -= (chamberCorr - cfebCableDelay - skewClearDelay); // first remove old hueristic correction
+                                rhtime_corr += m_new_heuristicCorr[CSCDetId(endcap,station,ring,0)]; // now apply new hueristic correction
+                        }
+                        else if (applyNewHeuristicCorrectionByChamber_)
+                        {
+                                rhtime_corr -= (chamberCorr - cfebCableDelay - skewClearDelay); // first remove old hueristic correction
+                                rhtime_corr += m_new_heuristicCorr[CSCDetId(endcap,station,ring,chamber)]; // now apply new hueristic correction
+                        }
                     }
-
-                    rhtime_corr /= 50.;
-
-                    // fill histogram
-                    histos_->fill1DHistByType(rhtime_corr, "hRHTiming", "recHit Timing", id, 200, -10, 10, "recHits");
-                    histos_->fill1DHistByType(twire, "hAnodeTiming", "anode Timing", id, 200, -10, 10, "recHits");
-                    if (makePlotsPerChamber_)
+                    else if (removeHeuristicCorrection_)
                     {
-                        histos_->fill1DHistByChamber(rhtime_corr, "hRHTiming", "recHit Timing", id, 200, -10, 10, "recHitsByChamber");
-                        histos_->fill1DHistByChamber(twire, "hAnodeTiming", "anode Timing", id, 200, -10, 10, "recHitsByChamber");
+                        rhtime_corr -= (chamberCorr - cfebCableDelay - skewClearDelay);
                     }
-                    if (makePlotsPerLayer_)
+                    else if (applyNewHeuristicCorrectionByRing_)
                     {
-                        histos_->fill1DHistByLayer(rhtime_corr, "hRHTiming", "recHit Timing", id, 200, -10, 10, "recHitsByLayer");
+                        rhtime_corr -= (chamberCorr - cfebCableDelay - skewClearDelay); // first remove old hueristic correction
+                        rhtime_corr += m_new_heuristicCorr[CSCDetId(endcap,station,ring,0)]; // now apply new hueristic correction                        
+                    }
+                    else if (applyNewHeuristicCorrectionByChamber_)
+                    {
+                        rhtime_corr -= (chamberCorr - cfebCableDelay - skewClearDelay); // first remove old hueristic correction
+                        rhtime_corr += m_new_heuristicCorr[CSCDetId(endcap,station,ring,chamber)]; // now apply new hueristic correction                        
+                    }
+                    
+                    rhtime_corr /= 50.;                    
+
+                    // fill histogram per station
+                    if (removeHeuristicCorrection_)
+                    {
+                        histos_->fill1DHistByType(rhtime_corr, "hRHTiming", "recHit Timing", id, 200, 2, 6, "recHits");
+                        histos_->fill1DHistByType(twire, "hAnodeTiming", "anode Timing", id, 200, -10, 10, "recHits");
+                        if (makePlotsPerChamber_)
+                        {
+                            histos_->fill1DHistByChamber(rhtime_corr, "hRHTiming", "recHit Timing", id, 200, 2, 6, "recHitsByChamber");
+                            histos_->fill1DHistByChamber(twire, "hAnodeTiming", "anode Timing", id, 200, -10, 10, "recHitsByChamber");
+                        }
+                        if (makePlotsPerLayer_)
+                        {
+                            histos_->fill1DHistByLayer(rhtime_corr, "hRHTiming", "recHit Timing", id, 200, 2, 6, "recHitsByLayer");
+                        }
+                    }
+                    else
+                    {
+                        histos_->fill1DHistByType(rhtime_corr, "hRHTiming", "recHit Timing", id, 200, -2, 2, "recHits");
+                        histos_->fill1DHistByType(twire, "hAnodeTiming", "anode Timing", id, 200, -10, 10, "recHits");
+                        if (makePlotsPerChamber_)
+                        {
+                            histos_->fill1DHistByChamber(rhtime_corr, "hRHTiming", "recHit Timing", id, 200, -2, 2, "recHitsByChamber");
+                            histos_->fill1DHistByChamber(twire, "hAnodeTiming", "anode Timing", id, 200, -10, 10, "recHitsByChamber");
+                        }
+                        if (makePlotsPerLayer_)
+                        {
+                            histos_->fill1DHistByLayer(rhtime_corr, "hRHTiming", "recHit Timing", id, 200, -2, 2, "recHitsByLayer");
+                        }
                     }
                 } // loop over rechits
             } // loop over segments
         } // loop over chambers
+
+
+        if (isGoodMuWithArbitratedSegment)
+        {
+            histos_->fill1DHist(is_tracker                            , "hMuIsTracker"            , "muon quality" , 4   , -1.5 , 2.5 , "Muons");
+            histos_->fill1DHist(is_sa                                 , "hMuIsSA"                 , "muon quality" , 4   , -1.5 , 2.5 , "Muons");
+            histos_->fill1DHist(is_pf                                 , "hMuIsPF"                 , "muon quality" , 4   , -1.5 , 2.5 , "Muons");
+            histos_->fill1DHist(std::max(maxOpeningAngleTrack ,2.501) , "hMuMaxOpeningAngleTrack" , "muon quality" , 70  , 2.5  , 3.2 , "Muons");
+            histos_->fill1DHist(std::max(maxOpeningAngleMuon  ,0.001) , "hMuMaxOpeningAngleMuon"  , "muon quality" , 160 , 0    , 3.2 , "Muons");
+            histos_->fill1DHist(numMatchedCSCsegments                 , "hMuNumMatchedSegments"   , "muon quality" , 10  , -0.5 , 9.5 , "Muons");
+            histos_->fill1DHist(p4.eta()                              , "hMuEta"                  , "muon quality" , 50  , -2.5 , 2.5 , "Muons");
+            histos_->fill1DHist(p4.phi()                              , "hMuPhi"                  , "muon quality" , 64  , -3.2 , 3.2 , "Muons");
+
+            // histos_->fill1DHist(is_global             , "hMuIsGlobal"             , "muon quality" , 4 , -1.5 , 2.5 , "Muons");
+            // histos_->fill1DHist(dz                    , "hMuDz"                   , "muon quality" , 300, -30 , 30 , "Muons");
+            // histos_->fill1DHist(d0                    , "hMuD0"                   , "muon quality" , 100 , -5 , 5 , "Muons");
+            // histos_->fill1DHist(gfit_chi2/gfit_ndof   , "hMuIsGfitNormChi2"       , "muon quality" , 100 , 0 , 25 , "Muons");
+            // histos_->fill1DHist(type                  , "hMuType"                 , "muon quality" , 4 , -1.5 , 2.5 , "Muons");
+            // histos_->fill1DHist(valid_siLayers        , "hMuSiLayers"             , "muon quality" , 4 , -1.5 , 2.5 , "Muons");
+            // histos_->fill1DHist(valid_pixelHits       , "hMuPixelHits"            , "muon quality" , 4 , -1.5 , 2.5 , "Muons");
+            // histos_->fill1DHist(charge                , "hMuCharge"               , "muon quality" , 4 , -1.5 , 2.5 , "Muons");
+            // histos_->fill1DHist(trk_charge            , "hMuTrkCharge"            , "muon quality" , 4 , -1.5 , 2.5 , "Muons");
+            // histos_->fill1DHist(gfit_validSTAhits     , "hMuGfitSAhits"           , "muon quality" , 4 , -1.5 , 2.5 , "Muons");
+            // histos_->fill1DHist(gfit_validSiHits      , "hMuIsGfitSiHits"         , "muon quality" , 4 , -1.5 , 2.5 , "Muons");
+            // histos_->fill1DHist(sta_validHits         , "hMuSAhits"               , "muon quality" , 4 , -1.5 , 2.5 , "Muons");
+            // histos_->fill1DHist(numMatchedStations    , "hMuNumMatchedStations"   , "muon quality" , 4 , -1.5 , 2.5 , "Muons");
+            // histos_->fill1DHist(pt                    , "hMuPt"                   , "muon quality" , 4 , -1.5 , 2.5 , "Muons");
+        }
+
     } // loop over muons
 
     // histos_->fill1DHist(nRecHits, "hRHnrechits", "recHits per event (all chambers)", 151, -0.5, 150.5, "recHits");    
@@ -379,6 +483,10 @@ void CSCTimingAnalyzer::setTimingParamValues (const CSCDetId& id)
 void 
 CSCTimingAnalyzer::beginJob()
 {
+    std::cout << "Reading heuristic corrections from file..." << std::endl;
+    if (!CSCTimingAnalyzer::readHeuristicCorrectionsFromFile())
+        std::cout << "Failed to read heuristic corrections from file." << std::endl;
+    std::cout << "Done reading heuristic corrections from file..." << std::endl;
 }
 
 // ------------ method called once each job just after ending the event loop  ------------
@@ -674,6 +782,73 @@ bool CSCTimingAnalyzer::isPOGmuonTight ()
     if (valid_pixelHits == 0) return false;;
     if (valid_siLayers <= 5) return false;
     return true;
+}
+
+bool CSCTimingAnalyzer::readHeuristicCorrectionsFromFile ()
+{
+    if (applyNewHeuristicCorrectionByChamber_)
+    {
+        std::ifstream infile(fileForHeuristicCorrByChamber_.c_str());
+        if (!infile)
+        {
+            std::cout << "Failed to read heuristic corrections from file " << fileForHeuristicCorrByChamber_ << std::endl;
+            return false;
+        }
+        if (verbose_)
+            std::cout << "Successfully opened file " << fileForHeuristicCorrByChamber_ << std::endl;
+        bool is_first = true;
+        while (!infile.eof())
+        {
+            if (is_first)
+            {
+                is_first = false;
+                continue;
+            }
+            std::string blah;
+            getline(infile, blah);
+            int endcap_, station_, ring_, chamber_;
+            double corr_;
+            infile >> endcap_ >> station_ >> ring_ >> chamber_ >> corr_;
+            if (debug_)
+                std::cout << endcap_ << "\t" << station_ << "\t" << ring_ << "\t" << chamber_ << "\t" << corr_ << std::endl;
+            CSCDetId id_(endcap_, station_, ring_, chamber_);
+            m_new_heuristicCorr[id_] = corr_;
+        }
+        infile.close();
+        return true;
+    }
+    else if (applyNewHeuristicCorrectionByRing_)
+    {
+        std::ifstream infile(fileForHeuristicCorrByRing_.c_str());
+        if (!infile)
+        {
+            std::cout << "Failed to read heuristic corrections from file " << fileForHeuristicCorrByRing_ << std::endl;
+            return false;
+        }
+        if (verbose_)
+            std::cout << "Successfully opened file " << fileForHeuristicCorrByChamber_ << std::endl;
+        bool is_first = true;
+        while (!infile.eof())
+        {
+            if (is_first)
+            {
+                is_first = false;
+                continue;
+            }
+            int endcap_, station_, ring_, chamber_ = 0;
+            double corr_;
+            std::string blah;
+            getline(infile, blah);
+            infile >> endcap_ >> station_ >> ring_ >> corr_;
+            if (debug_)
+                std::cout << endcap_ << "\t" << station_ << "\t" << ring_ << "\t" << chamber_ << "\t" << corr_ << std::endl;
+            CSCDetId id_(endcap_, station_, ring_, chamber_);
+            m_new_heuristicCorr[id_] = corr_;            
+        }
+        infile.close();
+        return true;
+    }
+    return false;
 }
 
 // ------------ method fills 'descriptions' with the allowed parameters for the module  ------------

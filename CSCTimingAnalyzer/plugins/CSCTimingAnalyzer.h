@@ -95,6 +95,7 @@ private:
     void setTimingParamBabyBranches (TTree* tree);
     void setTimingParamValues (const CSCDetId& id);
     bool isPOGmuonTight ();
+    bool readHeuristicCorrectionsFromFile ();
 
     // outfile where histograms are written
     TFile *outfile_;
@@ -113,11 +114,16 @@ private:
     bool applyUpdatedME11corrections_;
     bool checkCSCstatus_;
     bool checkDCSstatus_;
+    bool removeHeuristicCorrection_;
+    bool applyNewHeuristicCorrectionByRing_;
+    bool applyNewHeuristicCorrectionByChamber_;
     double min_pt_;
     double max_dz_;
     
     std::string outfileName_;
     std::string timeParamFileName_;
+    std::string fileForHeuristicCorrByRing_;
+    std::string fileForHeuristicCorrByChamber_;    
 
     //
     // event level quantities
@@ -290,4 +296,6 @@ private:
 
     std::map<CSCDetId, std::set<double> > m_chipCorr;
     std::map<CSCDetId, std::set<double> > m_new_chipCorr;
+
+    std::map<CSCDetId, double> m_new_heuristicCorr;
 };
