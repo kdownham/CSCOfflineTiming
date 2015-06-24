@@ -154,8 +154,8 @@ CSCTimingBabyMaker::~CSCTimingBabyMaker()
 //
 
 // ------------ method called to produce the data  ------------
-void
-CSCTimingBabyMaker::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
+bool
+CSCTimingBabyMaker::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
     //
     // event level quantities
@@ -301,11 +301,11 @@ CSCTimingBabyMaker::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
     iEvent.getByToken(vtx_token, vtx_h);
     const reco::VertexCollection *vtx_coll = vtx_h.product();
     reco::Vertex vtx = vtx_coll->front();
-    if (!isGoodVertex(vtx)) return;
+    if (!isGoodVertex(vtx)) return false;
 
     edm::Handle<reco::BeamSpot> bs_h;
     iEvent.getByToken(bs_token, bs_h);
-    if (!bs_h.isValid()) return;
+    if (!bs_h.isValid()) return false;
 
     edm::Handle<reco::TrackCollection> trks_h;
     iEvent.getByToken(trk_token, trks_h);
@@ -313,7 +313,7 @@ CSCTimingBabyMaker::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
     edm::Handle<reco::MuonCollection> mus_h;
     iEvent.getByToken(mu_token, mus_h);
-    if (!mus_h.isValid() || mus_h->size() == 0) return;
+    if (!mus_h.isValid() || mus_h->size() == 0) return false;
 
     int nGoodMus_ = 0;
     reco::MuonCollection::const_iterator muIter;
@@ -835,7 +835,7 @@ CSCTimingBabyMaker::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
     } // end loop over muons
 
-    if (nGoodMus_ == 0) return;
+    if (nGoodMus_ == 0) return false;
 
     //
     // put variables into event
@@ -905,6 +905,8 @@ CSCTimingBabyMaker::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
     iEvent.put(new_chipCorr                , "newchipCorr"                 );
     iEvent.put(twire                       , "twire"                       );
     iEvent.put(anode_bx_offset             , "anodebxoffset"               );
+
+    return true;
 }
 
 //

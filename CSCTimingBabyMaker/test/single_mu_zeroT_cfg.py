@@ -32,7 +32,7 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 100
 
 
 # Standard configs
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
 # process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1) )
 # process.options = cms.untracked.PSet( SkipEvent = cms.untracked.vstring('ProductNotFound') )
 # process.options = cms.untracked.PSet(SkipEvent = cms.untracked.vstring('LogicError'))
@@ -53,7 +53,11 @@ process.p = cms.Path(process.cscTimingBabyMaker)
 process.out = cms.OutputModule("PoolOutputModule",
                                fileName = cms.untracked.string(outfileName),
                                outputCommands = cms.untracked.vstring('drop *',
-                                                                      'keep *_*_*_CSCTIMING'))
+                                                                      'keep *_*_*_CSCTIMING'),
+                               SelectEvents = cms.untracked.PSet(
+                                   SelectEvents = cms.vstring('p')
+                               )
+)
 
 process.e = cms.EndPath(process.out)
 

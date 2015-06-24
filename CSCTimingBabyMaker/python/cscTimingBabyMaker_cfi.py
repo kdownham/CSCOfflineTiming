@@ -1,6 +1,6 @@
 import FWCore.ParameterSet.Config as cms
 
-cscTimingBabyMaker = cms.EDProducer('CSCTimingBabyMaker',
+cscTimingBabyMaker = cms.EDFilter('CSCTimingBabyMaker',
                                     readBadChannels = cms.bool(True),
                                     readBadChambers = cms.bool(True),
                                     CSCUseTimingCorrections = cms.bool(True),

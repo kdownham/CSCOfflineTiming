@@ -23,7 +23,7 @@
 
 // user include files
 #include "FWCore/Framework/interface/Frameworkfwd.h"
-#include "FWCore/Framework/interface/EDProducer.h"
+#include "FWCore/Framework/interface/EDFilter.h"
 
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
@@ -50,7 +50,7 @@ class CSCChannelMapperBase;
 // class declaration
 //
 
-class CSCTimingBabyMaker : public edm::EDProducer {
+class CSCTimingBabyMaker : public edm::EDFilter {
 public:
     explicit CSCTimingBabyMaker(const edm::ParameterSet&);
     ~CSCTimingBabyMaker();
@@ -59,7 +59,7 @@ public:
 
 private:
     virtual void beginJob() override;
-    virtual void produce(edm::Event&, const edm::EventSetup&) override;
+    virtual bool filter(edm::Event&, const edm::EventSetup&) override;
     virtual void endJob() override;
       
     //virtual void beginRun(edm::Run const&, edm::EventSetup const&) override;
