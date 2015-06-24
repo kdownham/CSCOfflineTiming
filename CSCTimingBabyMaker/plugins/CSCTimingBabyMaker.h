@@ -19,6 +19,7 @@
 
 // system include files
 #include <memory>
+#include <vector>
 
 // user include files
 #include "FWCore/Framework/interface/Frameworkfwd.h"
@@ -37,6 +38,8 @@
 #include "DataFormats/Common/interface/TriggerResults.h"
 
 #include "DataFormats/MuonDetId/interface/CSCDetId.h"
+
+
 
 class CSCRecoConditions;
 class CSCChamberTimeCorrections;
@@ -82,11 +85,13 @@ private:
     edm::EDGetTokenT<reco::BeamSpot> bs_token;
     edm::EDGetTokenT<edm::TriggerResults> trgResults_token;
 
+    bool debug_;
+
     static const unsigned int ME11P_SKEWCLEAR_CABLE_LENGTHS[36]; // length in centimeters
     static const unsigned int ME11M_SKEWCLEAR_CABLE_LENGTHS[36]; // length in centimeters
     static const unsigned int PPIB_DCFEB_CABLE_LENGTH; // length in centimeters
     static const double SKEWCLEAR_REVD_PROPAGATION_DELAY;  // [ns/m]
     static const double SKEWCLEAR_REVO_PROPAGATION_DELAY;  // don't know the real value, for now use 5 ns/m
     static const double PPIB_LVDS_DELAY; // from M. MatveevP: ~5 ns delay from LVDS receiver and LVDS transmitter on PPIB 
-    static const double AVG_CHIP_CORR;
+    static const double AVG_CHIP_CORR;    
 };

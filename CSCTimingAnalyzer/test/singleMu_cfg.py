@@ -54,10 +54,9 @@ import FWCore.ParameterSet.Types as CfgTypes
 
 if applyGoodRunList:
     process.source.lumisToProcess = CfgTypes.untracked(CfgTypes.VLuminosityBlockRange())
-    # JSONfile = '/home/users/fgolf/csc/CMSSW_7_4_5_timing/src/CSCOfflineTiming/CSCTimingAnalyzer/json/Cert_246908-247381_13TeV_PromptReco_Collisions15_ZeroTesla_JSON.txt'
-    JSONfile = '/home/users/fgolf/csc/CMSSW_7_4_5_timing/src/CSCOfflineTiming/CSCTimingAnalyzer/json/Cert_246908-247381_13TeV_PromptReco_Collisions15_ZeroTesla_JSON_MuonPhys.txt'
+    # JSONfile = '/home/users/fgolf/csc/CMSSW_7_4_5_timing/src/CSCOfflineTiming/CSCTimingAnalyzer/json/Cert_246908-248005_13TeV_PromptReco_Collisions15_ZeroTesla_JSON.txt'
+    JSONfile = '/home/users/fgolf/csc/CMSSW_7_4_5_timing/src/CSCOfflineTiming/CSCTimingAnalyzer/json/Cert_246908-248005_13TeV_PromptReco_Collisions15_ZeroTesla_JSON_MuonPhys.txt'
     myLumis = LumiList.LumiList(filename = JSONfile).getCMSSWString().split(',')
-    # myLumis = LumiList.LumiList(runs = [234664, 234669, 234670, 234671, 234673, 234677, 234679])
     process.source.lumisToProcess.extend(myLumis)
 
 process.load("CSCOfflineTiming.CSCTimingAnalyzer.cscTimingAnalyzer_cfi")
@@ -75,6 +74,7 @@ process.cscTimingAnalyzer.checkDCSstatus = cms.untracked.bool(False)
 process.cscTimingAnalyzer.removeHeuristicCorrection = cms.untracked.bool(False)
 process.cscTimingAnalyzer.applyNewHeuristicCorrectionByRing = cms.untracked.bool(False)
 process.cscTimingAnalyzer.applyNewHeuristicCorrectionByChamber = cms.untracked.bool(True)
+process.cscTimingAnalyzer.makeNminus1hists = cms.untracked.bool(True)
 
 applyUpdatedME11correctionsName = '_updateME11corrections'
 checkCSCstatusName = '_checkCSCstatus'

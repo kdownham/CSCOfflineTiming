@@ -18,6 +18,7 @@ CSCTimingAnalyzer::CSCTimingAnalyzer(const edm::ParameterSet& iConfig)
     removeHeuristicCorrection_             = iConfig.getUntrackedParameter<bool>("removeHeuristicCorrection"             , false);
     applyNewHeuristicCorrectionByRing_     = iConfig.getUntrackedParameter<bool>("applyNewHeuristicCorrectionByRing"     , false);
     applyNewHeuristicCorrectionByChamber_  = iConfig.getUntrackedParameter<bool>("applyNewHeuristicCorrectionByChamber"  , false);
+    makeNminus1hists_                      = iConfig.getUntrackedParameter<bool>("makeNminus1hists"                      , false);
     min_pt_                                = iConfig.getUntrackedParameter<double>("min_pt"                              , 10.  );
     max_dz_                                = iConfig.getUntrackedParameter<double>("max_dz"                              , 0.5  );
     outfileName_                           = iConfig.getUntrackedParameter<std::string>("outfileName", "histos.root");
@@ -50,7 +51,7 @@ CSCTimingAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
     if (!run_h.isValid()) return;
 
     getVars();
-    if (verbose_)
+    if (debug_)
         printf("\n\nrun, lumi, evt, csc_status: %d, %d, %llu, %d\n\n", run, lumi, evt, csc_status); 
 
     if (checkCSCstatus_ && !csc_status) return;
@@ -60,18 +61,19 @@ CSCTimingAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
     for (size_t nmu = 0; nmu < nMuons; nmu++)
     {
         getVars(nmu);
-        if (verbose_)
+        if (debug_)
             printf("\n\tMuon %zd: eta = %4.2f, is_global = %d, numMatchedStations = %d, numMatchedCSCsegments = %d\n", nmu, p4.eta(), is_global, numMatchedStations, numMatchedCSCsegments);
 
         if (p4.pt() < min_pt_) continue;
+        if (makeNminus1hists_)
+            CSCTimingAnalyzer::fillNm1hists();
         if (!CSCTimingAnalyzer::isPOGmuonTight()) continue;
         bool isGoodMuWithArbitratedSegment = false;
-
         size_t nChambers = numCSCsegmentsInChamber_h->at(nmu).size();
         for (size_t nch = 0; nch < nChambers; nch++)
         {
             getVars(nmu, nch);
-            if (verbose_)
+            if (debug_)
                 printf("\t\tchamber %zd: numCSCsegmentsInChamber = %d\n", nch, numCSCsegmentsInChamber);
 
             size_t nSegments = numRecHitsInSegment_h->at(nmu).at(nch).size();
@@ -83,7 +85,7 @@ CSCTimingAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
             for (size_t nseg = 0; nseg < nSegments; nseg++)
             {
                 getVars(nmu, nch, nseg);
-                if (verbose_)
+                if (debug_)
                     printf("\t\t\tsegment %zd: isSegmentAndTrackArbitrated = %d, numRecHitsInSegment = %d\n", nseg, isSegmentAndTrackArbitrated, numRecHitsInSegment);
 
                 // only use arbitrated segments
@@ -95,7 +97,7 @@ CSCTimingAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
                 for (size_t nrh = 0; nrh < nRecHits; nrh++)
                 {
                     getVars(nmu,nch,nseg,nrh);
-                    if (verbose_)
+                    if (debug_)
                     {
                         printf("\t\t\t\trechit %zd: (endcap,station,ring,chamber) = (%d,%d,%d,%d) has (cathode,anode) time = (%4.2f,%4.2f)\n", nrh, endcap, station, ring, chamber, rhtime, twire);
                         printf("\t\t\t\t\tnstrips = %d, chipCorr = %4.2f, cfebDelay = %4.2f, skewClearDelay = %4.2f, heuristic = %4.2f\n", nstrips, chipCorr, cfebCableDelay, skewClearDelay, chamberCorr-cfebCableDelay-skewClearDelay);
@@ -171,29 +173,35 @@ CSCTimingAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
                     if (removeHeuristicCorrection_)
                     {
                         histos_->fill1DHistByType(rhtime_corr, "hRHTiming", "recHit Timing", id, 200, 2, 6, "recHits");
+                        histos_->fill1DHistByType(nstrips, "hRHNumStrips", "Number of cathod strips", id, 10, -0.5, 9.5, "recHits");
                         histos_->fill1DHistByType(twire, "hAnodeTiming", "anode Timing", id, 200, -10, 10, "recHits");
                         if (makePlotsPerChamber_)
                         {
                             histos_->fill1DHistByChamber(rhtime_corr, "hRHTiming", "recHit Timing", id, 200, 2, 6, "recHitsByChamber");
+                            histos_->fill1DHistByType(nstrips, "hRHNumStrips", "Number of cathod strips", id, 10, -0.5, 9.5, "recHits");
                             histos_->fill1DHistByChamber(twire, "hAnodeTiming", "anode Timing", id, 200, -10, 10, "recHitsByChamber");
                         }
                         if (makePlotsPerLayer_)
                         {
                             histos_->fill1DHistByLayer(rhtime_corr, "hRHTiming", "recHit Timing", id, 200, 2, 6, "recHitsByLayer");
+                            histos_->fill1DHistByType(nstrips, "hRHNumStrips", "Number of cathod strips", id, 10, -0.5, 9.5, "recHits");
                         }
                     }
                     else
                     {
                         histos_->fill1DHistByType(rhtime_corr, "hRHTiming", "recHit Timing", id, 200, -2, 2, "recHits");
+                        histos_->fill1DHistByType(nstrips, "hRHNumStrips", "Number of cathod strips", id, 10, -0.5, 9.5, "recHits");
                         histos_->fill1DHistByType(twire, "hAnodeTiming", "anode Timing", id, 200, -10, 10, "recHits");
                         if (makePlotsPerChamber_)
                         {
                             histos_->fill1DHistByChamber(rhtime_corr, "hRHTiming", "recHit Timing", id, 200, -2, 2, "recHitsByChamber");
+                            histos_->fill1DHistByType(nstrips, "hRHNumStrips", "Number of cathod strips", id, 10, -0.5, 9.5, "recHits");
                             histos_->fill1DHistByChamber(twire, "hAnodeTiming", "anode Timing", id, 200, -10, 10, "recHitsByChamber");
                         }
                         if (makePlotsPerLayer_)
                         {
                             histos_->fill1DHistByLayer(rhtime_corr, "hRHTiming", "recHit Timing", id, 200, -2, 2, "recHitsByLayer");
+                            histos_->fill1DHistByType(nstrips, "hRHNumStrips", "Number of cathod strips", id, 10, -0.5, 9.5, "recHits");
                         }
                     }
                 } // loop over rechits
@@ -483,10 +491,12 @@ void CSCTimingAnalyzer::setTimingParamValues (const CSCDetId& id)
 void 
 CSCTimingAnalyzer::beginJob()
 {
-    std::cout << "Reading heuristic corrections from file..." << std::endl;
+    if (applyNewHeuristicCorrectionByChamber_ || applyNewHeuristicCorrectionByRing_)
+        std::cout << "Reading heuristic corrections from file..." << std::endl;
     if (!CSCTimingAnalyzer::readHeuristicCorrectionsFromFile())
         std::cout << "Failed to read heuristic corrections from file." << std::endl;
-    std::cout << "Done reading heuristic corrections from file..." << std::endl;
+    if (applyNewHeuristicCorrectionByChamber_ || applyNewHeuristicCorrectionByRing_)
+        std::cout << "Done reading heuristic corrections from file..." << std::endl;
 }
 
 // ------------ method called once each job just after ending the event loop  ------------
@@ -549,6 +559,8 @@ void CSCTimingAnalyzer::loadBranches (const edm::Event& event)
     event.getByLabel("cscTimingBabyMaker" , "p4"                          , p4_h                         );                         
     event.getByLabel("cscTimingBabyMaker" , "dz"                          , dz_h                         );                         
     event.getByLabel("cscTimingBabyMaker" , "d0"                          , d0_h                         );                         
+    event.getByLabel("cscTimingBabyMaker" , "dzbs"                        , dz_bs_h                      );                         
+    event.getByLabel("cscTimingBabyMaker" , "d0bs"                        , d0_bs_h                      );                         
     event.getByLabel("cscTimingBabyMaker" , "gfitchi2"                    , gfit_chi2_h                  );                  
     event.getByLabel("cscTimingBabyMaker" , "gfitndof"                    , gfit_ndof_h                  );                  
     event.getByLabel("cscTimingBabyMaker" , "maxOpeningAngleTrack"        , maxOpeningAngleTrack_h       );       
@@ -631,6 +643,8 @@ void CSCTimingAnalyzer::getVars (size_t muon_index, size_t chamber_index, size_t
         p4                          = p4_h->at(muon_index) ;
         dz                          = dz_h->at(muon_index) ;
         d0                          = d0_h->at(muon_index) ;
+        dz_bs                       = dz_h->at(muon_index) ;
+        d0_bs                       = d0_h->at(muon_index) ;
         gfit_chi2                   = gfit_chi2_h->at(muon_index) ;
         gfit_ndof                   = gfit_ndof_h->at(muon_index) ;
         maxOpeningAngleTrack        = maxOpeningAngleTrack_h->at(muon_index) ;
@@ -719,6 +733,8 @@ void CSCTimingAnalyzer::initVars ()
      p4                         = LorentzVector(0,0,0,0);
     dz                          = -999;
     d0                          = -999;
+    dz_bs                       = -999;
+    d0_bs                       = -999;
     gfit_chi2                   = -999;
     gfit_ndof                   = -1;
     maxOpeningAngleTrack        = -999;
@@ -770,17 +786,53 @@ void CSCTimingAnalyzer::initVars ()
     return;
 }
 
+bool CSCTimingAnalyzer::passesGlobalChi2 ()
+{
+    return (gfit_chi2/gfit_ndof < 10.);
+}
+
+bool CSCTimingAnalyzer::passesGlobalSAhits ()
+{
+    return (gfit_validSiHits > 0);
+}
+
+bool CSCTimingAnalyzer::passesNumStations ()
+{
+    return (numMatchedStations > 1);
+}
+
+bool CSCTimingAnalyzer::passesD0 ()
+{
+    return (fabs(d0_bs) <= 0.2);
+}
+
+bool CSCTimingAnalyzer::passesDZ ()
+{
+    return (fabs(dz_bs) <= max_dz_);
+}
+
+bool CSCTimingAnalyzer::passesPixelHits ()
+{
+    return (valid_pixelHits > 0);
+}
+
+bool CSCTimingAnalyzer::passesSiLayers ()
+{
+    return (valid_siLayers > 5);
+}
+
+
 bool CSCTimingAnalyzer::isPOGmuonTight ()
 {
-    if (!is_global) return false;
     // if (!is_pf) return false;
-    if (gfit_chi2/gfit_ndof > 10.) return false;
-    if (gfit_validSTAhits == 0) return false;
-    if (numMatchedStations <= 1) return false;
-    if (fabs(d0) > 0.2) return false;
-    if (fabs(dz) > max_dz_) return false;
-    if (valid_pixelHits == 0) return false;;
-    if (valid_siLayers <= 5) return false;
+    if (!isGlobalMuon()) return false;
+    if (!passesGlobalChi2()) return false;
+    if (!passesGlobalSAhits()) return false;
+    if (!passesNumStations()) return false;
+    if (!passesD0()) return false;
+    if (!passesDZ()) return false;
+    if (!passesPixelHits()) return false;
+    if (!passesSiLayers()) return false;
     return true;
 }
 
@@ -826,7 +878,7 @@ bool CSCTimingAnalyzer::readHeuristicCorrectionsFromFile ()
             return false;
         }
         if (verbose_)
-            std::cout << "Successfully opened file " << fileForHeuristicCorrByChamber_ << std::endl;
+            std::cout << "Successfully opened file " << fileForHeuristicCorrByRing_ << std::endl;
         bool is_first = true;
         while (!infile.eof())
         {
@@ -848,7 +900,53 @@ bool CSCTimingAnalyzer::readHeuristicCorrectionsFromFile ()
         infile.close();
         return true;
     }
-    return false;
+    return (!(applyNewHeuristicCorrectionByRing_ || applyNewHeuristicCorrectionByChamber_));
+}
+
+void CSCTimingAnalyzer::fillNm1hists ()
+{
+    // cuts for N-1 plotting
+    enum Cuts {IS_GLOBAL = 0, CHI2, STA_HITS, NSTATIONS, D0, DZ, NPIXELS, NLAYERS, NCUTS};
+    const unsigned int NBINS[] = {4, 50, 40, 6, 120, 300, 6, 20};
+    const double BIN_EDGE_LOW[] {-1.5, 0, -0.5, -0.5, -3, -30, -0.5, -0.5};
+    const double BIN_EDGE_HIGH[] = {2.5, 10, 39.5, 5.5, 3, 30, 5.5, 19.5};
+    const std::string HIST_NAMES[] = {"isGlobal", "globalChi2", "validSAhits", "nMatchedStations", "d0", "dz", "pixelHits", "siLayers"};
+
+    double cutParams[100];
+    cutParams[Cuts::IS_GLOBAL] = is_global;
+    cutParams[Cuts::CHI2]      = gfit_chi2/gfit_ndof;
+    cutParams[Cuts::STA_HITS]  = gfit_validSTAhits;
+    cutParams[Cuts::NSTATIONS] = numMatchedStations;
+    cutParams[Cuts::D0]        = d0_bs;
+    cutParams[Cuts::DZ]        = dz_bs;
+    cutParams[Cuts::NPIXELS]   = valid_pixelHits;
+    cutParams[Cuts::NLAYERS]   = valid_siLayers;
+
+    int cutDecisions[100];
+    cutDecisions[Cuts::IS_GLOBAL] = isGlobalMuon();      
+    cutDecisions[Cuts::CHI2]      = passesGlobalChi2();  
+    cutDecisions[Cuts::STA_HITS]  = passesGlobalSAhits();
+    cutDecisions[Cuts::NSTATIONS] = passesNumStations(); 
+    cutDecisions[Cuts::D0]        = passesD0();          
+    cutDecisions[Cuts::DZ]        = passesDZ();          
+    cutDecisions[Cuts::NPIXELS]   = passesPixelHits();   
+    cutDecisions[Cuts::NLAYERS]   = passesSiLayers();    
+
+    // build mask of cuts passed
+    unsigned int cuts_passed = 0;
+    for (size_t idx = 0; idx < Cuts::NCUTS; idx++)
+    {
+        cuts_passed |= (cutDecisions[idx] << idx);
+    }
+
+    for (size_t idx = 0; idx < Cuts::NCUTS; idx++)
+    {        
+        unsigned int cuts_to_pass = (~(1 << idx) & ((1<<Cuts::NCUTS)-1));
+        if ((cuts_passed & cuts_to_pass) == cuts_to_pass)
+        {
+            histos_->fill1DHist(std::max(std::min(cutParams[idx],BIN_EDGE_HIGH[idx]-0.01),BIN_EDGE_LOW[idx]+0.01), HIST_NAMES[idx].c_str(), "muon quality", NBINS[idx], BIN_EDGE_LOW[idx], BIN_EDGE_HIGH[idx], "MuonNM1Hists");
+        }
+    }
 }
 
 // ------------ method fills 'descriptions' with the allowed parameters for the module  ------------

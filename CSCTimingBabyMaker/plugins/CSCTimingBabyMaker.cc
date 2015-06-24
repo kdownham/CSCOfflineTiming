@@ -43,7 +43,8 @@ CSCTimingBabyMaker::CSCTimingBabyMaker(const edm::ParameterSet& iConfig) :
     vtx_token = consumes<reco::VertexCollection>(iConfig.getParameter<edm::InputTag>("vtxTag"));
     trk_token = consumes<reco::TrackCollection>(iConfig.getParameter<edm::InputTag>("trkTag"));
     bs_token  = consumes<reco::BeamSpot>(iConfig.getParameter<edm::InputTag>("bsTag"));
-    trgResults_token = consumes<edm::TriggerResults>(iConfig.getParameter<edm::InputTag>("trgResTag"));
+    trgResults_token = consumes<edm::TriggerResults>(iConfig.getParameter<edm::InputTag>("trgResTag"));    
+    debug_ = iConfig.getUntrackedParameter<bool>("debug", false);
 
     //
     // event level quantities
@@ -270,7 +271,7 @@ CSCTimingBabyMaker::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
         iSetup.get<CSCIndexerRecord>().get(indexer);
         iSetup.get<CSCChannelMapperRecord>().get(mapper);
         isLoaded_ = true;
-    }
+    }    
 
     //
     // fill event level quantities
@@ -489,6 +490,17 @@ CSCTimingBabyMaker::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
                     v_rhtime  .push_back(rhIter->tpeak()   );
                     v_twire   .push_back(rhIter->wireTime());
                     v_nstrips .push_back(rhIter->nStrips());
+
+                    if (debug_)
+                    {
+                        if (muIter->isGlobalMuon() && segIter->isMask(reco::MuonSegmentMatch::BestInChamberByDR) && segIter->isMask(reco::MuonSegmentMatch::BelongsToTrackByDR))
+                        {
+                            if (id.ring() == 1 && (id.station() == 3 || id.station() == 4))
+                                printf("endcap,station,ring,chamber: %d, %d, %d, %d\n", id.endcap(), id.station(), id.ring(), id.chamber());
+                            if (id.endcap() ==2 && id.station() == 4 && id.ring() == 2)
+                                printf("endcap,station,ring,chamber: %d, %d, %d, %d\n", id.endcap(), id.station(), id.ring(), id.chamber());
+                        }
+                    }
 
                     CSCDetId rawid = mapper->rawCSCDetId(id);
                     int index = indexer->chamberIndex(rawid)-1;

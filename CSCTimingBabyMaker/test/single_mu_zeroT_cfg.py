@@ -40,10 +40,12 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 
 process.source = cms.Source("PoolSource",
                             fileNames = cms.untracked.vstring(
-                            '/store/data/Run2015A/SingleMu/RECO/PromptReco-v1/000/246/951/00000/FE6E0461-D10B-E511-A8D0-02163E014428.root')
+                                # '/store/data/Run2015A/MinimumBias/RECO/PromptReco-v1/000/246/970/00000/00685C66-000C-E511-8B6B-02163E0142D7.root')
+                                '/store/data/Run2015A/SingleMu/RECO/PromptReco-v1/000/246/951/00000/FE6E0461-D10B-E511-A8D0-02163E014428.root')
 )
 
 process.load('CSCOfflineTiming.CSCTimingBabyMaker.cscTimingBabyMaker_cfi')
+process.cscTimingBabyMaker.debug = cms.untracked.bool(True)
 
 # From RAW
 process.p = cms.Path(process.cscTimingBabyMaker)

@@ -103,6 +103,17 @@ private:
     // histogram container and tools
     CSCValHists *histos_;    
     
+    void fillNm1hists ();
+
+    bool isGlobalMuon () { return is_global; }
+    bool passesGlobalChi2 ();
+    bool passesGlobalSAhits ();
+    bool passesNumStations ();
+    bool passesD0 ();
+    bool passesDZ ();
+    bool passesPixelHits ();
+    bool passesSiLayers ();     
+
     // toggle ME1/1 timing corrections
     bool makeChamberTimingCorrectionValueHists_;
     bool makePlotsPerChamber_;
@@ -117,6 +128,7 @@ private:
     bool removeHeuristicCorrection_;
     bool applyNewHeuristicCorrectionByRing_;
     bool applyNewHeuristicCorrectionByChamber_;
+    bool makeNminus1hists_;
     double min_pt_;
     double max_dz_;
     
@@ -141,6 +153,8 @@ private:
     edm::Handle<std::vector<LorentzVector> > p4_h ;
     edm::Handle<std::vector<double> > dz_h ;
     edm::Handle<std::vector<double> > d0_h ;
+    edm::Handle<std::vector<double> > dz_bs_h ;
+    edm::Handle<std::vector<double> > d0_bs_h ;
     edm::Handle<std::vector<double> > gfit_chi2_h ;
     edm::Handle<std::vector<double> > gfit_ndof_h ;
     edm::Handle<std::vector<double> > maxOpeningAngleTrack_h ;
@@ -205,6 +219,8 @@ private:
     LorentzVector  p4 ;
     double  dz ;
     double  d0 ;
+    double  dz_bs ;
+    double  d0_bs ;
     double  gfit_chi2 ;
     double  gfit_ndof ;
     double  maxOpeningAngleTrack ;

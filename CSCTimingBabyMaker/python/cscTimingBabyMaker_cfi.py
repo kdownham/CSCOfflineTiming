@@ -10,4 +10,5 @@ cscTimingBabyMaker = cms.EDProducer('CSCTimingBabyMaker',
                                     trkTag = cms.InputTag('generalTracks'),
                                     bsTag = cms.InputTag('offlineBeamSpot'),
                                     trgResTag = cms.InputTag('TriggerResults','','RECO'),
+                                    debug = cms.bool(False),
                                     verbose = cms.bool(False))
