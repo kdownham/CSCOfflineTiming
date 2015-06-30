@@ -91,11 +91,11 @@ private:
     void printMapToFile (const std::map<CSCDetId, double>& m, std::string filename);
     void printMapToFile (const std::map<CSCDetId, int>& m, std::string filename);
     void printMapToFile (const std::map<CSCDetId, std::set<double> >& m, std::string filename);    
-    void writeTimingParametersToTree (std::string filename);
     void setTimingParamBabyBranches (TTree* tree);
     void setTimingParamValues (const CSCDetId& id);
     bool isPOGmuonTight ();
     bool readHeuristicCorrectionsFromFile ();
+    void setTimingStudyBabyBranches (TTree* tree);
 
     // outfile where histograms are written
     TFile *outfile_;
@@ -129,6 +129,7 @@ private:
     bool applyNewHeuristicCorrectionByRing_;
     bool applyNewHeuristicCorrectionByChamber_;
     bool makeNminus1hists_;
+    bool writeTimingStudyBabyTree_;
     double min_pt_;
     double max_dz_;
     
@@ -136,6 +137,7 @@ private:
     std::string timeParamFileName_;
     std::string fileForHeuristicCorrByRing_;
     std::string fileForHeuristicCorrByChamber_;    
+    std::string timingStudyBabyFileName_;
 
     //
     // event level quantities
@@ -290,6 +292,9 @@ private:
     int        b_new_cfeb_skew_delay   ;
     int        b_new_cfeb_cable_delay  ;
     double     b_new_cfebCorr          ;
+    double     b_new_heuristicCorr     ;
+
+    double     b_rhtime;
 
     std::vector<double> b_chipCorr;
     std::vector<double> b_new_chipCorr;
@@ -314,4 +319,10 @@ private:
     std::map<CSCDetId, std::set<double> > m_new_chipCorr;
 
     std::map<CSCDetId, double> m_new_heuristicCorr;
+
+    TFile *babyFile;
+    TTree *babyTree;
+
+    static const double ME11_AVG_HEURISTIC_CORR;
+    static const double NON_ME11_AVG_HEURISTIC_CORR;
 };

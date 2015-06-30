@@ -3,6 +3,9 @@
 #include <iostream>
 #include <fstream>
 
+const double CSCTimingAnalyzer::ME11_AVG_HEURISTIC_CORR = -235.8;
+const double CSCTimingAnalyzer::NON_ME11_AVG_HEURISTIC_CORR = -217.;
+
 CSCTimingAnalyzer::CSCTimingAnalyzer(const edm::ParameterSet& iConfig)
 {
     makeChamberTimingCorrectionValueHists_ = iConfig.getUntrackedParameter<bool>("makeChamberTimingCorrectionValueHists" , false);
@@ -19,15 +22,28 @@ CSCTimingAnalyzer::CSCTimingAnalyzer(const edm::ParameterSet& iConfig)
     applyNewHeuristicCorrectionByRing_     = iConfig.getUntrackedParameter<bool>("applyNewHeuristicCorrectionByRing"     , false);
     applyNewHeuristicCorrectionByChamber_  = iConfig.getUntrackedParameter<bool>("applyNewHeuristicCorrectionByChamber"  , false);
     makeNminus1hists_                      = iConfig.getUntrackedParameter<bool>("makeNminus1hists"                      , false);
+    writeTimingStudyBabyTree_              = iConfig.getUntrackedParameter<bool>("writeTimingStudyBabyTree"              , false);
     min_pt_                                = iConfig.getUntrackedParameter<double>("min_pt"                              , 10.  );
     max_dz_                                = iConfig.getUntrackedParameter<double>("max_dz"                              , 0.5  );
     outfileName_                           = iConfig.getUntrackedParameter<std::string>("outfileName", "histos.root");
     timeParamFileName_                     = iConfig.getUntrackedParameter<std::string>("timeParamFileName", "cscTimingParameters.root");
+    timingStudyBabyFileName_               = iConfig.getUntrackedParameter<std::string>("timingStudyBabyFileName", "timingBaby.root");
     fileForHeuristicCorrByRing_            = iConfig.getParameter<std::string>("fileForHeuristicCorrByRing");
     fileForHeuristicCorrByChamber_         = iConfig.getParameter<std::string>("fileForHeuristicCorrByChamber");
 
     histos_  = new CSCValHists();
     outfile_ = new TFile(outfileName_.c_str(), "RECREATE");
+
+    if (writeTimingStudyBabyTree_)
+    {
+        babyFile = new TFile(timingStudyBabyFileName_.c_str(), "RECREATE");
+        babyTree = new TTree("tree", "baby tree for timing studies");
+    }
+    else
+    {
+        babyFile = 0;
+        babyTree = 0;
+    }
 }
 
 
@@ -47,7 +63,6 @@ void
 CSCTimingAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
     loadBranches(iEvent);
-
     if (!run_h.isValid()) return;
 
     getVars();
@@ -128,28 +143,43 @@ CSCTimingAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
                             else if (applyNewHeuristicCorrectionByRing_)
                             {
                                 rhtime_corr -= (new_chamberCorr - new_cfebCableDelay - new_skewClearDelay); // first remove old hueristic correction
-                                rhtime_corr += m_new_heuristicCorr[CSCDetId(endcap,station,ring,0)]; // now apply new hueristic correction
+                                CSCDetId tmp_id(endcap,station,ring,0);
+                                if (m_new_heuristicCorr.find(tmp_id) != m_new_heuristicCorr.end())
+                                    rhtime_corr += m_new_heuristicCorr[tmp_id]; // now apply new hueristic correction
+                                else                                       
+                                    rhtime_corr += (station == 1 && (ring == 1 || ring == 4)) ? CSCTimingAnalyzer::ME11_AVG_HEURISTIC_CORR : CSCTimingAnalyzer::NON_ME11_AVG_HEURISTIC_CORR; // now apply new hueristic correction                                            
                             }
                             else if (applyNewHeuristicCorrectionByChamber_)
                             {
                                 rhtime_corr -= (new_chamberCorr - new_cfebCableDelay - new_skewClearDelay); // first remove old hueristic correction
-                                rhtime_corr += m_new_heuristicCorr[CSCDetId(endcap,station,ring,chamber)]; // now apply new hueristic correction
+                                CSCDetId tmp_id(endcap,station,ring,chamber);
+                                if (m_new_heuristicCorr.find(tmp_id) != m_new_heuristicCorr.end())
+                                    rhtime_corr += m_new_heuristicCorr[tmp_id]; // now apply new hueristic correction
+                                else                                       
+                                    rhtime_corr += (station == 1 && (ring == 1 || ring == 4)) ? CSCTimingAnalyzer::ME11_AVG_HEURISTIC_CORR : CSCTimingAnalyzer::NON_ME11_AVG_HEURISTIC_CORR; // now apply new hueristic correction                               
                             }
                         }
                         else if (removeHeuristicCorrection_)
                         {
-
                             rhtime_corr -= (chamberCorr - cfebCableDelay - skewClearDelay);
                         }
                         else if (applyNewHeuristicCorrectionByRing_)
                         {
                                 rhtime_corr -= (chamberCorr - cfebCableDelay - skewClearDelay); // first remove old hueristic correction
-                                rhtime_corr += m_new_heuristicCorr[CSCDetId(endcap,station,ring,0)]; // now apply new hueristic correction
+                                CSCDetId tmp_id(endcap,station,ring,0);
+                                if (m_new_heuristicCorr.find(tmp_id) != m_new_heuristicCorr.end())
+                                    rhtime_corr += m_new_heuristicCorr[tmp_id]; // now apply new hueristic correction
+                                else                                       
+                                    rhtime_corr += (station == 1 && (ring == 1 || ring == 4)) ? CSCTimingAnalyzer::ME11_AVG_HEURISTIC_CORR : CSCTimingAnalyzer::NON_ME11_AVG_HEURISTIC_CORR; // now apply new hueristic correction
                         }
                         else if (applyNewHeuristicCorrectionByChamber_)
                         {
                                 rhtime_corr -= (chamberCorr - cfebCableDelay - skewClearDelay); // first remove old hueristic correction
-                                rhtime_corr += m_new_heuristicCorr[CSCDetId(endcap,station,ring,chamber)]; // now apply new hueristic correction
+                                CSCDetId tmp_id(endcap,station,ring,chamber);
+                                if (m_new_heuristicCorr.find(tmp_id) != m_new_heuristicCorr.end())
+                                    rhtime_corr += m_new_heuristicCorr[tmp_id]; // now apply new hueristic correction
+                                else                                       
+                                    rhtime_corr += (station == 1 && (ring == 1 || ring == 4)) ? CSCTimingAnalyzer::ME11_AVG_HEURISTIC_CORR : CSCTimingAnalyzer::NON_ME11_AVG_HEURISTIC_CORR; // now apply new hueristic correction                               
                         }
                     }
                     else if (removeHeuristicCorrection_)
@@ -159,12 +189,20 @@ CSCTimingAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
                     else if (applyNewHeuristicCorrectionByRing_)
                     {
                         rhtime_corr -= (chamberCorr - cfebCableDelay - skewClearDelay); // first remove old hueristic correction
-                        rhtime_corr += m_new_heuristicCorr[CSCDetId(endcap,station,ring,0)]; // now apply new hueristic correction                        
+                        CSCDetId tmp_id(endcap,station,ring,0);
+                        if (m_new_heuristicCorr.find(tmp_id) != m_new_heuristicCorr.end())
+                            rhtime_corr += m_new_heuristicCorr[tmp_id]; // now apply new hueristic correction
+                        else                                       
+                            rhtime_corr += (station == 1 && (ring == 1 || ring == 4)) ? CSCTimingAnalyzer::ME11_AVG_HEURISTIC_CORR : CSCTimingAnalyzer::NON_ME11_AVG_HEURISTIC_CORR; // now apply new hueristic correction
                     }
                     else if (applyNewHeuristicCorrectionByChamber_)
                     {
                         rhtime_corr -= (chamberCorr - cfebCableDelay - skewClearDelay); // first remove old hueristic correction
-                        rhtime_corr += m_new_heuristicCorr[CSCDetId(endcap,station,ring,chamber)]; // now apply new hueristic correction                        
+                        CSCDetId tmp_id(endcap,station,ring,chamber);
+                        if (m_new_heuristicCorr.find(tmp_id) != m_new_heuristicCorr.end())
+                            rhtime_corr += m_new_heuristicCorr[tmp_id]; // now apply new hueristic correction
+                        else                                       
+                            rhtime_corr += (station == 1 && (ring == 1 || ring == 4)) ? CSCTimingAnalyzer::ME11_AVG_HEURISTIC_CORR : CSCTimingAnalyzer::NON_ME11_AVG_HEURISTIC_CORR; // now apply new hueristic correction                               
                     }
                     
                     rhtime_corr /= 50.;                    
@@ -204,6 +242,13 @@ CSCTimingAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
                             histos_->fill1DHistByType(nstrips, "hRHNumStrips", "Number of cathod strips", id, 10, -0.5, 9.5, "recHits");
                         }
                     }
+
+                    if (writeTimingStudyBabyTree_)
+                    {
+                        b_rhtime = rhtime_corr ;
+                        babyTree->Fill();
+                    }
+
                 } // loop over rechits
             } // loop over segments
         } // loop over chambers
@@ -451,6 +496,7 @@ void CSCTimingAnalyzer::setTimingParamBabyBranches (TTree* tree)
     tree->Branch("new_cfeb_cable_delay"  , &b_new_cfeb_cable_delay  );
     tree->Branch("new_cfeb_cable_length" , &b_new_cfeb_cable_length );
     tree->Branch("new_cfeb_skew_delay"   , &b_new_cfeb_skew_delay   );
+    tree->Branch("new_heuristicCorr"     , &b_new_heuristicCorr     );
     tree->Branch("ring"                  , &b_ring                  );
     tree->Branch("station"               , &b_station               );
     return;
@@ -472,6 +518,7 @@ void CSCTimingAnalyzer::setTimingParamValues (const CSCDetId& id)
     b_new_cfeb_cable_delay  = m_new_cfeb_cable_delay[id];
     b_new_cfeb_cable_length = m_new_cfeb_cable_length[id];
     b_new_cfeb_skew_delay   = m_new_cfeb_skew_delay[id];
+    b_new_heuristicCorr     = (m_new_heuristicCorr.find(id) != m_new_heuristicCorr.end()) ? m_new_heuristicCorr[id] : (station == 1 && (ring == 1 || ring == 4)) ? CSCTimingAnalyzer::ME11_AVG_HEURISTIC_CORR : CSCTimingAnalyzer::NON_ME11_AVG_HEURISTIC_CORR;
 
     b_chipCorr.clear();
     std::copy(m_chipCorr[id].begin(), m_chipCorr[id].end(), std::back_inserter(b_chipCorr));    
@@ -487,6 +534,34 @@ void CSCTimingAnalyzer::setTimingParamValues (const CSCDetId& id)
     return;
 }
 
+void CSCTimingAnalyzer::setTimingStudyBabyBranches (TTree* tree)
+{
+    tree->Branch("chamber"                     , &chamber                     );
+    tree->Branch("endcap"                      , &endcap                      );
+    tree->Branch("ring"                        , &ring                        );
+    tree->Branch("station"                     , &station                     );
+    tree->Branch("run"                         , &run                         );
+    tree->Branch("lumi"                        , &lumi                        );
+    tree->Branch("evt"                         , &evt                         );
+    tree->Branch("p4"                          , &p4                          );
+    tree->Branch("dz"                          , &dz                          );
+    tree->Branch("d0"                          , &d0                          );
+    tree->Branch("dz_bs"                       , &dz_bs                       );
+    tree->Branch("d0_bs"                       , &d0_bs                       );
+    tree->Branch("maxOpeningAngleTrack"        , &maxOpeningAngleTrack        );
+    tree->Branch("maxOpeningAngleMuon"         , &maxOpeningAngleMuon         );
+    tree->Branch("distToChamberEdge"           , &distToChamberEdge           );
+    tree->Branch("distToChamberEdgeErr"        , &distToChamberEdgeErr        );
+    tree->Branch("numCSCsegmentsInChamber"     , &numCSCsegmentsInChamber     );
+    tree->Branch("arbitration_mask"            , &arbitration_mask            );
+    tree->Branch("isSegmentAndTrackArbitrated" , &isSegmentAndTrackArbitrated );
+    tree->Branch("layer"                       , &layer                       );
+    tree->Branch("rhtime"                      , &b_rhtime                    );
+    tree->Branch("twire"                       , &twire                       );
+    tree->Branch("nstrips"                     , &nstrips                     ); 
+   return;
+}
+
 // ------------ method called once each job just before starting event loop  ------------
 void 
 CSCTimingAnalyzer::beginJob()
@@ -497,6 +572,8 @@ CSCTimingAnalyzer::beginJob()
         std::cout << "Failed to read heuristic corrections from file." << std::endl;
     if (applyNewHeuristicCorrectionByChamber_ || applyNewHeuristicCorrectionByRing_)
         std::cout << "Done reading heuristic corrections from file..." << std::endl;
+    if (writeTimingStudyBabyTree_)
+        CSCTimingAnalyzer::setTimingStudyBabyBranches(babyTree);
 }
 
 // ------------ method called once each job just after ending the event loop  ------------
@@ -541,6 +618,13 @@ CSCTimingAnalyzer::endJob()
         outfile->cd();
         outtree->Write();
         outfile->Close();
+    }
+
+    if (writeTimingStudyBabyTree_)
+    {
+        babyFile->cd();
+        babyTree->Write();
+        babyFile->Close();
     }
 }
 
@@ -793,7 +877,7 @@ bool CSCTimingAnalyzer::passesGlobalChi2 ()
 
 bool CSCTimingAnalyzer::passesGlobalSAhits ()
 {
-    return (gfit_validSiHits > 0);
+    return (gfit_validSTAhits > 0);
 }
 
 bool CSCTimingAnalyzer::passesNumStations ()
