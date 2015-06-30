@@ -36,15 +36,15 @@
 #include "DataFormats/TrackReco/interface/TrackFwd.h"
 #include "DataFormats/BeamSpot/interface/BeamSpot.h"
 #include "DataFormats/Common/interface/TriggerResults.h"
-
 #include "DataFormats/MuonDetId/interface/CSCDetId.h"
-
 
 
 class CSCRecoConditions;
 class CSCChamberTimeCorrections;
 class CSCIndexerBase;
 class CSCChannelMapperBase;
+class MuonSegmentMatcher;
+class MuonServiceProxy;
 
 //
 // class declaration
@@ -77,6 +77,8 @@ private:
     edm::ESHandle<CSCIndexerBase> indexer;
     edm::ESHandle<CSCChannelMapperBase> mapper;
     CSCRecoConditions *recoConditions;
+    MuonServiceProxy *muonServiceProxy;
+    MuonSegmentMatcher *muonSegmentMatcher;
     bool isLoaded_;
 
     edm::EDGetTokenT<reco::MuonCollection> mu_token;
@@ -85,7 +87,12 @@ private:
     edm::EDGetTokenT<reco::BeamSpot> bs_token;
     edm::EDGetTokenT<edm::TriggerResults> trgResults_token;
 
+    bool useMuonSegmentMatcher_;
     bool debug_;
+
+    int nSAmus_;
+    int nMusWithMatchedSegments_;
+    int nMusWithCSCrhs_;
 
     static const unsigned int ME11P_SKEWCLEAR_CABLE_LENGTHS[36]; // length in centimeters
     static const unsigned int ME11M_SKEWCLEAR_CABLE_LENGTHS[36]; // length in centimeters

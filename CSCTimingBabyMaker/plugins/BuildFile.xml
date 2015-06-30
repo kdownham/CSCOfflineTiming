@@ -9,5 +9,6 @@
 <use name="CondFormats/CSCObjects"/>
 <use name="CalibMuon/CSCCalibration"/>
 <use name="RecoLocalMuon/CSCRecHitD"/>
+<use name="RecoMuon/TrackingTools"/>
 <flags EDM_PLUGIN="1"/>
 <flags   CXXFLAGS="-g -O0"/>
