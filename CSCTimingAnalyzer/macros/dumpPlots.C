@@ -3,14 +3,18 @@
 #include "TFile.h"
 #include "TDirectory.h"
 #include "TList.h"
-#include "TIter.h"
+#include "TCollection.h"
 #include "TObject.h"
+#include "TH1.h"
+#include "TCanvas.h"
+#include "TStyle.h"
 
 void dumpPlots (std::string fname)
 {
     std::string fname_short = fname;
     fname_short.erase(fname_short.end()-5,fname_short.end());
     TCanvas c1("c1","c1",600,400);
+    gStyle->SetOptStat("emrou");
 
     TFile file(fname.c_str());
     file.cd();
