@@ -107,6 +107,7 @@ process.cscTimingAnalyzer.removeHeuristicCorrection = cms.untracked.bool(False)
 process.cscTimingAnalyzer.applyNewHeuristicCorrectionByRing = cms.untracked.bool(False)
 process.cscTimingAnalyzer.applyNewHeuristicCorrectionByChamber = cms.untracked.bool(True)
 process.cscTimingAnalyzer.makeNminus1hists = cms.untracked.bool(True)
+process.cscTimingAnalyzer.writeTimingStudyBabyTree = cms.untracked.bool(True)
 
 applyUpdatedME11correctionsName = '_updateME11corrections'
 checkCSCstatusName = '_checkCSCstatus'
