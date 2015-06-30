@@ -9,6 +9,7 @@
 #include "TObjArray.h"
 #include "TObjString.h"
 #include "TH1.h"
+#include "TCanvas.h"
 
 void determineHeuristicCorrections (std::string fname, bool byStation, bool byChamber, std::string ofname = "")
 {
@@ -21,6 +22,9 @@ void determineHeuristicCorrections (std::string fname, bool byStation, bool byCh
 
     ofstream outfile;
     bool print_to_file = !ofname.empty();
+
+    TCanvas c1("c1","c1",600,400);
+    TH1F hnrhs("hnrhs","Number of rechits per chamber", 100, 0, 2500);
 
     if (byStation)
     {
@@ -110,6 +114,8 @@ void determineHeuristicCorrections (std::string fname, bool byStation, bool byCh
             if (chamber_.Sizeof() < 2 || chamber_.Sizeof() > 3) continue;
             if (chamber_.IsDigit()) chamber = chamber_.Atoi();
             double corr = ((TH1*)obj)->GetMean() * -50.;
+            int nrhs = ((TH1*)obj)->GetEntries();
+            hnrhs.Fill(std::min(nrhs,2499));
             if (print_to_file)
                 outfile << endcap << "\t" << station << "\t" << ring << "\t" << chamber << "\t" << corr << std::endl;
             else
@@ -120,6 +126,9 @@ void determineHeuristicCorrections (std::string fname, bool byStation, bool byCh
 
     if (print_to_file)
         outfile.close();
+
+    hnrhs.Draw();
+    c1.Print("num_rechits_per_chamber.pdf");
 
     return;
 }
