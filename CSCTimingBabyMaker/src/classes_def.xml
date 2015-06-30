@@ -1,5 +1,6 @@
 <lcgdict>
   <class name="std::vector<std::vector<double> >"/>
+  <class name="std::vector<std::vector<char> >"/>
   <class name="std::vector<std::vector<std::vector<unsigned int> > >"/>
   <class name="std::vector<std::vector<std::vector<int> > >"/>
   <class name="std::vector<std::vector<std::vector<bool> > >"/>
@@ -9,6 +10,7 @@
 
   <class name="std::vector<std::vector<int> >::iterator"/>
   <class name="std::vector<std::vector<double> >::iterator"/>
+  <class name="std::vector<std::vector<char> >::iterator"/>
   <class name="std::vector<std::vector<std::vector<unsigned int> > >::iterator"/>
   <class name="std::vector<std::vector<std::vector<int> > >::iterator"/>
   <class name="std::vector<std::vector<std::vector<bool> > >::iterator"/>
@@ -18,6 +20,7 @@
 
   <class name="std::vector<std::vector<int> >::const_iterator"/>
   <class name="std::vector<std::vector<double> >::const_iterator"/>
+  <class name="std::vector<std::vector<char> >::const_iterator"/>
   <class name="std::vector<std::vector<std::vector<unsigned int> > >::const_iterator"/>
   <class name="std::vector<std::vector<std::vector<int> > >::const_iterator"/>
   <class name="std::vector<std::vector<std::vector<bool> > >::const_iterator"/>
@@ -26,6 +29,7 @@
   <class name="std::vector<std::vector<std::vector<std::vector<double> > > >::const_iterator"/>
 
   <class name="edm::Wrapper<std::vector<std::vector<double> > >"/>
+  <class name="edm::Wrapper<std::vector<std::vector<char> > >"/>
   <class name="edm::Wrapper<std::vector<std::vector<std::vector<unsigned int> > > >"/>
   <class name="edm::Wrapper<std::vector<std::vector<std::vector<int> > > >"/>
   <class name="edm::Wrapper<std::vector<std::vector<std::vector<bool> > > >"/>
