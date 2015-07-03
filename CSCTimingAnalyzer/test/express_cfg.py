@@ -101,13 +101,16 @@ process.cscTimingAnalyzer.min_pt = cms.untracked.double(0)
 process.cscTimingAnalyzer.max_dz = cms.untracked.double(999)
 process.cscTimingAnalyzer.printTimeCorrectionParametersToFile = cms.untracked.bool(False)
 process.cscTimingAnalyzer.writeTimeCorrectionParametersToTree = cms.untracked.bool(False)
-process.cscTimingAnalyzer.checkCSCstatus = cms.untracked.bool(True)
+process.cscTimingAnalyzer.checkCSCstatus = cms.untracked.bool(False)
 process.cscTimingAnalyzer.checkDCSstatus = cms.untracked.bool(False)
 process.cscTimingAnalyzer.removeHeuristicCorrection = cms.untracked.bool(False)
 process.cscTimingAnalyzer.applyNewHeuristicCorrectionByRing = cms.untracked.bool(False)
 process.cscTimingAnalyzer.applyNewHeuristicCorrectionByChamber = cms.untracked.bool(True)
 process.cscTimingAnalyzer.makeNminus1hists = cms.untracked.bool(True)
 process.cscTimingAnalyzer.writeTimingStudyBabyTree = cms.untracked.bool(True)
+process.cscTimingAnalyzer.removeMatchedStationsRequirement = cms.untracked.bool(True);
+process.cscTimingAnalyzer.fileForHeuristicCorrByRing = cms.string('/home/users/fgolf/csc/CMSSW_7_4_5_timing/src/CSCOfflineTiming/CSCTimingAnalyzer/data/timing_corrections_by_ring_segmentMatched.txt')
+process.cscTimingAnalyzer.fileForHeuristicCorrByChamber = cms.string('/home/users/fgolf/csc/CMSSW_7_4_5_timing/src/CSCOfflineTiming/CSCTimingAnalyzer/data/timing_corrections_by_chamber_segmentMatched.txt')
 
 applyUpdatedME11correctionsName = '_updateME11corrections'
 checkCSCstatusName = '_checkCSCstatus'
@@ -131,6 +134,8 @@ if process.cscTimingAnalyzer.applyNewHeuristicCorrectionByRing:
     outfileName = outfileName + '_newHeuristicCorrByRing'
 if process.cscTimingAnalyzer.applyNewHeuristicCorrectionByChamber:
     outfileName = outfileName + '_newHeuristicCorrByChamber'    
+if process.cscTimingAnalyzer.removeMatchedStationsRequirement:
+    outfileName = outfileName + '_removeMatchedStationsRequirement'
 # if process.cscTimingAnalyzer.min_pt > 1:
 #     outfileName = outfileName + min_pt_name
 # if process.cscTimingAnalyzer.max_dz > 0.5:

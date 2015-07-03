@@ -12,39 +12,19 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 process.source = cms.Source("PoolSource",
                             # replace 'myfile.root' with the source file you want to use
                             fileNames = cms.untracked.vstring(
-                                '/store/user/fgolf/csc/timing/offline/SingleMu/v2/150619_175657/0000/csc_singleMu_zeroT_1.root',
-                                '/store/user/fgolf/csc/timing/offline/SingleMu/v2/150619_175657/0000/csc_singleMu_zeroT_10.root',
-                                '/store/user/fgolf/csc/timing/offline/SingleMu/v2/150619_175657/0000/csc_singleMu_zeroT_11.root',
-                                '/store/user/fgolf/csc/timing/offline/SingleMu/v2/150619_175657/0000/csc_singleMu_zeroT_12.root',
-                                '/store/user/fgolf/csc/timing/offline/SingleMu/v2/150619_175657/0000/csc_singleMu_zeroT_13.root',
-                                '/store/user/fgolf/csc/timing/offline/SingleMu/v2/150619_175657/0000/csc_singleMu_zeroT_14.root',
-                                '/store/user/fgolf/csc/timing/offline/SingleMu/v2/150619_175657/0000/csc_singleMu_zeroT_15.root',
-                                '/store/user/fgolf/csc/timing/offline/SingleMu/v2/150619_175657/0000/csc_singleMu_zeroT_16.root',
-                                '/store/user/fgolf/csc/timing/offline/SingleMu/v2/150619_175657/0000/csc_singleMu_zeroT_17.root',
-                                '/store/user/fgolf/csc/timing/offline/SingleMu/v2/150619_175657/0000/csc_singleMu_zeroT_18.root',
-                                '/store/user/fgolf/csc/timing/offline/SingleMu/v2/150619_175657/0000/csc_singleMu_zeroT_19.root',
-                                '/store/user/fgolf/csc/timing/offline/SingleMu/v2/150619_175657/0000/csc_singleMu_zeroT_2.root',
-                                '/store/user/fgolf/csc/timing/offline/SingleMu/v2/150619_175657/0000/csc_singleMu_zeroT_20.root',
-                                '/store/user/fgolf/csc/timing/offline/SingleMu/v2/150619_175657/0000/csc_singleMu_zeroT_21.root',
-                                '/store/user/fgolf/csc/timing/offline/SingleMu/v2/150619_175657/0000/csc_singleMu_zeroT_22.root',
-                                '/store/user/fgolf/csc/timing/offline/SingleMu/v2/150619_175657/0000/csc_singleMu_zeroT_23.root',
-                                '/store/user/fgolf/csc/timing/offline/SingleMu/v2/150619_175657/0000/csc_singleMu_zeroT_24.root',
-                                '/store/user/fgolf/csc/timing/offline/SingleMu/v2/150619_175657/0000/csc_singleMu_zeroT_25.root',
-                                '/store/user/fgolf/csc/timing/offline/SingleMu/v2/150619_175657/0000/csc_singleMu_zeroT_26.root',
-                                '/store/user/fgolf/csc/timing/offline/SingleMu/v2/150619_175657/0000/csc_singleMu_zeroT_27.root',
-                                '/store/user/fgolf/csc/timing/offline/SingleMu/v2/150619_175657/0000/csc_singleMu_zeroT_28.root',
-                                '/store/user/fgolf/csc/timing/offline/SingleMu/v2/150619_175657/0000/csc_singleMu_zeroT_29.root',
-                                '/store/user/fgolf/csc/timing/offline/SingleMu/v2/150619_175657/0000/csc_singleMu_zeroT_3.root',
-                                '/store/user/fgolf/csc/timing/offline/SingleMu/v2/150619_175657/0000/csc_singleMu_zeroT_30.root',
-                                '/store/user/fgolf/csc/timing/offline/SingleMu/v2/150619_175657/0000/csc_singleMu_zeroT_31.root',
-                                '/store/user/fgolf/csc/timing/offline/SingleMu/v2/150619_175657/0000/csc_singleMu_zeroT_32.root',
-                                '/store/user/fgolf/csc/timing/offline/SingleMu/v2/150619_175657/0000/csc_singleMu_zeroT_33.root',
-                                '/store/user/fgolf/csc/timing/offline/SingleMu/v2/150619_175657/0000/csc_singleMu_zeroT_4.root',
-                                '/store/user/fgolf/csc/timing/offline/SingleMu/v2/150619_175657/0000/csc_singleMu_zeroT_5.root',
-                                '/store/user/fgolf/csc/timing/offline/SingleMu/v2/150619_175657/0000/csc_singleMu_zeroT_6.root',
-                                '/store/user/fgolf/csc/timing/offline/SingleMu/v2/150619_175657/0000/csc_singleMu_zeroT_7.root',
-                                '/store/user/fgolf/csc/timing/offline/SingleMu/v2/150619_175657/0000/csc_singleMu_zeroT_8.root',
-                                '/store/user/fgolf/csc/timing/offline/SingleMu/v2/150619_175657/0000/csc_singleMu_zeroT_9.root')
+                                '/store/user/fgolf/csc/timing/offline/SingleMu/v3/150630_025216/0000/csc_singleMu_zeroT_1.root',
+                                '/store/user/fgolf/csc/timing/offline/SingleMu/v3/150630_025216/0000/csc_singleMu_zeroT_10.root',
+                                '/store/user/fgolf/csc/timing/offline/SingleMu/v3/150630_025216/0000/csc_singleMu_zeroT_11.root',
+                                '/store/user/fgolf/csc/timing/offline/SingleMu/v3/150630_025216/0000/csc_singleMu_zeroT_12.root',
+                                '/store/user/fgolf/csc/timing/offline/SingleMu/v3/150630_025216/0000/csc_singleMu_zeroT_13.root',
+                                '/store/user/fgolf/csc/timing/offline/SingleMu/v3/150630_025216/0000/csc_singleMu_zeroT_2.root',
+                                '/store/user/fgolf/csc/timing/offline/SingleMu/v3/150630_025216/0000/csc_singleMu_zeroT_3.root',
+                                '/store/user/fgolf/csc/timing/offline/SingleMu/v3/150630_025216/0000/csc_singleMu_zeroT_4.root',
+                                '/store/user/fgolf/csc/timing/offline/SingleMu/v3/150630_025216/0000/csc_singleMu_zeroT_5.root',
+                                '/store/user/fgolf/csc/timing/offline/SingleMu/v3/150630_025216/0000/csc_singleMu_zeroT_6.root',
+                                '/store/user/fgolf/csc/timing/offline/SingleMu/v3/150630_025216/0000/csc_singleMu_zeroT_7.root',
+                                '/store/user/fgolf/csc/timing/offline/SingleMu/v3/150630_025216/0000/csc_singleMu_zeroT_8.root',
+                                '/store/user/fgolf/csc/timing/offline/SingleMu/v3/150630_025216/0000/csc_singleMu_zeroT_9.root')
 )
 
 # process.options = cms.untracked.PSet( SkipEvent = cms.untracked.vstring('ProductNotFound') )
@@ -54,8 +34,8 @@ import FWCore.ParameterSet.Types as CfgTypes
 
 if applyGoodRunList:
     process.source.lumisToProcess = CfgTypes.untracked(CfgTypes.VLuminosityBlockRange())
-    # JSONfile = '/home/users/fgolf/csc/CMSSW_7_4_5_timing/src/CSCOfflineTiming/CSCTimingAnalyzer/json/Cert_246908-248005_13TeV_PromptReco_Collisions15_ZeroTesla_JSON.txt'
-    JSONfile = '/home/users/fgolf/csc/CMSSW_7_4_5_timing/src/CSCOfflineTiming/CSCTimingAnalyzer/json/Cert_246908-248005_13TeV_PromptReco_Collisions15_ZeroTesla_JSON_MuonPhys.txt'
+    # JSONfile = '/home/users/fgolf/csc/CMSSW_7_4_5_timing/src/CSCOfflineTiming/CSCTimingAnalyzer/json/Cert_246908-248038_13TeV_PromptReco_Collisions15_ZeroTesla_JSON.txt'
+    JSONfile = '/home/users/fgolf/csc/CMSSW_7_4_5_timing/src/CSCOfflineTiming/CSCTimingAnalyzer/json/Cert_246908-248038_13TeV_PromptReco_Collisions15_ZeroTesla_JSON_MuonPhys.txt'
     myLumis = LumiList.LumiList(filename = JSONfile).getCMSSWString().split(',')
     process.source.lumisToProcess.extend(myLumis)
 
@@ -75,7 +55,10 @@ process.cscTimingAnalyzer.removeHeuristicCorrection = cms.untracked.bool(False)
 process.cscTimingAnalyzer.applyNewHeuristicCorrectionByRing = cms.untracked.bool(False)
 process.cscTimingAnalyzer.applyNewHeuristicCorrectionByChamber = cms.untracked.bool(True)
 process.cscTimingAnalyzer.makeNminus1hists = cms.untracked.bool(True)
-process.cscTimingAnalyzer.writeTimingStudyBabyTree = cms.untracked.bool(False)
+process.cscTimingAnalyzer.writeTimingStudyBabyTree = cms.untracked.bool(True)
+process.cscTimingAnalyzer.removeMatchedStationsRequirement = cms.untracked.bool(True);
+process.cscTimingAnalyzer.fileForHeuristicCorrByRing = cms.string('/home/users/fgolf/csc/CMSSW_7_4_5_timing/src/CSCOfflineTiming/CSCTimingAnalyzer/data/timing_corrections_by_ring_segmentMatched.txt')
+process.cscTimingAnalyzer.fileForHeuristicCorrByChamber = cms.string('/home/users/fgolf/csc/CMSSW_7_4_5_timing/src/CSCOfflineTiming/CSCTimingAnalyzer/data/timing_corrections_by_chamber_segmentMatched.txt')
 
 applyUpdatedME11correctionsName = '_updateME11corrections'
 checkCSCstatusName = '_checkCSCstatus'
@@ -98,7 +81,9 @@ if process.cscTimingAnalyzer.removeHeuristicCorrection:
 if process.cscTimingAnalyzer.applyNewHeuristicCorrectionByRing:
     outfileName = outfileName + '_newHeuristicCorrByRing'
 if process.cscTimingAnalyzer.applyNewHeuristicCorrectionByChamber:
-    outfileName = outfileName + '_newHeuristicCorrByChamber'    
+    outfileName = outfileName + '_newHeuristicCorrByChamber'
+if process.cscTimingAnalyzer.removeMatchedStationsRequirement:
+    outfileName = outfileName + '_removeMatchedStationsRequirement'
 # if process.cscTimingAnalyzer.min_pt > 1:
 #     outfileName = outfileName + min_pt_name
 # if process.cscTimingAnalyzer.max_dz > 0.5:
@@ -108,5 +93,8 @@ outfileName = outfileName + fileExtension
 print outfileName
 
 process.cscTimingAnalyzer.outfileName = cms.untracked.string(outfileName)
+
+process.out = cms.OutputModule("PoolOutputModule",
+                               fileName = cms.untracked.string(outfileName) )
 
 process.p = cms.Path(process.cscTimingAnalyzer)
