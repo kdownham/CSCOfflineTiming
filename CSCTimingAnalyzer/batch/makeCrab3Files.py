@@ -12,7 +12,7 @@ dataSet = ''
 numEvtsTotal = -1
 numEvtsPerJob = 20000
 numLumisPerJob = 500
-filesPerJob = 5
+filesPerJob = 2
 outNtupleName = 'ntuple.root'
 storageElement = 'T2_US_UCSD'
 tag = 'V07-00-03'
@@ -107,18 +107,19 @@ def checkConventions():
     
     print 'CRAB submission should happen outside of {%s,%s}' % (configPfx, psetPfx)
 
-if len(sys.argv) < 9 :
+if len(sys.argv) < 7 :
     print 'Usage: makeCrabFiles.py [OPTIONS]'
     print '\nWhere the required options are: '
     print '\t-CMSSWcfg\tname of the skeleton CMSSW config file '
     print '\t-d\t\tname of dataset'
     print '\t-t\t\tCSCTimingAnalyzer tag'
-    print '\t-gtag\t\tglobal tag'
     print '\nOptional arguments:'
+    print '\t-gtag\t\tglobal tag'
     print '\t-isData\t\tFlag to specify if you are running on data.'
     print '\t-strElem\tpreferred storage element. Default is T2_US_UCSD if left unspecified'
     print '\t-nEvts\t\tNumber of events you want to run on. Default is -1'
     print '\t-evtsPerJob\tNumber of events per job. Default is 20000'
+    print '\t-filesPerJob\tNumber of files per job. Default is 2'
     #print '\t-n\t\tName of output Ntuple file. Default is ntuple.root'
     print '\t-m\t\tsubmission mode (possible: condor_g, condor, glite). Default is glidein'
     print '\t-dbs\t\tdbs url'
@@ -135,6 +136,8 @@ for i in range(0, len(sys.argv)):
         numEvtsTotal = sys.argv[i+1]
     if sys.argv[i] == '-evtsPerJob':
         numEvtsPerJob = sys.argv[i+1]
+    if sys.argv[i] == '-filesPerJob':
+        filesEvtsPerJob = sys.argv[i+1]
     if sys.argv[i] == '-lumisPerJob':
         numLumisPerJob = sys.argv[i+1]
     if sys.argv[i] == '-strElem':
