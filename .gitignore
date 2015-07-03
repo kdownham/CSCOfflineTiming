@@ -12,3 +12,4 @@ __init__.py
 *.o
 *.so
 *.pcm
+*.log
