@@ -130,6 +130,7 @@ private:
     bool applyNewHeuristicCorrectionByChamber_;
     bool makeNminus1hists_;
     bool writeTimingStudyBabyTree_;
+    bool removeMatchedStationsRequirement_;
     double min_pt_;
     double max_dz_;
     

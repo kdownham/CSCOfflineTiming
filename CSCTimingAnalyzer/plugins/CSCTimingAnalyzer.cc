@@ -23,6 +23,7 @@ CSCTimingAnalyzer::CSCTimingAnalyzer(const edm::ParameterSet& iConfig)
     applyNewHeuristicCorrectionByChamber_  = iConfig.getUntrackedParameter<bool>("applyNewHeuristicCorrectionByChamber"  , false);
     makeNminus1hists_                      = iConfig.getUntrackedParameter<bool>("makeNminus1hists"                      , false);
     writeTimingStudyBabyTree_              = iConfig.getUntrackedParameter<bool>("writeTimingStudyBabyTree"              , false);
+    removeMatchedStationsRequirement_      = iConfig.getUntrackedParameter<bool>("removeMatchedStationsRequirement"      , false);
     min_pt_                                = iConfig.getUntrackedParameter<double>("min_pt"                              , 10.  );
     max_dz_                                = iConfig.getUntrackedParameter<double>("max_dz"                              , 0.5  );
     outfileName_                           = iConfig.getUntrackedParameter<std::string>("outfileName", "histos.root");
@@ -912,7 +913,7 @@ bool CSCTimingAnalyzer::isPOGmuonTight ()
     if (!isGlobalMuon()) return false;
     if (!passesGlobalChi2()) return false;
     if (!passesGlobalSAhits()) return false;
-    if (!passesNumStations()) return false;
+    if (!passesNumStations() && !removeMatchedStationsRequirement_) return false;
     if (!passesD0()) return false;
     if (!passesDZ()) return false;
     if (!passesPixelHits()) return false;
