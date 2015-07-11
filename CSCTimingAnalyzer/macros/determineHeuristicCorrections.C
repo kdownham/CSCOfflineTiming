@@ -1,6 +1,8 @@
 #include <string>
 #include <iostream>
 #include <fstream>
+#include <map>
+#include <utility>
 #include "TFile.h"
 #include "TDirectoryFile.h"
 #include "TString.h"
@@ -11,7 +13,29 @@
 #include "TH1.h"
 #include "TCanvas.h"
 
-void determineHeuristicCorrections (std::string fname, bool byStation, bool byChamber, std::string ofname = "")
+struct DetId
+{
+    DetId () {endcap=0;station=0;ring=0;chamber=0;}
+    DetId (int endcap_, int station_, int ring_, int chamber_) {endcap=endcap_; station=station_; ring=ring_; chamber=chamber_;}
+    int endcap;
+    int station;
+    int ring;
+    int chamber;
+    bool operator<( const DetId & n ) const {
+        if (this->endcap < n.endcap)
+            return true;
+        else if (this->endcap == n.endcap && this->station < n.station)
+            return true;
+        else if (this->endcap == n.endcap && this->station == n.station && this->ring < n.ring)
+            return true;
+        else if (this->endcap == n.endcap && this->station == n.station && this->ring == n.ring && this->chamber < n.chamber)
+            return true;
+        else
+            return false;
+    }
+};
+
+void determineHeuristicCorrections (std::string fname, bool byStation, bool byChamber, bool combineME11ab = false, std::string ofname = "")
 {
     TFile file(fname.c_str());
     TDirectoryFile *dir;
@@ -53,6 +77,7 @@ void determineHeuristicCorrections (std::string fname, bool byStation, bool byCh
         }
     }
 
+    std::map<DetId, std::pair<unsigned long, double> > m;
     TList *hlist = dir->GetListOfKeys();
     for (auto hist : *hlist)
     {
@@ -84,7 +109,7 @@ void determineHeuristicCorrections (std::string fname, bool byStation, bool byCh
             if (s.IsDigit()) station = s.Atoi();
             TString r = station_ring[1];
             if (r.IsDigit()) ring = r.Atoi();            
-            double corr = ((TH1*)obj)->GetMean() * -50.;
+            double corr = ((TH1*)obj)->GetMean() * -50.;            
             if (print_to_file)
                 outfile << endcap << "\t" << station << "\t" << ring << "\t" << corr << std::endl;
             else
@@ -114,13 +139,45 @@ void determineHeuristicCorrections (std::string fname, bool byStation, bool byCh
             if (chamber_.Sizeof() < 2 || chamber_.Sizeof() > 3) continue;
             if (chamber_.IsDigit()) chamber = chamber_.Atoi();
             double corr = ((TH1*)obj)->GetMean() * -50.;
-            int nrhs = ((TH1*)obj)->GetEntries();
-            hnrhs.Fill(std::min(nrhs,2499));
-            if (print_to_file)
-                outfile << endcap << "\t" << station << "\t" << ring << "\t" << chamber << "\t" << corr << std::endl;
+            unsigned long nrhs = ((TH1*)obj)->GetEntries();
+
+            if (!combineME11ab)
+            {
+                unsigned long hmax = 2499;
+                hnrhs.Fill(std::min(nrhs,hmax));
+                if (print_to_file)
+                    outfile << endcap << "\t" << station << "\t" << ring << "\t" << chamber << "\t" << corr << std::endl;
+                else
+                    printf("%d\t%d\t%d\t%d\t%4.2f\n", endcap, station, ring, chamber, corr);
+            }
             else
-                printf("%d\t%d\t%d\t%d\t%4.2f\n", endcap, station, ring, chamber, corr);
+            {
+                if (ring == 4) ring = 1;
+                DetId id(endcap, station, ring, chamber);
+                if (m.find(id) != m.end())
+                {
+                    m[id].first += nrhs;
+                    m[id].second += (double)nrhs*corr;
+                }
+                else
+                {
+                    m[id] = std::make_pair(nrhs, (double)nrhs*corr);
+                }
+            }
             objarray->Delete();
+        }
+    }
+
+    if (byChamber && combineME11ab)
+    {
+        for (auto item : m)
+        {
+            item.second.second = item.second.second/item.second.first;
+            hnrhs.Fill(std::min(item.second.first,(unsigned long)2499));
+            if (print_to_file)
+                outfile << item.first.endcap << "\t" << item.first.station << "\t" << item.first.ring << "\t" << item.first.chamber << "\t" << item.second.second << std::endl;
+            else
+                printf("%d\t%d\t%d\t%d\t%4.2f\n", item.first.endcap, item.first.station, item.first.ring, item.first.chamber, item.second.second);
         }
     }
 
