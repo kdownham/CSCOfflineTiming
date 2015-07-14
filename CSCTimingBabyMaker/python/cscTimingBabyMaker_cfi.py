@@ -9,7 +9,8 @@ cscTimingBabyMaker = cms.EDFilter('CSCTimingBabyMaker',
                                   vtxTag = cms.InputTag('offlinePrimaryVertices'),
                                   trkTag = cms.InputTag('generalTracks'),
                                   bsTag = cms.InputTag('offlineBeamSpot'),
-                                  trgResTag = cms.InputTag('TriggerResults','','RECO'),
+                                  trgResTag = cms.InputTag('TriggerResults','','HLT'),
+                                  trgEvtTag = cms.InputTag('hltTriggerSummaryAOD','','HLT'),
                                   useMuonSegmentMatcher = cms.bool(False),
                                   debug = cms.bool(False),
                                   verbose = cms.bool(False),
@@ -23,5 +24,8 @@ cscTimingBabyMaker = cms.EDFilter('CSCTimingBabyMaker',
                                   ServiceParameters = cms.PSet(
                                       Propagators = cms.untracked.vstring('SteppingHelixPropagatorAny'),
                                       RPCLayers = cms.bool(True)
-                                  )
+                                  ),
+                                  fillTriggerObjects = cms.untracked.bool(True),
+                                  prunedTriggerNames = cms.untracked.vstring(
+                                      "HLT*Mu*")
 )

@@ -7,7 +7,8 @@
   <class name="std::vector<std::vector<std::vector<std::vector<int> > > >"/>
   <class name="std::vector<std::vector<std::vector<std::vector<char> > > >"/>
   <class name="std::vector<std::vector<std::vector<std::vector<double> > > >"/>
-
+  <class name="std::vector<std::vector<math::XYZTLorentzVectorD> >"/>
+  
   <class name="std::vector<std::vector<int> >::iterator"/>
   <class name="std::vector<std::vector<double> >::iterator"/>
   <class name="std::vector<std::vector<char> >::iterator"/>
@@ -17,7 +18,8 @@
   <class name="std::vector<std::vector<std::vector<std::vector<int> > > >::iterator"/>
   <class name="std::vector<std::vector<std::vector<std::vector<char> > > >::iterator"/>
   <class name="std::vector<std::vector<std::vector<std::vector<double> > > >::iterator"/>
-
+  <class name="std::vector<std::vector<math::XYZTLorentzVectorD> >::iterator"/>
+  
   <class name="std::vector<std::vector<int> >::const_iterator"/>
   <class name="std::vector<std::vector<double> >::const_iterator"/>
   <class name="std::vector<std::vector<char> >::const_iterator"/>
@@ -27,6 +29,7 @@
   <class name="std::vector<std::vector<std::vector<std::vector<int> > > >::const_iterator"/>
   <class name="std::vector<std::vector<std::vector<std::vector<char> > > >::const_iterator"/>
   <class name="std::vector<std::vector<std::vector<std::vector<double> > > >::const_iterator"/>
+  <class name="std::vector<std::vector<math::XYZTLorentzVectorD> >::const_iterator"/>
 
   <class name="edm::Wrapper<std::vector<std::vector<double> > >"/>
   <class name="edm::Wrapper<std::vector<std::vector<char> > >"/>
@@ -36,4 +39,13 @@
   <class name="edm::Wrapper<std::vector<std::vector<std::vector<std::vector<int> > > > >"/>
   <class name="edm::Wrapper<std::vector<std::vector<std::vector<std::vector<char> > > > >"/>
   <class name="edm::Wrapper<std::vector<std::vector<std::vector<std::vector<double> > > > >"/>
+  <class name="edm::Wrapper<std::vector<std::vector<math::XYZTLorentzVectorD> > >"/>
+
+  <class name="TBits"/>
+  <class name="edm::Wrapper<TBits>"/>
+  
+  <class name="std::vector<TString>"/>
+  <class name="std::vector<TString>::iterator"/>
+  <class name="std::vector<TString>::const_iterator"/>  
+  <class name="edm::Wrapper<std::vector<TString> >"/>  
 </lcgdict>

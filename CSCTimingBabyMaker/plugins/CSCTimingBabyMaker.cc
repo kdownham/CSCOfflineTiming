@@ -1,5 +1,4 @@
 #include "CSCOfflineTiming/CSCTimingBabyMaker/plugins/CSCTimingBabyMaker.h"
-#include "DataFormats/Math/interface/LorentzVector.h"
 #include "DataFormats/Math/interface/angle.h"
 #include "DataFormats/VertexReco/interface/Vertex.h"
 #include "DataFormats/MuonReco/interface/MuonChamberMatch.h"
@@ -18,11 +17,12 @@
 #include "FWCore/Common/interface/TriggerNames.h"
 #include "RecoMuon/TrackingTools/interface/MuonServiceProxy.h"
 #include "RecoMuon/TrackingTools/interface/MuonSegmentMatcher.h"
+#include "TBits.h"
+#include "TString.h"
+#include "TRegexp.h"
 
 // #include "FWCore/Common/interface/TriggerNames.h"
 // #include "DataFormats/Common/interface/TriggerResults.h"
-
-typedef math::XYZTLorentzVectorD LorentzVector;
 
 const unsigned int CSCTimingBabyMaker::PPIB_DCFEB_CABLE_LENGTH = 270; // length in centimeters
 const double CSCTimingBabyMaker::SKEWCLEAR_REVD_PROPAGATION_DELAY = 5.2;  // [ns/m]
@@ -53,8 +53,13 @@ CSCTimingBabyMaker::CSCTimingBabyMaker(const edm::ParameterSet& iConfig) :
     trk_token = consumes<reco::TrackCollection>(iConfig.getParameter<edm::InputTag>("trkTag"));
     bs_token  = consumes<reco::BeamSpot>(iConfig.getParameter<edm::InputTag>("bsTag"));
     trgResults_token = consumes<edm::TriggerResults>(iConfig.getParameter<edm::InputTag>("trgResTag"));
+    trgEvent_token  = consumes<trigger::TriggerEvent>(iConfig.getParameter<edm::InputTag>("trgEvtTag"));
     useMuonSegmentMatcher_ = iConfig.getUntrackedParameter<bool>("useMuonSegmentMatcher", false);
+    fillTriggerObjects_ = iConfig.getUntrackedParameter<bool>("fillTriggerObjects", false);
     debug_ = iConfig.getUntrackedParameter<bool>("debug", false);
+
+    processName = iConfig.getUntrackedParameter<std::string>("processName", "");
+    prunedTriggerNames = iConfig.getUntrackedParameter<std::vector<std::string> > ("prunedTriggerNames");
 
     nSAmus_ = 0;
     nMusWithMatchedSegments_ = 0;
@@ -69,6 +74,12 @@ CSCTimingBabyMaker::CSCTimingBabyMaker(const edm::ParameterSet& iConfig) :
     produces<double>    ("bfield").setBranchAlias("bfield");
     produces<bool>      ("cscstatus").setBranchAlias("csc_status");
     produces<unsigned int> ("detectorstatus").setBranchAlias("detector_status");
+
+    produces<TBits>                                     ("hltbits")       .setBranchAlias("hlt_bits"        );
+    produces<std::vector<TString> >                     ("hlttrigNames")  .setBranchAlias("hlt_trigNames"   );
+    produces<std::vector<unsigned int> >                ("hltprescales")  .setBranchAlias("hlt_prescales"   );
+    produces<std::vector<std::vector<int> > >           ("hlttrigObjsid") .setBranchAlias("hlt_trigObjs_id" );
+    produces<std::vector<std::vector<LorentzVector> > > ("hlttrigObjsp4") .setBranchAlias("hlt_trigObjs_p4" );
 
     //
     // muon level quantities
@@ -171,8 +182,39 @@ CSCTimingBabyMaker::~CSCTimingBabyMaker()
 
 // ------------ method called to produce the data  ------------
 bool
-CSCTimingBabyMaker::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
+CSCTimingBabyMaker::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)    
 {
+    if (processName == "")
+    {
+        iEvent.getByToken(trgEvent_token, triggerEvent_h);
+        if (!triggerEvent_h.isValid())
+            throw cms::Exception("CSCTimingBabyMaker::filter: error getting TriggerEvent product from Event!"  );
+
+        // This line is important as it makes sure it is never called
+        // again! A self-terminating code snippet...
+        processName = triggerEvent_h.provenance()->processName();
+
+        // This is the once and only once bit described in beginRun
+        bool changed(true);
+        if (hltConfig.init(iEvent.getRun(), iSetup, processName, changed)) {}
+        else throw cms::Exception("CSCTimingBabyMaker::filter: config extraction failure with process name " + processName);
+    }
+    else
+    {
+        iEvent.getByToken(trgEvent_token, triggerEvent_h);
+        if (!triggerEvent_h.isValid())
+            throw cms::Exception("CSCTimingBabyMaker::filter: error getting TriggerEvent product from Event!"  );
+    }
+
+    iEvent.getByToken(trgResults_token, trigResults_h);
+    if (!trigResults_h.isValid())
+    {
+        throw cms::Exception("CSCTimingBabyMaker::filter: error getting TriggerResults product from Event!"  );
+    }
+
+    assert( trigResults_h->size()==hltConfig.size() );
+    unsigned int nTriggers = trigResults_h->size();    
+
     //
     // event level quantities
     //
@@ -182,7 +224,16 @@ CSCTimingBabyMaker::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     std::auto_ptr<double> bfield (new double);
     std::auto_ptr<bool> csc_status (new bool);     
     std::auto_ptr<unsigned int> detector_status (new unsigned int);    
-       
+
+    std::auto_ptr<TBits>                                     hlt_bits        (new TBits(nTriggers)                         );
+    std::auto_ptr<std::vector<TString> >                     hlt_trigNames   (new std::vector<TString>                     );
+    std::auto_ptr<std::vector<unsigned int> >                hlt_prescales   (new std::vector<unsigned int>                );
+    std::auto_ptr<std::vector<std::vector<int> > >           hlt_trigObjs_id (new std::vector<std::vector<int> >           );
+    std::auto_ptr<std::vector<std::vector<LorentzVector> > > hlt_trigObjs_p4 (new std::vector<std::vector<LorentzVector> > );
+    hlt_trigNames  ->reserve(nTriggers);
+    hlt_trigObjs_id->reserve(nTriggers);
+    hlt_trigObjs_p4->reserve(nTriggers);
+
     //
     // muon level quantities
     //
@@ -264,18 +315,6 @@ CSCTimingBabyMaker::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     std::auto_ptr<std::vector<std::vector<std::vector<std::vector<int> > > > >    new_cfeb_cable_delay  (new std::vector<std::vector<std::vector<std::vector<int> > > >    );
     std::auto_ptr<std::vector<std::vector<std::vector<std::vector<double> > > > > new_cfebCorr          (new std::vector<std::vector<std::vector<std::vector<double> > > > );
     std::auto_ptr<std::vector<std::vector<std::vector<std::vector<double> > > > > new_chipCorr          (new std::vector<std::vector<std::vector<std::vector<double> > > > );
-
-    // edm::Handle<edm::TriggerResults> trigResults_h;
-    // iEvent.getByToken(trgResults_token, trigResults_h);
-    // if (trigResults_h.isValid())
-    // {
-    //     edm::TriggerNames trigNames = iEvent.triggerNames(*trigResults_h);
-    //     std::vector<std::string> vtrigNames = trigNames.triggerNames();
-    //     std::cout << std::endl;
-    //     for (auto name : vtrigNames)
-    //         std::cout << name << std::endl;
-    //     std::cout << std::endl;
-    // }
     
     //
     // load chamber timing corrections
@@ -312,6 +351,30 @@ CSCTimingBabyMaker::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     }	 
 
     *bfield = current*currentToBFieldScaleFactor;    
+
+    //
+    // fill trigger info
+    //
+    for (unsigned int idx = 0; idx < nTriggers; idx++)
+    {
+        std::vector<LorentzVector> vp4;
+        std::vector<int> vid;
+
+        const std::string& name = hltConfig.triggerName(idx);
+        hlt_trigNames->push_back(name);
+        hlt_prescales->push_back(hltConfig.prescaleValue(iEvent, iSetup, name));
+        
+        if (trigResults_h->accept(idx))
+        {
+            hlt_bits->SetBitNumber(idx);
+
+            if (fillTriggerObjects_ && isPrunedTrigger(name))
+                fillTriggerObjInfo(idx, vid, vp4);
+        }
+
+        hlt_trigObjs_id->push_back(vid);
+        hlt_trigObjs_p4->push_back(vp4);
+    }
     
     edm::Handle<reco::VertexCollection> vtx_h;
     iEvent.getByToken(vtx_token, vtx_h);
@@ -1368,6 +1431,11 @@ CSCTimingBabyMaker::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     iEvent.put(bfield                      , "bfield"                      );
     iEvent.put(csc_status                  , "cscstatus"                   );
     iEvent.put(detector_status             , "detectorstatus"              );
+    iEvent.put(hlt_bits                    , "hltbits"                     );
+    iEvent.put(hlt_trigNames               , "hlttrigNames"                );
+    iEvent.put(hlt_prescales               , "hltprescales"                ); 
+    iEvent.put(hlt_trigObjs_id             , "hlttrigObjsid"               );
+    iEvent.put(hlt_trigObjs_p4             , "hlttrigObjsp4"               );    
     iEvent.put(endcap                      , "endcap"                      );
     iEvent.put(station                     , "station"                     );
     iEvent.put(ring                        , "ring"                        );
@@ -1471,6 +1539,161 @@ int CSCTimingBabyMaker::getSkewClearCableDelayForME11 (const CSCDetId &id)
     return int(ppib_odmb_delay + ppib_dcfeb_delay + CSCTimingBabyMaker::PPIB_LVDS_DELAY*precision);
 }
 
+//
+// compare trigger name (name) with list of triggers to store object information for (prunedTriggerNames)
+//
+bool CSCTimingBabyMaker::isPrunedTrigger (const std::string& name) const
+{
+    for(unsigned int idx = 0; idx < prunedTriggerNames.size(); ++idx)
+    {
+        TString pattern(prunedTriggerNames.at(idx));
+        pattern.ToLower();
+        TRegexp reg(Form("%s", pattern.Data()), true);
+        TString sname(name);
+        sname.ToLower();
+        if (sname.Index(reg) >= 0)
+            return true;
+    }
+    return false;
+}
+
+//
+// fill ID, p4 for matched trigger objects
+//
+void CSCTimingBabyMaker::fillTriggerObjInfo (unsigned int triggerIndex, std::vector<int>& ids, std::vector<LorentzVector>& p4s) const
+{
+    const trigger::TriggerObjectCollection& triggerObjects = triggerEvent_h->getObjects();  // trigger objects
+    if (triggerObjects.size() == 0) return;                                                 //
+    const std::vector<std::string>& moduleLabels = hltConfig.moduleLabels(triggerIndex);              // modules on this trigger path
+    const unsigned int    moduleIndex  = trigResults_h->index(triggerIndex);             // index (slot position) of module giving the decision of the path
+    unsigned int          nFilters     = triggerEvent_h->sizeFilters();                     // number of filters
+
+    // map ( trigger id => filter index )
+    std::map<int, unsigned int> trigObjsToStore;
+
+    // True if different trigger id's are found in the same filter
+    bool mixedTrigIds = false;
+
+    // loop over trigger modules
+    unsigned int lastFilterIndex = nFilters;
+    for (unsigned int j = 0; j <= moduleIndex; ++j)
+    {
+        // get module name & filter index
+        const std::string& moduleLabel = moduleLabels.at(j);
+        const unsigned int filterIndex = triggerEvent_h->filterIndex(edm::InputTag(moduleLabel, "", processName));
+      
+        // these are the filters with trigger objects filled
+        if ( filterIndex < nFilters )
+        { 
+            lastFilterIndex = filterIndex;
+   
+            // get trigger objects & ids
+            //unsigned int lastEleFilterIndex = 0;
+            const trigger::Vids& triggerIds  = triggerEvent_h->filterIds(filterIndex);
+            const trigger::Keys& triggerKeys = triggerEvent_h->filterKeys(filterIndex);
+            assert( triggerIds.size() == triggerKeys.size() );
+
+            // True if a filter has hlt objects ( objects with positive trigger id )
+            bool hlt = false;   
+      
+            // Trigger object id for filters associated with a unique trigger object id
+            int filterId = -1;
+
+            // loop on trigger objects
+            for (unsigned int k = 0; k < triggerKeys.size(); k++)
+            {
+                // trigger object id
+                int id = triggerIds.at(k);
+
+                // hlt objects
+                if (id > 0)
+                {
+                    hlt = true;                                   // True if a filter has hlt objects ( objects with positive trigger id )
+                    if (k == 0)
+                    {                                             // Assuming all trigger ids are the same for this filter
+                        filterId = id;                            // Filter id for all the objects in this filter
+                        if (filterId == 82 || filterId == 92)     // Remember the index of the last filter with all objects having a trigger id of 82 or 92 
+                        {
+                            //lastEleFilterIndex = filterIndex;
+                        }
+                    }
+                    else
+                    {
+                        if (id != filterId)
+                        {
+                            mixedTrigIds = true;                    // True if different trigger id's are found in the same filter
+                        }
+                    }
+                } // end if( id > 0 )
+            } // end loop on trigger objects
+
+            //
+            if (hlt)                                            // only store hlt objects
+            {
+                assert (filterId != -1);                        // sanity
+                trigObjsToStore[filterId] = filterIndex;        // Store the filter Index ( used to get trigger objects ) for each different trigger type ( filterId )
+                if (filterId == 82) trigObjsToStore.erase(92);  // If this is an electron trigger ( filterId 82 or 92 ) we only want the last one ( that is either 82 or 92 )
+                if (filterId == 92) trigObjsToStore.erase(82);  // 
+            }
+        } // end if(filterIndex < nFilters)
+    }   // end loop over trigger modules
+ 
+    //////////////////////////////////////////////
+    // Show the trigger objects we want to save //
+    //////////////////////////////////////////////
+
+    // If we find different trigger ids under any filter we only store the objects for the last filter
+    if (mixedTrigIds)
+    {
+        // get trigger objects & ids
+        const trigger::Vids& triggerIds  = triggerEvent_h->filterIds ( lastFilterIndex );
+        const trigger::Keys& triggerKeys = triggerEvent_h->filterKeys( lastFilterIndex );
+        assert( triggerIds.size() == triggerKeys.size() );
+
+        // loop on trigger objects
+        for (unsigned int k = 0; k < triggerKeys.size(); k++)
+        {
+            // trigger object id
+            int id = triggerIds.at(k);                                                        
+
+            // trigger p4, p4id
+            const trigger::TriggerObject& triggerObject = triggerObjects[triggerKeys[k]];
+  
+            // store trigger id, trigger p4, & trigger object id
+            p4s.push_back( LorentzVector( triggerObject.particle().p4() ) );
+            ids.push_back(id);
+        } 
+    }
+    // If each filter has trigger objects with the same trigger id, we store the trigger 
+    // objects for the last filter of each distinct trigger object type
+    else
+    {
+        std::map<int, unsigned int>::iterator it;
+        for (it = trigObjsToStore.begin() ; it != trigObjsToStore.end(); it++)
+        {
+            // get trigger objects & ids
+            const unsigned int filterIndex   = (*it).second;
+            const trigger::Vids& triggerIds  = triggerEvent_h->filterIds (filterIndex);
+            const trigger::Keys& triggerKeys = triggerEvent_h->filterKeys(filterIndex);
+            assert( triggerIds.size() == triggerKeys.size() );
+    
+            // loop on trigger objects
+            for (unsigned int k = 0; k < triggerKeys.size(); k++)
+            {
+                // trigger object id
+                int id = triggerIds.at(k);                                                        
+
+                // trigger p4, p4id
+                const trigger::TriggerObject& triggerObject = triggerObjects[ triggerKeys[k] ];
+    
+                // store trigger id, trigger p4, & trigger object id
+                p4s.push_back( LorentzVector( triggerObject.particle().p4() ) );
+                ids.push_back(id);
+            } 
+        }
+    }
+}
+
 
 // ------------ method called once each job just before starting event loop  ------------
 void 
@@ -1491,12 +1714,17 @@ CSCTimingBabyMaker::endJob() {
 }
 
 // ------------ method called when starting to processes a run  ------------
-/*
-  void
-  CSCTimingBabyMaker::beginRun(edm::Run const&, edm::EventSetup const&)
-  {
-  }
-*/
+void
+CSCTimingBabyMaker::beginRun(edm::Run const& iRun, edm::EventSetup const& iSetup)
+{
+    if (processName != "")
+    {
+        bool changed(true);
+        if (hltConfig.init(iRun, iSetup, processName, changed)) {}
+        else throw cms::Exception("HLTMaker::beginRun: config extraction failure with process name " + processName);
+    }
+}
+
  
 // ------------ method called when ending the processing of a run  ------------
 /*

@@ -10,5 +10,6 @@
 <use name="CalibMuon/CSCCalibration"/>
 <use name="RecoLocalMuon/CSCRecHitD"/>
 <use name="RecoMuon/TrackingTools"/>
+<use name="HLTrigger/HLTcore"/>
 <flags EDM_PLUGIN="1"/>
 <flags   CXXFLAGS="-g -O0"/>

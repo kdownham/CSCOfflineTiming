@@ -31,13 +31,18 @@
 
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 
+#include "HLTrigger/HLTcore/interface/HLTConfigProvider.h"
+
 #include "DataFormats/MuonReco/interface/MuonFwd.h"
 #include "DataFormats/VertexReco/interface/VertexFwd.h"
 #include "DataFormats/TrackReco/interface/TrackFwd.h"
 #include "DataFormats/BeamSpot/interface/BeamSpot.h"
 #include "DataFormats/Common/interface/TriggerResults.h"
+#include "DataFormats/HLTReco/interface/TriggerEvent.h"
 #include "DataFormats/MuonDetId/interface/CSCDetId.h"
+#include "DataFormats/Math/interface/LorentzVector.h"
 
+typedef math::XYZTLorentzVectorD LorentzVector;
 
 class CSCRecoConditions;
 class CSCChamberTimeCorrections;
@@ -62,7 +67,7 @@ private:
     virtual bool filter(edm::Event&, const edm::EventSetup&) override;
     virtual void endJob() override;
       
-    //virtual void beginRun(edm::Run const&, edm::EventSetup const&) override;
+    virtual void beginRun(edm::Run const&, edm::EventSetup const&) override;
     //virtual void endRun(edm::Run const&, edm::EventSetup const&) override;
     //virtual void beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) override;
     //virtual void endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) override;
@@ -71,6 +76,9 @@ private:
     bool isGoodVertex (const reco::Vertex& vertex);
     static int getSkewClearCableLengthForME11 (const CSCDetId &id);
     static int getSkewClearCableDelayForME11 (const CSCDetId &id);
+
+    bool isPrunedTrigger (const std::string& name) const;
+    void fillTriggerObjInfo (unsigned int triggerIndex, std::vector<int>& ids, std::vector<LorentzVector>& p4s) const;
 
     // ----------member data ---------------------------
     edm::ESHandle<CSCChamberTimeCorrections> theChamberTimingCorrections;
@@ -86,10 +94,20 @@ private:
     edm::EDGetTokenT<reco::TrackCollection> trk_token;
     edm::EDGetTokenT<reco::BeamSpot> bs_token;
     edm::EDGetTokenT<edm::TriggerResults> trgResults_token;
+    edm::EDGetTokenT<trigger::TriggerEvent> trgEvent_token;
+
+    edm::Handle<trigger::TriggerEvent> triggerEvent_h;
+    edm::Handle<edm::TriggerResults> trigResults_h;
+
+    std::string processName;
+    std::vector<std::string> prunedTriggerNames;
+    
+    HLTConfigProvider hltConfig;
 
     bool useMuonSegmentMatcher_;
-    bool debug_;
-
+    bool fillTriggerObjects_;    
+    bool debug_;    
+    
     int nSAmus_;
     int nMusWithMatchedSegments_;
     int nMusWithCSCrhs_;
