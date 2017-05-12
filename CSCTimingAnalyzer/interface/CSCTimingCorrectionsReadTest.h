@@ -60,4 +60,6 @@ private:
     edm::ESHandle<CSCChannelMapperBase> mapper;
 
     bool isLoaded_;
+
+    std::string outfileName_;
 };

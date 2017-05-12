@@ -12,6 +12,7 @@
 CSCTimingCorrectionsReadTest::CSCTimingCorrectionsReadTest(const edm::ParameterSet& iConfig) :
     isLoaded_(false)
 {
+    outfileName_ = iConfig.getUntrackedParameter<std::string>("outfileName", "test.dat");
 }
 
 
@@ -36,7 +37,7 @@ CSCTimingCorrectionsReadTest::analyze(const edm::Event& iEvent, const edm::Event
         isLoaded_ = true;
     }
     
-    FILE *outfile = fopen("./test.dat", "w+");
+    FILE *outfile = fopen(outfileName_.c_str(), "w+");
     if (outfile)
     {        
         std::cerr << "Failed to open file test.dat for writing." << std::endl;
@@ -51,7 +52,9 @@ CSCTimingCorrectionsReadTest::analyze(const edm::Event& iEvent, const edm::Event
         if (ic != index+1)
             printf("ic = %d, index = %d\n, id=(%d,%d,%d,%d)\n", ic, index, id.endcap(), id.station(), id.ring(), id.chamber());
         double corr = theChamberTimingCorrections->item(index).cfeb_timing_corr*1./theChamberTimingCorrections->precision();
-        fprintf(outfile, "%d %d %d %d %d %4.2f\n", ic, id.endcap(), id.station(), id.ring(), id.chamber(), corr);
+        int clength = theChamberTimingCorrections->item(index).cfeb_length;
+        char crev = theChamberTimingCorrections->item(index).cfeb_rev;
+        fprintf(outfile, "%d %d %d %d %d %c %d %4.2f\n", ic, id.endcap(), id.station(), id.ring(), id.chamber(), crev, clength, corr);
         // printf("%d %d %d %d %d %4.2f\n", ic, id.endcap(), id.station(), id.ring(), id.chamber(), corr);
     }
 
