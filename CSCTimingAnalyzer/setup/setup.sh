@@ -16,3 +16,9 @@ sed -i '19d' ${CMSSW_BASE}/src/RecoLocalMuon/CSCValidation/BuildFile.xml
 echo "<export>" >> ${CMSSW_BASE}/src/RecoLocalMuon/CSCValidation/BuildFile.xml
 echo "   <lib   name=\"1\"/>" >> ${CMSSW_BASE}/src/RecoLocalMuon/CSCValidation/BuildFile.xml
 echo "</export>" >> ${CMSSW_BASE}/src/RecoLocalMuon/CSCValidation/BuildFile.xml
+
+if [ ! -f ${CMSSW_BASE}/src/OnlineDB/CSCCondDB/BuildFile.xml ];
+then
+    cd ${CMSSW_BASE}/src
+    git cms-addpkg OnlineDB/CSCCondDB
+fi
