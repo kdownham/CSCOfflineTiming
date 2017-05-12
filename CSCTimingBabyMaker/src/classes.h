@@ -14,7 +14,8 @@ namespace CSCOfflineTiming_CSCTimingBabyMaker
         std::vector<std::vector<std::vector<unsigned int> > > dummy03;
         std::vector<std::vector<std::vector<int> > > dummy04;
         std::vector<std::vector<std::vector<bool> > > dummy05;
-
+        std::vector<std::vector<std::vector<double> > > dummy010;
+        
         std::vector<std::vector<std::vector<std::vector<int> > > > dummy06;
         std::vector<std::vector<std::vector<std::vector<char> > > > dummy07;
         std::vector<std::vector<std::vector<std::vector<double> > > > dummy08;
@@ -28,6 +29,7 @@ namespace CSCOfflineTiming_CSCTimingBabyMaker
         std::vector<std::vector<std::vector<unsigned int> > >::iterator it03;
         std::vector<std::vector<std::vector<int> > >::iterator it04;
         std::vector<std::vector<std::vector<bool> > >::iterator it05;
+        std::vector<std::vector<std::vector<double> > >::iterator it10;        
 
         std::vector<std::vector<std::vector<std::vector<int> > > >::iterator it06;
         std::vector<std::vector<std::vector<std::vector<char> > > >::iterator it07;
@@ -41,6 +43,7 @@ namespace CSCOfflineTiming_CSCTimingBabyMaker
         edm::Wrapper<std::vector<std::vector<std::vector<unsigned int> > > > dummy3;
         edm::Wrapper<std::vector<std::vector<std::vector<int> > > > dummy4;
         edm::Wrapper<std::vector<std::vector<std::vector<bool> > > > dummy5;
+        edm::Wrapper<std::vector<std::vector<std::vector<double> > > > dummy10;        
 
         edm::Wrapper<std::vector<std::vector<std::vector<std::vector<int> > > > > dummy6;
         edm::Wrapper<std::vector<std::vector<std::vector<std::vector<char> > > > > dummy7;

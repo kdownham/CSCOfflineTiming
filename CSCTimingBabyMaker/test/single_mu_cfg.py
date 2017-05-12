@@ -1,22 +1,29 @@
 import FWCore.ParameterSet.Config as cms
 
-process = cms.Process("CSCTIMING")
+from Configuration.StandardSequences.Eras import eras
 
-process.load("Configuration.Geometry.GeometryIdeal_cff")
-process.load("Configuration.StandardSequences.MagneticField_cff")
-process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
+process = cms.Process("CSCTIMING",eras.Run2_2016)
+
+process.load('Configuration.StandardSequences.Services_cff')
+process.load('SimGeneral.HepPDTESSource.pythiapdt_cfi')
 process.load('FWCore.MessageService.MessageLogger_cfi')
-process.load("Configuration.StandardSequences.RawToDigi_Data_cff")
-process.load("Configuration.StandardSequences.Reconstruction_cff")
+process.load('Configuration.EventContent.EventContent_cff')
+process.load('Configuration.StandardSequences.GeometryRecoDB_cff')
+process.load('Configuration.StandardSequences.MagneticField_AutoFromDBCurrent_cff')
+process.load('Configuration.StandardSequences.RawToDigi_Data_cff')
+process.load('Configuration.StandardSequences.L1Reco_cff')
+process.load('Configuration.StandardSequences.Reconstruction_Data_cff')
+process.load('DQMOffline.Configuration.DQMOffline_cff')
 process.load('Configuration.StandardSequences.EndOfProcess_cff')
+process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 
 # Express for 711 MWGR July 2014
-process.GlobalTag.globaltag = 'GR_P_V56::All'
+process.GlobalTag.globaltag = '80X_dataRun2_2016SeptRepro_v3'
 
 # Config CSC for postls1
-process.CSCGeometryESModule.useGangedStripsInME1a = cms.bool(False)
-process.CSCIndexerESProducer.AlgoName=cms.string("CSCIndexerPostls1")
-process.CSCChannelMapperESProducer.AlgoName=cms.string("CSCChannelMapperPostls1")
+# process.CSCGeometryESModule.useGangedStripsInME1a = cms.bool(False)
+# process.CSCIndexerESProducer.AlgoName=cms.string("CSCIndexerPostls1")
+# process.CSCChannelMapperESProducer.AlgoName=cms.string("CSCChannelMapperPostls1")
 
 # automatically name the output file correctly and uniquely
 baseFileName = 'csc_singleMu'
@@ -28,7 +35,7 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 process.MessageLogger.suppressError = cms.untracked.vstring('HLTConfigProvider','cscTimingBabyMaker')
 
 # Standard configs
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 # process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1) )
 # process.options = cms.untracked.PSet( SkipEvent = cms.untracked.vstring('ProductNotFound') )
 # process.options = cms.untracked.PSet(SkipEvent = cms.untracked.vstring('LogicError'))
@@ -36,7 +43,7 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
 
 process.source = cms.Source("PoolSource",
                             fileNames = cms.untracked.vstring(
-                                'file:/hadoop/cms/phedex/store/data/Run2015B/SingleMuon/RECO/PromptReco-v1/000/251/168/00000/4802C29D-CA26-E511-9912-02163E013406.root')
+                                'file:/home/users/fgolf/csc/CMSSW_8_0_17/src/test_new.root')
 )
 
 process.load('CSCOfflineTiming.CSCTimingBabyMaker.cscTimingBabyMaker_cfi')

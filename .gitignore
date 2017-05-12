@@ -13,3 +13,6 @@ __init__.py
 *.so
 *.pcm
 *.log
+*.bak
+*.db
+*.dat
