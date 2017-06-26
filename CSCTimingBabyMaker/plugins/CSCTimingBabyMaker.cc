@@ -224,18 +224,18 @@ CSCTimingBabyMaker::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
   //
   // event level quantities
   //
-  std::auto_ptr<int> run  (new int);
-  std::auto_ptr<int> lumi (new int);
-  std::auto_ptr<unsigned long long> evt (new unsigned long long);
-  std::auto_ptr<double> bfield (new double);
-  std::auto_ptr<bool> csc_status (new bool);     
-  std::auto_ptr<unsigned int> detector_status (new unsigned int);    
+  std::unique_ptr<int> run  (new int);
+  std::unique_ptr<int> lumi (new int);
+  std::unique_ptr<unsigned long long> evt (new unsigned long long);
+  std::unique_ptr<double> bfield (new double);
+  std::unique_ptr<bool> csc_status (new bool);
+  std::unique_ptr<unsigned int> detector_status (new unsigned int);
 
-  std::auto_ptr<TBits>                                     hlt_bits        (new TBits(nTriggers)                         );
-  std::auto_ptr<std::vector<TString> >                     hlt_trigNames   (new std::vector<TString>                     );
-  std::auto_ptr<std::vector<unsigned int> >                hlt_prescales   (new std::vector<unsigned int>                );
-  std::auto_ptr<std::vector<std::vector<int> > >           hlt_trigObjs_id (new std::vector<std::vector<int> >           );
-  std::auto_ptr<std::vector<std::vector<LorentzVector> > > hlt_trigObjs_p4 (new std::vector<std::vector<LorentzVector> > );
+  std::unique_ptr<TBits>                                     hlt_bits        (new TBits(nTriggers)                         );
+  std::unique_ptr<std::vector<TString> >                     hlt_trigNames   (new std::vector<TString>                     );
+  std::unique_ptr<std::vector<unsigned int> >                hlt_prescales   (new std::vector<unsigned int>                );
+  std::unique_ptr<std::vector<std::vector<int> > >           hlt_trigObjs_id (new std::vector<std::vector<int> >           );
+  std::unique_ptr<std::vector<std::vector<LorentzVector> > > hlt_trigObjs_p4 (new std::vector<std::vector<LorentzVector> > );
   hlt_trigNames  ->reserve(nTriggers);
   hlt_trigObjs_id->reserve(nTriggers);
   hlt_trigObjs_p4->reserve(nTriggers);
@@ -243,88 +243,88 @@ CSCTimingBabyMaker::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
   //
   // muon level quantities
   //
-  std::auto_ptr<std::vector<bool> > is_global  (new std::vector<bool>);
-  std::auto_ptr<std::vector<bool> > is_tracker (new std::vector<bool>);
-  std::auto_ptr<std::vector<bool> > is_sa      (new std::vector<bool>);
-  std::auto_ptr<std::vector<bool> > is_pf      (new std::vector<bool>);
+  std::unique_ptr<std::vector<bool> > is_global  (new std::vector<bool>);
+  std::unique_ptr<std::vector<bool> > is_tracker (new std::vector<bool>);
+  std::unique_ptr<std::vector<bool> > is_sa      (new std::vector<bool>);
+  std::unique_ptr<std::vector<bool> > is_pf      (new std::vector<bool>);
 
-  std::auto_ptr<std::vector<LorentzVector> > p4 (new std::vector<LorentzVector>);
+  std::unique_ptr<std::vector<LorentzVector> > p4 (new std::vector<LorentzVector>);
 
-  std::auto_ptr<std::vector<double> > dz (new std::vector<double>);
-  std::auto_ptr<std::vector<double> > d0 (new std::vector<double>);
-  std::auto_ptr<std::vector<double> > dz_bs (new std::vector<double>);
-  std::auto_ptr<std::vector<double> > d0_bs (new std::vector<double>);
-  std::auto_ptr<std::vector<double> > gfit_chi2 (new std::vector<double>);
-  std::auto_ptr<std::vector<double> > gfit_ndof (new std::vector<double>);
-  std::auto_ptr<std::vector<double> > maxOpeningAngleTrack (new std::vector<double>);
-  std::auto_ptr<std::vector<double> > maxOpeningAngleMuon (new std::vector<double>);
-  std::auto_ptr<std::vector<double> > time (new std::vector<double>);
-  std::auto_ptr<std::vector<double> > timeErr (new std::vector<double>);
+  std::unique_ptr<std::vector<double> > dz (new std::vector<double>);
+  std::unique_ptr<std::vector<double> > d0 (new std::vector<double>);
+  std::unique_ptr<std::vector<double> > dz_bs (new std::vector<double>);
+  std::unique_ptr<std::vector<double> > d0_bs (new std::vector<double>);
+  std::unique_ptr<std::vector<double> > gfit_chi2 (new std::vector<double>);
+  std::unique_ptr<std::vector<double> > gfit_ndof (new std::vector<double>);
+  std::unique_ptr<std::vector<double> > maxOpeningAngleTrack (new std::vector<double>);
+  std::unique_ptr<std::vector<double> > maxOpeningAngleMuon (new std::vector<double>);
+  std::unique_ptr<std::vector<double> > time (new std::vector<double>);
+  std::unique_ptr<std::vector<double> > timeErr (new std::vector<double>);
   
-  std::auto_ptr<std::vector<int> > type (new std::vector<int>);
-  std::auto_ptr<std::vector<int> > valid_siLayers (new std::vector<int>);
-  std::auto_ptr<std::vector<int> > valid_pixelHits (new std::vector<int>);
-  std::auto_ptr<std::vector<int> > charge (new std::vector<int>);
-  std::auto_ptr<std::vector<int> > trk_charge (new std::vector<int>);
-  std::auto_ptr<std::vector<int> > gfit_validSTAhits (new std::vector<int>);
-  std::auto_ptr<std::vector<int> > gfit_validSiHits (new std::vector<int>);
-  std::auto_ptr<std::vector<int> > sta_validHits (new std::vector<int>);
-  std::auto_ptr<std::vector<int> > numMatchedStations (new std::vector<int>);
-  std::auto_ptr<std::vector<int> > numMatchedCSCsegments (new std::vector<int>);
-  std::auto_ptr<std::vector<int> > station_mask (new std::vector<int>);
-  std::auto_ptr<std::vector<int> > direction (new std::vector<int>);
+  std::unique_ptr<std::vector<int> > type (new std::vector<int>);
+  std::unique_ptr<std::vector<int> > valid_siLayers (new std::vector<int>);
+  std::unique_ptr<std::vector<int> > valid_pixelHits (new std::vector<int>);
+  std::unique_ptr<std::vector<int> > charge (new std::vector<int>);
+  std::unique_ptr<std::vector<int> > trk_charge (new std::vector<int>);
+  std::unique_ptr<std::vector<int> > gfit_validSTAhits (new std::vector<int>);
+  std::unique_ptr<std::vector<int> > gfit_validSiHits (new std::vector<int>);
+  std::unique_ptr<std::vector<int> > sta_validHits (new std::vector<int>);
+  std::unique_ptr<std::vector<int> > numMatchedStations (new std::vector<int>);
+  std::unique_ptr<std::vector<int> > numMatchedCSCsegments (new std::vector<int>);
+  std::unique_ptr<std::vector<int> > station_mask (new std::vector<int>);
+  std::unique_ptr<std::vector<int> > direction (new std::vector<int>);
   
   //
   // chamber level quantities
   //
-  std::auto_ptr<std::vector<std::vector<double> > > distToChamberEdge (new std::vector<std::vector<double> >);
-  std::auto_ptr<std::vector<std::vector<double> > > distToChamberEdgeErr (new std::vector<std::vector<double> >);
-  std::auto_ptr<std::vector<std::vector<int> > > numCSCsegmentsInChamber (new std::vector<std::vector<int> >);
+  std::unique_ptr<std::vector<std::vector<double> > > distToChamberEdge (new std::vector<std::vector<double> >);
+  std::unique_ptr<std::vector<std::vector<double> > > distToChamberEdgeErr (new std::vector<std::vector<double> >);
+  std::unique_ptr<std::vector<std::vector<int> > > numCSCsegmentsInChamber (new std::vector<std::vector<int> >);
 
   //
   // segment level quantities
   //
-  std::auto_ptr<std::vector<std::vector<std::vector<unsigned int> > > > arbitration_mask (new std::vector<std::vector<std::vector<unsigned int> > > );
-  std::auto_ptr<std::vector<std::vector<std::vector<bool> > > > isSegmentAndTrackArbitrated (new std::vector<std::vector<std::vector<bool> > > );
-  std::auto_ptr<std::vector<std::vector<std::vector<int> > > > numRecHitsInSegment (new std::vector<std::vector<std::vector<int> > > );
-  std::auto_ptr<std::vector<std::vector<std::vector<double> > > > segmentTime (new std::vector<std::vector<std::vector<double> > > );    
+  std::unique_ptr<std::vector<std::vector<std::vector<unsigned int> > > > arbitration_mask (new std::vector<std::vector<std::vector<unsigned int> > > );
+  std::unique_ptr<std::vector<std::vector<std::vector<bool> > > > isSegmentAndTrackArbitrated (new std::vector<std::vector<std::vector<bool> > > );
+  std::unique_ptr<std::vector<std::vector<std::vector<int> > > > numRecHitsInSegment (new std::vector<std::vector<std::vector<int> > > );
+  std::unique_ptr<std::vector<std::vector<std::vector<double> > > > segmentTime (new std::vector<std::vector<std::vector<double> > > );    
     
   //
   // rechit level quantities
   //
-  std::auto_ptr<std::vector<std::vector<std::vector<std::vector<int> > > > >    endcap                (new std::vector<std::vector<std::vector<std::vector<int> > > >    );
-  std::auto_ptr<std::vector<std::vector<std::vector<std::vector<int> > > > >    station               (new std::vector<std::vector<std::vector<std::vector<int> > > >    );
-  std::auto_ptr<std::vector<std::vector<std::vector<std::vector<int> > > > >    ring                  (new std::vector<std::vector<std::vector<std::vector<int> > > >    );
-  std::auto_ptr<std::vector<std::vector<std::vector<std::vector<int> > > > >    chamber               (new std::vector<std::vector<std::vector<std::vector<int> > > >    );
-  std::auto_ptr<std::vector<std::vector<std::vector<std::vector<int> > > > >    layer                 (new std::vector<std::vector<std::vector<std::vector<int> > > >    );
+  std::unique_ptr<std::vector<std::vector<std::vector<std::vector<int> > > > >    endcap                (new std::vector<std::vector<std::vector<std::vector<int> > > >    );
+  std::unique_ptr<std::vector<std::vector<std::vector<std::vector<int> > > > >    station               (new std::vector<std::vector<std::vector<std::vector<int> > > >    );
+  std::unique_ptr<std::vector<std::vector<std::vector<std::vector<int> > > > >    ring                  (new std::vector<std::vector<std::vector<std::vector<int> > > >    );
+  std::unique_ptr<std::vector<std::vector<std::vector<std::vector<int> > > > >    chamber               (new std::vector<std::vector<std::vector<std::vector<int> > > >    );
+  std::unique_ptr<std::vector<std::vector<std::vector<std::vector<int> > > > >    layer                 (new std::vector<std::vector<std::vector<std::vector<int> > > >    );
 
-  std::auto_ptr<std::vector<std::vector<std::vector<std::vector<double> > > > > rhtime                (new std::vector<std::vector<std::vector<std::vector<double> > > > );
-  std::auto_ptr<std::vector<std::vector<std::vector<std::vector<double> > > > > twire                 (new std::vector<std::vector<std::vector<std::vector<double> > > > );
-  std::auto_ptr<std::vector<std::vector<std::vector<std::vector<int> > > > >    nstrips               (new std::vector<std::vector<std::vector<std::vector<int> > > >    );
+  std::unique_ptr<std::vector<std::vector<std::vector<std::vector<double> > > > > rhtime                (new std::vector<std::vector<std::vector<std::vector<double> > > > );
+  std::unique_ptr<std::vector<std::vector<std::vector<std::vector<double> > > > > twire                 (new std::vector<std::vector<std::vector<std::vector<double> > > > );
+  std::unique_ptr<std::vector<std::vector<std::vector<std::vector<int> > > > >    nstrips               (new std::vector<std::vector<std::vector<std::vector<int> > > >    );
 
-  std::auto_ptr<std::vector<std::vector<std::vector<std::vector<int> > > > >    cfeb_cable_length     (new std::vector<std::vector<std::vector<std::vector<int> > > >    );
-  std::auto_ptr<std::vector<std::vector<std::vector<std::vector<int> > > > >    cfeb_skew_delay       (new std::vector<std::vector<std::vector<std::vector<int> > > >    );
-  std::auto_ptr<std::vector<std::vector<std::vector<std::vector<int> > > > >    cfeb_timing_corr      (new std::vector<std::vector<std::vector<std::vector<int> > > >    );
-  std::auto_ptr<std::vector<std::vector<std::vector<std::vector<int> > > > >    cfeb_cable_delay      (new std::vector<std::vector<std::vector<std::vector<int> > > >    );
-  std::auto_ptr<std::vector<std::vector<std::vector<std::vector<int> > > > >    precision             (new std::vector<std::vector<std::vector<std::vector<int> > > >    );
-  std::auto_ptr<std::vector<std::vector<std::vector<std::vector<char> > > > >   cfeb_cable_rev        (new std::vector<std::vector<std::vector<std::vector<char> > > >   );
-  std::auto_ptr<std::vector<std::vector<std::vector<std::vector<double> > > > > anode_bx_offset       (new std::vector<std::vector<std::vector<std::vector<double> > > > );    
+  std::unique_ptr<std::vector<std::vector<std::vector<std::vector<int> > > > >    cfeb_cable_length     (new std::vector<std::vector<std::vector<std::vector<int> > > >    );
+  std::unique_ptr<std::vector<std::vector<std::vector<std::vector<int> > > > >    cfeb_skew_delay       (new std::vector<std::vector<std::vector<std::vector<int> > > >    );
+  std::unique_ptr<std::vector<std::vector<std::vector<std::vector<int> > > > >    cfeb_timing_corr      (new std::vector<std::vector<std::vector<std::vector<int> > > >    );
+  std::unique_ptr<std::vector<std::vector<std::vector<std::vector<int> > > > >    cfeb_cable_delay      (new std::vector<std::vector<std::vector<std::vector<int> > > >    );
+  std::unique_ptr<std::vector<std::vector<std::vector<std::vector<int> > > > >    precision             (new std::vector<std::vector<std::vector<std::vector<int> > > >    );
+  std::unique_ptr<std::vector<std::vector<std::vector<std::vector<char> > > > >   cfeb_cable_rev        (new std::vector<std::vector<std::vector<std::vector<char> > > >   );
+  std::unique_ptr<std::vector<std::vector<std::vector<std::vector<double> > > > > anode_bx_offset       (new std::vector<std::vector<std::vector<std::vector<double> > > > );    
 
-  std::auto_ptr<std::vector<std::vector<std::vector<std::vector<double> > > > > chipCorr              (new std::vector<std::vector<std::vector<std::vector<double> > > > );
-  std::auto_ptr<std::vector<std::vector<std::vector<std::vector<double> > > > > cfebCorr              (new std::vector<std::vector<std::vector<std::vector<double> > > > );
-  std::auto_ptr<std::vector<std::vector<std::vector<std::vector<double> > > > > skewClearDelay        (new std::vector<std::vector<std::vector<std::vector<double> > > > );
-  std::auto_ptr<std::vector<std::vector<std::vector<std::vector<double> > > > > cfebCableDelay        (new std::vector<std::vector<std::vector<std::vector<double> > > > );
-  std::auto_ptr<std::vector<std::vector<std::vector<std::vector<double> > > > > chamberCorr           (new std::vector<std::vector<std::vector<std::vector<double> > > > );
+  std::unique_ptr<std::vector<std::vector<std::vector<std::vector<double> > > > > chipCorr              (new std::vector<std::vector<std::vector<std::vector<double> > > > );
+  std::unique_ptr<std::vector<std::vector<std::vector<std::vector<double> > > > > cfebCorr              (new std::vector<std::vector<std::vector<std::vector<double> > > > );
+  std::unique_ptr<std::vector<std::vector<std::vector<std::vector<double> > > > > skewClearDelay        (new std::vector<std::vector<std::vector<std::vector<double> > > > );
+  std::unique_ptr<std::vector<std::vector<std::vector<std::vector<double> > > > > cfebCableDelay        (new std::vector<std::vector<std::vector<std::vector<double> > > > );
+  std::unique_ptr<std::vector<std::vector<std::vector<std::vector<double> > > > > chamberCorr           (new std::vector<std::vector<std::vector<std::vector<double> > > > );
 
-  std::auto_ptr<std::vector<std::vector<std::vector<std::vector<double> > > > > new_skewClearDelay    (new std::vector<std::vector<std::vector<std::vector<double> > > > );
-  std::auto_ptr<std::vector<std::vector<std::vector<std::vector<double> > > > > new_cfebCableDelay    (new std::vector<std::vector<std::vector<std::vector<double> > > > );
-  std::auto_ptr<std::vector<std::vector<std::vector<std::vector<double> > > > > new_chamberCorr       (new std::vector<std::vector<std::vector<std::vector<double> > > > );
-  std::auto_ptr<std::vector<std::vector<std::vector<std::vector<int> > > > >    new_cfeb_cable_length (new std::vector<std::vector<std::vector<std::vector<int> > > >    );
-  std::auto_ptr<std::vector<std::vector<std::vector<std::vector<char> > > > >   new_cfeb_cable_rev    (new std::vector<std::vector<std::vector<std::vector<char> > > >   );
-  std::auto_ptr<std::vector<std::vector<std::vector<std::vector<int> > > > >    new_cfeb_skew_delay   (new std::vector<std::vector<std::vector<std::vector<int> > > >    );
-  std::auto_ptr<std::vector<std::vector<std::vector<std::vector<int> > > > >    new_cfeb_cable_delay  (new std::vector<std::vector<std::vector<std::vector<int> > > >    );
-  std::auto_ptr<std::vector<std::vector<std::vector<std::vector<double> > > > > new_cfebCorr          (new std::vector<std::vector<std::vector<std::vector<double> > > > );
-  std::auto_ptr<std::vector<std::vector<std::vector<std::vector<double> > > > > new_chipCorr          (new std::vector<std::vector<std::vector<std::vector<double> > > > );
+  std::unique_ptr<std::vector<std::vector<std::vector<std::vector<double> > > > > new_skewClearDelay    (new std::vector<std::vector<std::vector<std::vector<double> > > > );
+  std::unique_ptr<std::vector<std::vector<std::vector<std::vector<double> > > > > new_cfebCableDelay    (new std::vector<std::vector<std::vector<std::vector<double> > > > );
+  std::unique_ptr<std::vector<std::vector<std::vector<std::vector<double> > > > > new_chamberCorr       (new std::vector<std::vector<std::vector<std::vector<double> > > > );
+  std::unique_ptr<std::vector<std::vector<std::vector<std::vector<int> > > > >    new_cfeb_cable_length (new std::vector<std::vector<std::vector<std::vector<int> > > >    );
+  std::unique_ptr<std::vector<std::vector<std::vector<std::vector<char> > > > >   new_cfeb_cable_rev    (new std::vector<std::vector<std::vector<std::vector<char> > > >   );
+  std::unique_ptr<std::vector<std::vector<std::vector<std::vector<int> > > > >    new_cfeb_skew_delay   (new std::vector<std::vector<std::vector<std::vector<int> > > >    );
+  std::unique_ptr<std::vector<std::vector<std::vector<std::vector<int> > > > >    new_cfeb_cable_delay  (new std::vector<std::vector<std::vector<std::vector<int> > > >    );
+  std::unique_ptr<std::vector<std::vector<std::vector<std::vector<double> > > > > new_cfebCorr          (new std::vector<std::vector<std::vector<std::vector<double> > > > );
+  std::unique_ptr<std::vector<std::vector<std::vector<std::vector<double> > > > > new_chipCorr          (new std::vector<std::vector<std::vector<std::vector<double> > > > );
     
   //
   // load chamber timing corrections
@@ -1470,80 +1470,80 @@ CSCTimingBabyMaker::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     //
     // put variables into event
     //
-  iEvent.put(run                         , "run"                         );
-  iEvent.put(lumi                        , "lumi"                        );
-  iEvent.put(evt                         , "evt"                         );
-  iEvent.put(bfield                      , "bfield"                      );
-  iEvent.put(csc_status                  , "cscstatus"                   );
-  iEvent.put(detector_status             , "detectorstatus"              );
-  iEvent.put(hlt_bits                    , "hltbits"                     );
-  iEvent.put(hlt_trigNames               , "hlttrigNames"                );
-  iEvent.put(hlt_prescales               , "hltprescales"                ); 
-  iEvent.put(hlt_trigObjs_id             , "hlttrigObjsid"               );
-  iEvent.put(hlt_trigObjs_p4             , "hlttrigObjsp4"               );    
-  iEvent.put(endcap                      , "endcap"                      );
-  iEvent.put(station                     , "station"                     );
-  iEvent.put(ring                        , "ring"                        );
-  iEvent.put(chamber                     , "chamber"                     );
-  iEvent.put(layer                       , "layer"                       );
-  iEvent.put(rhtime                      , "rhtime"                      );
-  iEvent.put(nstrips                     , "nstrips"                     );
-  iEvent.put(is_global                   , "isglobal"                    );
-  iEvent.put(is_tracker                  , "istracker"                   );
-  iEvent.put(is_sa                       , "issa"                        );
-  iEvent.put(is_pf                       , "ispf"                        );
-  iEvent.put(p4                          , "p4"                          );
-  iEvent.put(dz                          , "dz"                          );
-  iEvent.put(d0                          , "d0"                          );
-  iEvent.put(dz_bs                       , "dzbs"                        );
-  iEvent.put(d0_bs                       , "d0bs"                        );
-  iEvent.put(gfit_chi2                   , "gfitchi2"                    );
-  iEvent.put(gfit_ndof                   , "gfitndof"                    );
-  iEvent.put(maxOpeningAngleTrack        , "maxOpeningAngleTrack"        );
-  iEvent.put(maxOpeningAngleMuon         , "maxOpeningAngleMuon"         );
-  iEvent.put(direction                   , "direction"                   );
-  iEvent.put(time                        , "time"                        );
-  iEvent.put(timeErr                     , "timeErr"                     );                       
-  iEvent.put(type                        , "type"                        );
-  iEvent.put(valid_siLayers              , "validsiLayers"               );
-  iEvent.put(valid_pixelHits             , "validpixelHits"              );
-  iEvent.put(charge                      , "charge"                      );
-  iEvent.put(trk_charge                  , "trkcharge"                   );
-  iEvent.put(gfit_validSTAhits           , "gfitvalidSTAhits"            );
-  iEvent.put(gfit_validSiHits            , "gfitvalidSiHits"             );
-  iEvent.put(sta_validHits               , "stavalidHits"                );
-  iEvent.put(numMatchedStations          , "numMatchedStations"          );
-  iEvent.put(numMatchedCSCsegments       , "numMatchedCSCsegments"       );
-  iEvent.put(station_mask                , "stationmask"                 );
-  iEvent.put(distToChamberEdge           , "distToChamberEdge"           );
-  iEvent.put(distToChamberEdgeErr        , "distToChamberEdgeErr"        );
-  iEvent.put(numCSCsegmentsInChamber     , "numCSCsegmentsInChamber"     );
-  iEvent.put(arbitration_mask            , "arbitrationmask"             );
-  iEvent.put(isSegmentAndTrackArbitrated , "isSegmentAndTrackArbitrated" );
-  iEvent.put(numRecHitsInSegment         , "numRecHitsInSegment"         );
-  iEvent.put(segmentTime                 , "segmentTime"                 );
-  iEvent.put(chipCorr                    , "chipCorr"                    );
-  iEvent.put(cfebCorr                    , "cfebCorr"                    );
-  iEvent.put(skewClearDelay              , "skewClearDelay"              );
-  iEvent.put(cfebCableDelay              , "cfebCableDelay"              );
-  iEvent.put(chamberCorr                 , "chamberCorr"                 );
-  iEvent.put(cfeb_cable_length           , "cfebcablelength"             );
-  iEvent.put(cfeb_cable_rev              , "cfebcablerev"                );
-  iEvent.put(cfeb_skew_delay             , "cfebskewdelay"               );
-  iEvent.put(cfeb_timing_corr            , "cfebtimingcorr"              );
-  iEvent.put(cfeb_cable_delay            , "cfebcabledelay"              );
-  iEvent.put(precision                   , "precision"                   );
-  iEvent.put(new_skewClearDelay          , "newskewClearDelay"           );
-  iEvent.put(new_cfebCableDelay          , "newcfebCableDelay"           );
-  iEvent.put(new_chamberCorr             , "newchamberCorr"              );
-  iEvent.put(new_cfeb_cable_length       , "newcfebcablelength"          );
-  iEvent.put(new_cfeb_cable_rev          , "newcfebcablerev"             );
-  iEvent.put(new_cfeb_skew_delay         , "newcfebskewdelay"            );
-  iEvent.put(new_cfeb_cable_delay        , "newcfebcabledelay"           );
-  iEvent.put(new_cfebCorr                , "newcfebCorr"                 );
-  iEvent.put(new_chipCorr                , "newchipCorr"                 );
-  iEvent.put(twire                       , "twire"                       );
-  iEvent.put(anode_bx_offset             , "anodebxoffset"               );
+  iEvent.put(std::move(run                         ), "run"                         );
+  iEvent.put(std::move(lumi                        ), "lumi"                        );
+  iEvent.put(std::move(evt                         ), "evt"                         );
+  iEvent.put(std::move(bfield                      ), "bfield"                      );
+  iEvent.put(std::move(csc_status                  ), "cscstatus"                   );
+  iEvent.put(std::move(detector_status             ), "detectorstatus"              );
+  iEvent.put(std::move(hlt_bits                    ), "hltbits"                     );
+  iEvent.put(std::move(hlt_trigNames               ), "hlttrigNames"                );
+  iEvent.put(std::move(hlt_prescales               ), "hltprescales"                ); 
+  iEvent.put(std::move(hlt_trigObjs_id             ), "hlttrigObjsid"               );
+  iEvent.put(std::move(hlt_trigObjs_p4             ), "hlttrigObjsp4"               );    
+  iEvent.put(std::move(endcap                      ), "endcap"                      );
+  iEvent.put(std::move(station                     ), "station"                     );
+  iEvent.put(std::move(ring                        ), "ring"                        );
+  iEvent.put(std::move(chamber                     ), "chamber"                     );
+  iEvent.put(std::move(layer                       ), "layer"                       );
+  iEvent.put(std::move(rhtime                      ), "rhtime"                      );
+  iEvent.put(std::move(nstrips                     ), "nstrips"                     );
+  iEvent.put(std::move(is_global                   ), "isglobal"                    );
+  iEvent.put(std::move(is_tracker                  ), "istracker"                   );
+  iEvent.put(std::move(is_sa                       ), "issa"                        );
+  iEvent.put(std::move(is_pf                       ), "ispf"                        );
+  iEvent.put(std::move(p4                          ), "p4"                          );
+  iEvent.put(std::move(dz                          ), "dz"                          );
+  iEvent.put(std::move(d0                          ), "d0"                          );
+  iEvent.put(std::move(dz_bs                       ), "dzbs"                        );
+  iEvent.put(std::move(d0_bs                       ), "d0bs"                        );
+  iEvent.put(std::move(gfit_chi2                   ), "gfitchi2"                    );
+  iEvent.put(std::move(gfit_ndof                   ), "gfitndof"                    );
+  iEvent.put(std::move(maxOpeningAngleTrack        ), "maxOpeningAngleTrack"        );
+  iEvent.put(std::move(maxOpeningAngleMuon         ), "maxOpeningAngleMuon"         );
+  iEvent.put(std::move(direction                   ), "direction"                   );
+  iEvent.put(std::move(time                        ), "time"                        );
+  iEvent.put(std::move(timeErr                     ), "timeErr"                     );                       
+  iEvent.put(std::move(type                        ), "type"                        );
+  iEvent.put(std::move(valid_siLayers              ), "validsiLayers"               );
+  iEvent.put(std::move(valid_pixelHits             ), "validpixelHits"              );
+  iEvent.put(std::move(charge                      ), "charge"                      );
+  iEvent.put(std::move(trk_charge                  ), "trkcharge"                   );
+  iEvent.put(std::move(gfit_validSTAhits           ), "gfitvalidSTAhits"            );
+  iEvent.put(std::move(gfit_validSiHits            ), "gfitvalidSiHits"             );
+  iEvent.put(std::move(sta_validHits               ), "stavalidHits"                );
+  iEvent.put(std::move(numMatchedStations          ), "numMatchedStations"          );
+  iEvent.put(std::move(numMatchedCSCsegments       ), "numMatchedCSCsegments"       );
+  iEvent.put(std::move(station_mask                ), "stationmask"                 );
+  iEvent.put(std::move(distToChamberEdge           ), "distToChamberEdge"           );
+  iEvent.put(std::move(distToChamberEdgeErr        ), "distToChamberEdgeErr"        );
+  iEvent.put(std::move(numCSCsegmentsInChamber     ), "numCSCsegmentsInChamber"     );
+  iEvent.put(std::move(arbitration_mask            ), "arbitrationmask"             );
+  iEvent.put(std::move(isSegmentAndTrackArbitrated ), "isSegmentAndTrackArbitrated" );
+  iEvent.put(std::move(numRecHitsInSegment         ), "numRecHitsInSegment"         );
+  iEvent.put(std::move(segmentTime                 ), "segmentTime"                 );
+  iEvent.put(std::move(chipCorr                    ), "chipCorr"                    );
+  iEvent.put(std::move(cfebCorr                    ), "cfebCorr"                    );
+  iEvent.put(std::move(skewClearDelay              ), "skewClearDelay"              );
+  iEvent.put(std::move(cfebCableDelay              ), "cfebCableDelay"              );
+  iEvent.put(std::move(chamberCorr                 ), "chamberCorr"                 );
+  iEvent.put(std::move(cfeb_cable_length           ), "cfebcablelength"             );
+  iEvent.put(std::move(cfeb_cable_rev              ), "cfebcablerev"                );
+  iEvent.put(std::move(cfeb_skew_delay             ), "cfebskewdelay"               );
+  iEvent.put(std::move(cfeb_timing_corr            ), "cfebtimingcorr"              );
+  iEvent.put(std::move(cfeb_cable_delay            ), "cfebcabledelay"              );
+  iEvent.put(std::move(precision                   ), "precision"                   );
+  iEvent.put(std::move(new_skewClearDelay          ), "newskewClearDelay"           );
+  iEvent.put(std::move(new_cfebCableDelay          ), "newcfebCableDelay"           );
+  iEvent.put(std::move(new_chamberCorr             ), "newchamberCorr"              );
+  iEvent.put(std::move(new_cfeb_cable_length       ), "newcfebcablelength"          );
+  iEvent.put(std::move(new_cfeb_cable_rev          ), "newcfebcablerev"             );
+  iEvent.put(std::move(new_cfeb_skew_delay         ), "newcfebskewdelay"            );
+  iEvent.put(std::move(new_cfeb_cable_delay        ), "newcfebcabledelay"           );
+  iEvent.put(std::move(new_cfebCorr                ), "newcfebCorr"                 );
+  iEvent.put(std::move(new_chipCorr                ), "newchipCorr"                 );
+  iEvent.put(std::move(twire                       ), "twire"                       );
+  iEvent.put(std::move(anode_bx_offset             ), "anodebxoffset"               );
 
   return true;
 }
