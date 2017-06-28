@@ -13,15 +13,15 @@
 #include "TH1.h"
 #include "TCanvas.h"
 
-struct DetId
+struct CSCHeurCorrDetId
 {
-    DetId () {endcap=0;station=0;ring=0;chamber=0;}
-    DetId (int endcap_, int station_, int ring_, int chamber_) {endcap=endcap_; station=station_; ring=ring_; chamber=chamber_;}
+    CSCHeurCorrDetId () {endcap=0;station=0;ring=0;chamber=0;}
+    CSCHeurCorrDetId (int endcap_, int station_, int ring_, int chamber_) {endcap=endcap_; station=station_; ring=ring_; chamber=chamber_;}
     int endcap;
     int station;
     int ring;
     int chamber;
-    bool operator<( const DetId & n ) const {
+    bool operator<( const CSCHeurCorrDetId & n ) const {
         if (this->endcap < n.endcap)
             return true;
         else if (this->endcap == n.endcap && this->station < n.station)
@@ -77,7 +77,7 @@ void determineHeuristicCorrections (std::string fname, bool byStation, bool byCh
         }
     }
 
-    std::map<DetId, std::pair<unsigned long, double> > m;
+    std::map<CSCHeurCorrDetId, std::pair<unsigned long, double> > m;
     TList *hlist = dir->GetListOfKeys();
     for (auto hist : *hlist)
     {
@@ -153,7 +153,7 @@ void determineHeuristicCorrections (std::string fname, bool byStation, bool byCh
             else
             {
                 if (ring == 4) ring = 1;
-                DetId id(endcap, station, ring, chamber);
+                CSCHeurCorrDetId id(endcap, station, ring, chamber);
                 if (m.find(id) != m.end())
                 {
                     m[id].first += nrhs;
