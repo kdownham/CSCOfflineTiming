@@ -18,9 +18,11 @@ CSCMakeTimingCorrectionsForDB::CSCMakeTimingCorrectionsForDB(const edm::Paramete
     isLoaded_(false)
 {
     heuristicCorrFileName = iConfig.getUntrackedParameter<std::string>("heuristicCorrFileName", "");
+    cableLengthFileName = iConfig.getUntrackedParameter<std::string>("cableLengthFileName", "");
     outFileName = iConfig.getUntrackedParameter<std::string>("outFileName", "");
     outChipFileName = iConfig.getUntrackedParameter<std::string>("outChipFileName", "");
     recoConditions = new CSCRecoConditions(iConfig);
+    updateOnlyNewChambers_ = iConfig.getUntrackedParameter<bool>("updateOnlyNewChambers", false);
 }
 
 
@@ -77,7 +79,7 @@ CSCMakeTimingCorrectionsForDB::analyze(const edm::Event& iEvent, const edm::Even
                     mvals[index] = c;
                     // if (id.endcap() == 2 && !(id.station() == 1 && (id.ring() ==1 || id.ring() == 4)))
                     // {
-                    //     printf("(index, endcap, station, ring, chamber), corr = (%d, %d, %d, %d, %d), %4.2f\n", index, id.endcap(), id.station(), id.ring(), id.chamber(),c.cfeb_timing_corr * 1./theChamberTimingCorrections->precision());                        
+                    //     printf("(index, endcap, station, ring, chamber), corr = (%d, %d, %d, %d, %d), %4.2f\n", index, id.endcap(), id.station(), id.ring(), id.chamber(),c.cfeb_timing_corr * 1./theChamberTimingCorrections->precision());
                     // }
                     unsigned int nlayers = 6;
                     for (unsigned int il = 1; il <= nlayers; il++)
@@ -89,7 +91,8 @@ CSCMakeTimingCorrectionsForDB::analyze(const edm::Event& iEvent, const edm::Even
                             unsigned int chip_index = indexer->chipIndex(detid, ichip) - 1;
                             double chipCorr = theChipCorrections->value(chip_index);
                             chipCorr /= theChipCorrections->scale();
-                            if (is==1 && (ir==1 || ir==4)) chipCorr = -52.41;                            
+                            if (is==1 && (ir==1 || ir==4)) chipCorr = -52.41;
+                            if (ie==2 && is==1 && ir==3 && ic==3 && chipCorr < -60) chipCorr = -52.41;
                             if (chipfile)
                                 fprintf(chipfile, "%d %2.2f\n", chip_index+1, chipCorr);
                             // chipCorr -= 0.5;
@@ -136,6 +139,33 @@ CSCMakeTimingCorrectionsForDB::analyze(const edm::Event& iEvent, const edm::Even
     }
     infile.close();
 
+    //
+    // read skewclear cable lengths from file
+    //
+    infile.open(cableLengthFileName.c_str());
+    if (!infile)
+    {
+        std::cout << "Failed to read skewclear cable lengths from file " << cableLengthFileName << std::endl;
+        return;
+    }
+    is_first = true;
+    while (std::getline(infile, line))
+    {
+        if (is_first)
+        {
+            is_first = false;
+            continue;
+        }
+        std::istringstream ss(line);
+        int endcap, station, ring, chamber, clength, cdelay;
+        char crev;
+        ss >> endcap >> station >> ring >> chamber >> crev >> clength >> cdelay;
+        CSCDetId id(endcap, station, ring, chamber);
+        mcable[id] = clength;
+        mcrev[id] = crev;
+        mdelay[id] = cdelay;
+    }
+
     FILE *outfile = 0;
     if (!outFileName.empty()) outfile = fopen(outFileName.c_str(), "w+");
     if (!outfile)
@@ -148,63 +178,117 @@ CSCMakeTimingCorrectionsForDB::analyze(const edm::Event& iEvent, const edm::Even
     {
         std::cerr << "Failed to open file old.txt for writing." << std::endl;
     }
-    
+
     for (auto item : mid)
     {
         if (item.first.ring() == 4) continue;
         if (oldfile)
         {
-            fprintf(oldfile, "%hd %c %hd %c %hd %hd %d %hd\n", 
-                    mvals[item.second].cfeb_length, mvals[item.second].cfeb_rev, 
-                    mvals[item.second].alct_length, mvals[item.second].alct_rev, 
-                    mvals[item.second].cfeb_tmb_skew_delay, 
+            fprintf(oldfile, "%hd %c %hd %c %hd %hd %d %hd\n",
+                    mvals[item.second].cfeb_length, mvals[item.second].cfeb_rev,
+                    mvals[item.second].alct_length, mvals[item.second].alct_rev,
+                    mvals[item.second].cfeb_tmb_skew_delay,
                     mvals[item.second].anode_bx_offset,
                     mvals[item.second].cfeb_timing_corr,
                     mvals[item.second].cfeb_cable_delay);
         }
-        int corr = mvals[item.second].cfeb_timing_corr;        
-        if ((mcorr.find(item.first) != mcorr.end()) && item.first.station() == 1 && (item.first.ring() == 1 || item.first.ring() == 4))
+        int corr = mvals[item.second].cfeb_timing_corr;
+        int clength = mvals[item.second].cfeb_length;
+        int cdelay = mvals[item.second].cfeb_tmb_skew_delay;
+        char crev = mvals[item.second].cfeb_rev;
+        if (updateOnlyNewChambers_)
         {
-            corr = mcorr[item.first];
+            if ((mcorr.find(item.first) != mcorr.end()) && item.first.station() == 1 && (item.first.ring() == 1 || item.first.ring() == 4))
+            {
+                corr = mcorr[item.first];
             // printf("\tusing new correction for (index, endcap, station, ring, chamber) = (%d, %d, %d, %d, %d)\n", item.second, item.first.endcap(), item.first.station(), item.first.ring(), item.first.chamber());
+            }
+            if ((mcorr.find(item.first) != mcorr.end()) && item.first.station() == 4 && item.first.ring() == 2 && (item.first.endcap() == 2 || (item.first.endcap() == 1 && (item.first.chamber() < 9 || item.first.chamber() > 13))))
+            {
+                corr = mcorr[item.first];
+                // printf("\tusing new correction for (index, endcap, station, ring, chamber) = (%d, %d, %d, %d, %d)\n", item.second, item.first.endcap(), item.first.station(), item.first.ring(), item.first.chamber());
+            }
+            if ((mcable.find(item.first) != mcable.end()) && item.first.station() == 1 && (item.first.ring() == 1 || item.first.ring() == 4))
+            {
+                clength = mcable[item.first];
+                // printf("\tusing new correction for (index, endcap, station, ring, chamber) = (%d, %d, %d, %d, %d)\n", item.second, item.first.endcap(), item.first.station(), item.first.ring(), item.first.chamber());
+            }
+            if ((mcrev.find(item.first) != mcrev.end()) && item.first.station() == 1 && (item.first.ring() == 1 || item.first.ring() == 4))
+            {
+                crev = mcrev[item.first];
+                // printf("\tusing new correction for (index, endcap, station, ring, chamber) = (%d, %d, %d, %d, %d)\n", item.second, item.first.endcap(), item.first.station(), item.first.ring(), item.first.chamber());
+            }
+            if ((mdelay.find(item.first) != mdelay.end()) && item.first.station() == 1 && (item.first.ring() == 1 || item.first.ring() == 4))
+            {
+                cdelay = mdelay[item.first];
+                // printf("\tusing new correction for (index, endcap, station, ring, chamber) = (%d, %d, %d, %d, %d)\n", item.second, item.first.endcap(), item.first.station(), item.first.ring(), item.first.chamber());
+            }
         }
-        if ((mcorr.find(item.first) != mcorr.end()) && item.first.station() == 4 && item.first.ring() == 2 && (item.first.endcap() == 2 || (item.first.endcap() == 1 && (item.first.chamber() < 9 || item.first.chamber() > 13))))
+        else
         {
-            corr = mcorr[item.first];
+            if ((mcorr.find(item.first) != mcorr.end()))
+            {
+                corr = mcorr[item.first];
             // printf("\tusing new correction for (index, endcap, station, ring, chamber) = (%d, %d, %d, %d, %d)\n", item.second, item.first.endcap(), item.first.station(), item.first.ring(), item.first.chamber());
+            }
+            if ((mcable.find(item.first) != mcable.end()))
+            {
+                clength = mcable[item.first];
+                // printf("\tusing new correction for (index, endcap, station, ring, chamber) = (%d, %d, %d, %d, %d)\n", item.second, item.first.endcap(), item.first.station(), item.first.ring(), item.first.chamber());
+            }
+            if ((mcrev.find(item.first) != mcrev.end()))
+            {
+                crev = mcrev[item.first];
+                // printf("\tusing new correction for (index, endcap, station, ring, chamber) = (%d, %d, %d, %d, %d)\n", item.second, item.first.endcap(), item.first.station(), item.first.ring(), item.first.chamber());
+            }
+            if ((mdelay.find(item.first) != mdelay.end()))
+            {
+                cdelay = mdelay[item.first];
+                // printf("\tusing new correction for (index, endcap, station, ring, chamber) = (%d, %d, %d, %d, %d)\n", item.second, item.first.endcap(), item.first.station(), item.first.ring(), item.first.chamber());
+            }
         }
+
         if (outfile)
         {
-            fprintf(outfile, "%d %hd %c %hd %c %hd %hd %d %hd\n", 
+            fprintf(outfile, "%d %hd %c %hd %c %hd %hd %d %hd\n",
                     item.second+1,
-                    mvals[item.second].cfeb_length, mvals[item.second].cfeb_rev, 
-                    mvals[item.second].alct_length, mvals[item.second].alct_rev, 
-                    mvals[item.second].cfeb_tmb_skew_delay, 
-                    mvals[item.second].anode_bx_offset,
-                    corr, 
+                    clength, crev,
+                    mvals[item.second].alct_length, mvals[item.second].alct_rev,
+                    cdelay,
+                    getUpdatedAnodeBXOffset(item.first),
+                    corr,
                     mvals[item.second].cfeb_cable_delay);
         }
-        printf("%u %d %d %d %d %hd %c %hd %c %hd %hd %d %hd\n", 
-               item.second+1, 
+        printf("%u %d %d %d %d %hd %c %hd %c %hd %hd %d %hd\n",
+               item.second+1,
                item.first.endcap(), item.first.station(), item.first.ring(), item.first.chamber(),
-               mvals[item.second].cfeb_length, mvals[item.second].cfeb_rev, 
-               mvals[item.second].alct_length, mvals[item.second].alct_rev, 
-               mvals[item.second].cfeb_tmb_skew_delay, 
-               mvals[item.second].anode_bx_offset,
-               corr, 
+               clength, crev,
+               mvals[item.second].alct_length, mvals[item.second].alct_rev,
+               cdelay,
+               getUpdatedAnodeBXOffset(item.first),
+               corr,
                mvals[item.second].cfeb_cable_delay);
     }
     fclose(outfile);
     fclose(oldfile);
 }
-void 
+
+unsigned int CSCMakeTimingCorrectionsForDB::getUpdatedAnodeBXOffset (CSCDetId id)
+{
+    if (id.station() == 1 && (id.ring() == 1 || id.ring() == 4)) return 830;
+    else if (id.station() > 1 && id.ring() == 1) return 820;
+    else if (id.ring() == 2 || id.ring() == 3) return 828;
+    return 820;
+}
+
+void
 CSCMakeTimingCorrectionsForDB::beginJob()
 {
 }
 
 // ------------ method called once each job just after ending the event loop  ------------
-void 
-CSCMakeTimingCorrectionsForDB::endJob() 
+void
+CSCMakeTimingCorrectionsForDB::endJob()
 {
 }
 
