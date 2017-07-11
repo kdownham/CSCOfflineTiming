@@ -179,13 +179,12 @@ void determineHeuristicCorrections (std::string fname, bool byStation, bool byCh
             else
                 printf("%d\t%d\t%d\t%d\t%4.2f\n", item.first.endcap, item.first.station, item.first.ring, item.first.chamber, item.second.second);
         }
+        hnrhs.Draw();
+        c1.Print("num_rechits_per_chamber.pdf");
     }
 
     if (print_to_file)
         outfile.close();
-
-    hnrhs.Draw();
-    c1.Print("num_rechits_per_chamber.pdf");
 
     return;
 }

@@ -75,13 +75,13 @@ void makeMuonTimingPlot (std::string fname)
     prelim.SetTextFont(52);
     prelim.SetTextSize(0.0456);
 
-    TLatex data(0.17, 0.76, "Data 2016");
+    TLatex data(0.17, 0.76, "Data 2017");
     data.SetNDC();
     data.SetTextAlign(13);
     data.SetTextFont(52);
     data.SetTextSize(0.0456);
 
-    TLatex lumi(0.9, 0.93, "4.0 fb^{-1} (13 TeV)");
+    TLatex lumi(0.9, 0.93, "2.89 fb^{-1} (13 TeV)");
     lumi.SetNDC();
     lumi.SetTextAlign(31);
     lumi.SetTextFont(42);
@@ -121,7 +121,7 @@ void makeMuonTimingPlot (std::string fname)
     title->SetTextSize(0.052);    
     title->SetTextAlign(11);
     
-    c1.Print("plots/muon_time_all.pdf");
+    // c1.Print("plots/muon_time_all.pdf");
     c1.Print("plots/muon_time_all.png");
-    c1.Print("plots/muon_time_all.root");
+    // c1.Print("plots/muon_time_all.root");
 }

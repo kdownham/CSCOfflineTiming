@@ -167,13 +167,13 @@ void makeMeanTimingPlot (std::string fname, bool byStation)
     prelim.SetTextFont(52);
     prelim.SetTextSize(0.0456);
 
-    TLatex data(0.17, 0.76, "Data 2016");
+    TLatex data(0.17, 0.76, "Data 2017");
     data.SetNDC();
     data.SetTextAlign(13);
     data.SetTextFont(52);
     data.SetTextSize(0.0456);
 
-    TLatex lumi(0.85, 0.82, "4.0 fb^{-1} (13 TeV)");
+    TLatex lumi(0.85, 0.82, "2.89 fb^{-1} (13 TeV)");
     lumi.SetNDC();
     lumi.SetTextAlign(31);
     lumi.SetTextFont(42);
@@ -200,9 +200,9 @@ void makeMeanTimingPlot (std::string fname, bool byStation)
         title->SetTextSize(0.046);    
         title->SetTextAlign(11);
         
-        c1.Print("plots/mean_rhtime.pdf");
+        // c1.Print("plots/mean_rhtime.pdf");
         c1.Print("plots/mean_rhtime.png");
-        c1.Print("plots/mean_rhtime.root");        
+        // c1.Print("plots/mean_rhtime.root");
     }
     else
     {
