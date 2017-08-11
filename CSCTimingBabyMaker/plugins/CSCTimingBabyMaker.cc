@@ -28,7 +28,7 @@ const double CSCTimingBabyMaker::SKEWCLEAR_REVD_PROPAGATION_DELAY = 5.2;  // [ns
 const double CSCTimingBabyMaker::SKEWCLEAR_REVF_PROPAGATION_DELAY = 5.2;  // [ns/m]
 const double CSCTimingBabyMaker::SKEWCLEAR_REVN_PROPAGATION_DELAY = 4.7;  // [ns/m]
 const double CSCTimingBabyMaker::SKEWCLEAR_REVO_PROPAGATION_DELAY = 5.05;  // don't know the real value, for now use 5 ns/m
-const double CSCTimingBabyMaker::PPIB_LVDS_DELAY = 5; // from M. MatveevP: ~5 ns delay from LVDS receiver and LVDS transmitter on PPIB 
+const double CSCTimingBabyMaker::PPIB_LVDS_DELAY = 5; // from M. MatveevP: ~5 ns delay from LVDS receiver and LVDS transmitter on PPIB
 const double CSCTimingBabyMaker::AVG_CHIP_CORR = -52.41;
 
 const unsigned int CSCTimingBabyMaker::ME11P_SKEWCLEAR_CABLE_LENGTHS[36] = {1100,1150,1100,1050,1000,1050,1000,1050,1100,1150,1100,1050,900,950,1200,1150,1100,1150,1100,1150,1100,1050,1000,950,900,900,1100,1050,1000,950,900,950,1200,1150,1100,1150};
@@ -55,7 +55,7 @@ CSCTimingBabyMaker::CSCTimingBabyMaker(const edm::ParameterSet& iConfig) :
   bs_token  = consumes<reco::BeamSpot>(iConfig.getParameter<edm::InputTag>("bsTag"));
   trgResults_token = consumes<edm::TriggerResults>(iConfig.getParameter<edm::InputTag>("trgResTag"));
   trgEvent_token  = consumes<trigger::TriggerEvent>(iConfig.getParameter<edm::InputTag>("trgEvtTag"));
-  dcs_token = consumes<DcsStatusCollection>(edm::InputTag("scalersRawToDigi"));  
+  dcs_token = consumes<DcsStatusCollection>(edm::InputTag("scalersRawToDigi"));
   useMuonSegmentMatcher_ = iConfig.getUntrackedParameter<bool>("useMuonSegmentMatcher", false);
   fillTriggerObjects_ = iConfig.getUntrackedParameter<bool>("fillTriggerObjects", false);
   debug_ = iConfig.getUntrackedParameter<bool>("debug", false);
@@ -106,7 +106,7 @@ CSCTimingBabyMaker::CSCTimingBabyMaker(const edm::ParameterSet& iConfig) :
 
   produces<std::vector<int> > ("type").setBranchAlias("type");
   produces<std::vector<int> > ("validsiLayers").setBranchAlias("valid_siLayers");
-  produces<std::vector<int> > ("validpixelHits").setBranchAlias("valid_pixelHits");    
+  produces<std::vector<int> > ("validpixelHits").setBranchAlias("valid_pixelHits");
   produces<std::vector<int> > ("charge").setBranchAlias("charge");
   produces<std::vector<int> > ("trkcharge").setBranchAlias("trk_charge");
   produces<std::vector<int> > ("gfitvalidSTAhits").setBranchAlias("gfit_validSTAhits");
@@ -116,14 +116,14 @@ CSCTimingBabyMaker::CSCTimingBabyMaker(const edm::ParameterSet& iConfig) :
   produces<std::vector<int> > ("numMatchedCSCsegments").setBranchAlias("numMatchedCSCsegments");
   produces<std::vector<int> > ("stationmask").setBranchAlias("station_mask");
   produces<std::vector<int> > ("direction").setBranchAlias("direction");
-  
+
   //
   // chamber level quantities
   //
   produces<std::vector<std::vector<double> > > ("distToChamberEdge").setBranchAlias("distToChamberEdge");
-  produces<std::vector<std::vector<double> > > ("distToChamberEdgeErr").setBranchAlias("distToChamberEdgeErr");    
+  produces<std::vector<std::vector<double> > > ("distToChamberEdgeErr").setBranchAlias("distToChamberEdgeErr");
   produces<std::vector<std::vector<int> > > ("numCSCsegmentsInChamber").setBranchAlias("numCSCsegmentsInChamber");
-    
+
   //
   // segment level quantities
   //
@@ -131,7 +131,7 @@ CSCTimingBabyMaker::CSCTimingBabyMaker(const edm::ParameterSet& iConfig) :
   produces<std::vector<std::vector<std::vector<bool> > > > ("isSegmentAndTrackArbitrated").setBranchAlias("isSegmentAndTrackArbitrated");
   produces<std::vector<std::vector<std::vector<int> > > > ("numRecHitsInSegment").setBranchAlias("numRecHitsInSegment");
   produces<std::vector<std::vector<std::vector<double> > > > ("segmentTime").setBranchAlias("segmentTime");
-    
+
   //
   // rechit level quantities
   //
@@ -149,7 +149,7 @@ CSCTimingBabyMaker::CSCTimingBabyMaker(const edm::ParameterSet& iConfig) :
   produces<std::vector<std::vector<std::vector<std::vector<int> > > > >    ("cfebskewdelay"     ).setBranchAlias("cfeb_skew_delay"   );
   produces<std::vector<std::vector<std::vector<std::vector<int> > > > >    ("cfebtimingcorr"    ).setBranchAlias("cfeb_timing_corr"  );
   produces<std::vector<std::vector<std::vector<std::vector<int> > > > >    ("cfebcabledelay"    ).setBranchAlias("cfeb_cable_delay"  );
-  produces<std::vector<std::vector<std::vector<std::vector<int> > > > >    ("precision"         ).setBranchAlias("precision"         );    
+  produces<std::vector<std::vector<std::vector<std::vector<int> > > > >    ("precision"         ).setBranchAlias("precision"         );
   produces<std::vector<std::vector<std::vector<std::vector<char> > > > >   ("cfebcablerev"      ).setBranchAlias("cfeb_cable_rev"    );
   produces<std::vector<std::vector<std::vector<std::vector<double> > > > > ("anodebxoffset").setBranchAlias("anode_bx_offset");
 
@@ -173,7 +173,7 @@ CSCTimingBabyMaker::CSCTimingBabyMaker(const edm::ParameterSet& iConfig) :
 
 CSCTimingBabyMaker::~CSCTimingBabyMaker()
 {
- 
+
   // do anything here that needs to be done at desctruction time
   // (e.g. close files, deallocate resources etc.)
   delete recoConditions;
@@ -188,14 +188,14 @@ CSCTimingBabyMaker::~CSCTimingBabyMaker()
 
 // ------------ method called to produce the data  ------------
 bool
-CSCTimingBabyMaker::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)    
+CSCTimingBabyMaker::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
-  if (processName == "")
-  {
-    iEvent.getByToken(trgEvent_token, triggerEvent_h);
-    if (!triggerEvent_h.isValid())
-      throw cms::Exception("CSCTimingBabyMaker::filter: error getting TriggerEvent product from Event!"  );
 
+  iEvent.getByToken(trgEvent_token, triggerEvent_h);
+  if (!triggerEvent_h.isValid())
+    throw cms::Exception("CSCTimingBabyMaker::filter: error getting TriggerEvent product from Event!"  );
+
+  if (processName == "") {
     // This line is important as it makes sure it is never called
     // again! A self-terminating code snippet...
     processName = triggerEvent_h.provenance()->processName();
@@ -205,21 +205,13 @@ CSCTimingBabyMaker::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     if (hltConfig.init(iEvent.getRun(), iSetup, processName, changed)) {}
     else throw cms::Exception("CSCTimingBabyMaker::filter: config extraction failure with process name " + processName);
   }
-  else
-  {
-    iEvent.getByToken(trgEvent_token, triggerEvent_h);
-    if (!triggerEvent_h.isValid())
-      throw cms::Exception("CSCTimingBabyMaker::filter: error getting TriggerEvent product from Event!"  );
-  }
 
   iEvent.getByToken(trgResults_token, trigResults_h);
   if (!trigResults_h.isValid())
-  {
     throw cms::Exception("CSCTimingBabyMaker::filter: error getting TriggerResults product from Event!"  );
-  }
 
   assert( trigResults_h->size()==hltConfig.size() );
-  unsigned int nTriggers = trigResults_h->size();    
+  unsigned int nTriggers = trigResults_h->size();
 
   //
   // event level quantities
@@ -260,7 +252,7 @@ CSCTimingBabyMaker::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
   std::unique_ptr<std::vector<double> > maxOpeningAngleMuon (new std::vector<double>);
   std::unique_ptr<std::vector<double> > time (new std::vector<double>);
   std::unique_ptr<std::vector<double> > timeErr (new std::vector<double>);
-  
+
   std::unique_ptr<std::vector<int> > type (new std::vector<int>);
   std::unique_ptr<std::vector<int> > valid_siLayers (new std::vector<int>);
   std::unique_ptr<std::vector<int> > valid_pixelHits (new std::vector<int>);
@@ -273,7 +265,7 @@ CSCTimingBabyMaker::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
   std::unique_ptr<std::vector<int> > numMatchedCSCsegments (new std::vector<int>);
   std::unique_ptr<std::vector<int> > station_mask (new std::vector<int>);
   std::unique_ptr<std::vector<int> > direction (new std::vector<int>);
-  
+
   //
   // chamber level quantities
   //
@@ -287,8 +279,8 @@ CSCTimingBabyMaker::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
   std::unique_ptr<std::vector<std::vector<std::vector<unsigned int> > > > arbitration_mask (new std::vector<std::vector<std::vector<unsigned int> > > );
   std::unique_ptr<std::vector<std::vector<std::vector<bool> > > > isSegmentAndTrackArbitrated (new std::vector<std::vector<std::vector<bool> > > );
   std::unique_ptr<std::vector<std::vector<std::vector<int> > > > numRecHitsInSegment (new std::vector<std::vector<std::vector<int> > > );
-  std::unique_ptr<std::vector<std::vector<std::vector<double> > > > segmentTime (new std::vector<std::vector<std::vector<double> > > );    
-    
+  std::unique_ptr<std::vector<std::vector<std::vector<double> > > > segmentTime (new std::vector<std::vector<std::vector<double> > > );
+
   //
   // rechit level quantities
   //
@@ -308,7 +300,7 @@ CSCTimingBabyMaker::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
   std::unique_ptr<std::vector<std::vector<std::vector<std::vector<int> > > > >    cfeb_cable_delay      (new std::vector<std::vector<std::vector<std::vector<int> > > >    );
   std::unique_ptr<std::vector<std::vector<std::vector<std::vector<int> > > > >    precision             (new std::vector<std::vector<std::vector<std::vector<int> > > >    );
   std::unique_ptr<std::vector<std::vector<std::vector<std::vector<char> > > > >   cfeb_cable_rev        (new std::vector<std::vector<std::vector<std::vector<char> > > >   );
-  std::unique_ptr<std::vector<std::vector<std::vector<std::vector<double> > > > > anode_bx_offset       (new std::vector<std::vector<std::vector<std::vector<double> > > > );    
+  std::unique_ptr<std::vector<std::vector<std::vector<std::vector<double> > > > > anode_bx_offset       (new std::vector<std::vector<std::vector<std::vector<double> > > > );
 
   std::unique_ptr<std::vector<std::vector<std::vector<std::vector<double> > > > > chipCorr              (new std::vector<std::vector<std::vector<std::vector<double> > > > );
   std::unique_ptr<std::vector<std::vector<std::vector<std::vector<double> > > > > cfebCorr              (new std::vector<std::vector<std::vector<std::vector<double> > > > );
@@ -325,7 +317,7 @@ CSCTimingBabyMaker::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
   std::unique_ptr<std::vector<std::vector<std::vector<std::vector<int> > > > >    new_cfeb_cable_delay  (new std::vector<std::vector<std::vector<std::vector<int> > > >    );
   std::unique_ptr<std::vector<std::vector<std::vector<std::vector<double> > > > > new_cfebCorr          (new std::vector<std::vector<std::vector<std::vector<double> > > > );
   std::unique_ptr<std::vector<std::vector<std::vector<std::vector<double> > > > > new_chipCorr          (new std::vector<std::vector<std::vector<std::vector<double> > > > );
-    
+
   //
   // load chamber timing corrections
   //
@@ -336,7 +328,7 @@ CSCTimingBabyMaker::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     iSetup.get<CSCIndexerRecord>().get(indexer);
     iSetup.get<CSCChannelMapperRecord>().get(mapper);
     isLoaded_ = true;
-  }    
+  }
 
   //
   // fill event level quantities
@@ -346,11 +338,10 @@ CSCTimingBabyMaker::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
   *evt    = iEvent.id().event();
   *csc_status = false;
   *detector_status = false;
-    
-  edm::Handle<DcsStatusCollection> dcsHandle;
-  iEvent.getByToken(dcs_token, dcsHandle);    
 
-    
+  edm::Handle<DcsStatusCollection> dcsHandle;
+  iEvent.getByToken(dcs_token, dcsHandle);
+
   const double currentToBFieldScaleFactor = 2.09237036221512717e-04;
   double current = -9999/currentToBFieldScaleFactor;
 
@@ -359,9 +350,9 @@ CSCTimingBabyMaker::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     current = (*dcsHandle)[0].magnetCurrent();
     *csc_status = (*dcsHandle)[0].ready(DcsStatus::CSCp) & (*dcsHandle)[0].ready(DcsStatus::CSCm);
     *detector_status = (*dcsHandle)[0].ready();
-  }	 
+  }
 
-  *bfield = current*currentToBFieldScaleFactor;    
+  *bfield = current*currentToBFieldScaleFactor;
 
   //
   // fill trigger info
@@ -374,7 +365,7 @@ CSCTimingBabyMaker::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     const std::string& name = hltConfig.triggerName(idx);
     hlt_trigNames->push_back(name);
     // hlt_prescales->push_back(hltConfig.prescaleValue(iEvent, iSetup, name));
-        
+
     if (trigResults_h->accept(idx))
     {
       hlt_bits->SetBitNumber(idx);
@@ -386,7 +377,7 @@ CSCTimingBabyMaker::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     hlt_trigObjs_id->push_back(vid);
     hlt_trigObjs_p4->push_back(vp4);
   }
-    
+
   edm::Handle<reco::VertexCollection> vtx_h;
   iEvent.getByToken(vtx_token, vtx_h);
   const reco::VertexCollection *vtx_coll = vtx_h.product();
@@ -411,7 +402,7 @@ CSCTimingBabyMaker::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     reco::MuonCollection::const_iterator muIter;
     reco::MuonCollection::const_iterator muIter2;
     for (muIter = mus_h->begin(); muIter != mus_h->end(); muIter++)
-    {        
+    {
       //
       // chamber level quantities
       //
@@ -425,8 +416,8 @@ CSCTimingBabyMaker::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       std::vector<std::vector<unsigned int> > vv_arbitration_mask;
       std::vector<std::vector<bool> > vv_isSegmentAndTrackArbitrated;
       std::vector<std::vector<int> > vv_numRecHitsInSegment;
-      std::vector<std::vector<double> > vv_segmentTime;            
-        
+      std::vector<std::vector<double> > vv_segmentTime;
+
       //
       // rechit level quantities
       //
@@ -466,7 +457,7 @@ CSCTimingBabyMaker::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
       if (!muIter->isStandAloneMuon()) continue;
       ++nSAmus_;
-           
+
       int numMatchedCSCsegments_ = 0;
       int numCSCrhs_ = 0;
       //
@@ -475,8 +466,8 @@ CSCTimingBabyMaker::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       std::vector<unsigned int> v_arbitration_mask;
       std::vector<bool> v_isSegmentAndTrackArbitrated;
       std::vector<int> v_numRecHitsInSegment;
-      std::vector<double> v_segmentTime;            
-        
+      std::vector<double> v_segmentTime;
+
       //
       // rechit level quantities
       //
@@ -559,19 +550,19 @@ CSCTimingBabyMaker::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
         std::vector<int>    v_new_cfeb_skew_delay  ;
         std::vector<int>    v_new_cfeb_cable_delay ;
         std::vector<double> v_new_cfebCorr         ;
-        std::vector<double> v_new_chipCorr         ;                    
+        std::vector<double> v_new_chipCorr         ;
 
         std::vector<CSCRecHit2D> rechits = segment->specificRecHits();
         std::vector<CSCRecHit2D>::const_iterator rhIter;
         numCSCrhs_ += rechits.size();
         for (rhIter = rechits.begin(); rhIter != rechits.end(); rhIter++)
-        {                                        
+        {
           CSCDetId id = (CSCDetId)rhIter->cscDetId();
           v_endcap  .push_back(id.endcap()       );
           v_station .push_back(id.station()      );
           v_ring    .push_back(id.ring()         );
           v_chamber .push_back(id.chamber()      );
-          v_layer   .push_back(id.layer()        );        
+          v_layer   .push_back(id.layer()        );
           v_rhtime  .push_back(rhIter->tpeak()   );
           v_twire   .push_back(rhIter->wireTime());
           v_nstrips .push_back(rhIter->nStrips());
@@ -587,12 +578,12 @@ CSCTimingBabyMaker::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
           int precision_ = theChamberTimingCorrections->precision();
           v_precision.push_back(precision_);
-                        
+
           v_cfebCorr      .push_back(v_cfeb_timing_corr.back() * 1./precision_    );
           v_skewClearDelay.push_back(v_cfeb_skew_delay.back() * 1./precision_     );
           v_cfebCableDelay.push_back(v_cfeb_cable_delay.back() * 25.              );
           v_chamberCorr   .push_back(recoConditions->chamberTimingCorrection(id) );
-                    
+
           unsigned int idCenterStrip = rhIter->nStrips() / 2;
           if (rhIter->nStrips() > 0)
           {
@@ -611,8 +602,8 @@ CSCTimingBabyMaker::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
             v_new_cfeb_cable_delay .push_back(0);
             v_new_cfebCorr        .push_back(v_cfeb_timing_corr.back() * 1./precision_);
             int new_skew_delay_ = CSCTimingBabyMaker::getSkewClearCableDelayForME11(id);
-            v_new_cfeb_skew_delay .push_back(new_skew_delay_);                // includes PPIB-ODMB cable + PPIB-DCFEB cable + PPIB_LVDS delays (in 10 ps unit)           
-            v_new_skewClearDelay  .push_back(new_skew_delay_*1./v_precision.back());          // includes PPIB-ODMB cable + PPIB-DCFEB cable + PPIB_LVDS delays            
+            v_new_cfeb_skew_delay .push_back(new_skew_delay_);                // includes PPIB-ODMB cable + PPIB-DCFEB cable + PPIB_LVDS delays (in 10 ps unit)
+            v_new_skewClearDelay  .push_back(new_skew_delay_*1./v_precision.back());          // includes PPIB-ODMB cable + PPIB-DCFEB cable + PPIB_LVDS delays
             v_new_cfebCableDelay  .push_back(0);
             v_new_chamberCorr     .push_back(v_new_cfebCorr.back() + v_new_skewClearDelay.back() + v_new_cfebCableDelay.back());
             v_new_chipCorr.push_back(CSCTimingBabyMaker::AVG_CHIP_CORR);
@@ -641,11 +632,11 @@ CSCTimingBabyMaker::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
         vv_ring                  .push_back(v_ring                 );
         vv_chamber               .push_back(v_chamber              );
         vv_layer                 .push_back(v_layer                );
-                                                                            
+
         vv_rhtime                .push_back(v_rhtime               );
         vv_twire                 .push_back(v_twire                );
         vv_nstrips               .push_back(v_nstrips              );
-                                                                            
+
         vv_cfeb_cable_length     .push_back(v_cfeb_cable_length    );
         vv_cfeb_skew_delay       .push_back(v_cfeb_skew_delay      );
         vv_cfeb_timing_corr      .push_back(v_cfeb_timing_corr     );
@@ -653,13 +644,13 @@ CSCTimingBabyMaker::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
         vv_precision             .push_back(v_precision            );
         vv_cfeb_cable_rev        .push_back(v_cfeb_cable_rev       );
         vv_anode_bx_offset       .push_back(v_anode_bx_offset      );
-                                                                            
+
         vv_chipCorr              .push_back(v_chipCorr             );
         vv_cfebCorr              .push_back(v_cfebCorr             );
         vv_skewClearDelay        .push_back(v_skewClearDelay       );
         vv_cfebCableDelay        .push_back(v_cfebCableDelay       );
         vv_chamberCorr           .push_back(v_chamberCorr          );
-                                                                            
+
         vv_new_skewClearDelay    .push_back(v_new_skewClearDelay   );
         vv_new_cfebCableDelay    .push_back(v_new_cfebCableDelay   );
         vv_new_chamberCorr       .push_back(v_new_chamberCorr      );
@@ -667,10 +658,10 @@ CSCTimingBabyMaker::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
         vv_new_cfeb_cable_rev    .push_back(v_new_cfeb_cable_rev   );
         vv_new_cfeb_skew_delay   .push_back(v_new_cfeb_skew_delay  );
         vv_new_cfeb_cable_delay  .push_back(v_new_cfeb_cable_delay );
-        vv_new_cfebCorr          .push_back(v_new_cfebCorr         );                
-        vv_new_chipCorr          .push_back(v_new_chipCorr         );                
+        vv_new_cfebCorr          .push_back(v_new_cfebCorr         );
+        vv_new_chipCorr          .push_back(v_new_chipCorr         );
 
-      } // end loop over segment matches                      
+      } // end loop over segment matches
 
 
       for (auto seg : v_numRecHitsInSegment)
@@ -690,11 +681,11 @@ CSCTimingBabyMaker::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       vvv_ring                  .push_back(vv_ring                 );
       vvv_chamber               .push_back(vv_chamber              );
       vvv_layer                 .push_back(vv_layer                );
-                                                                            
+
       vvv_rhtime                .push_back(vv_rhtime               );
       vvv_twire                 .push_back(vv_twire                );
       vvv_nstrips               .push_back(vv_nstrips              );
-                                                                            
+
       vvv_cfeb_cable_length     .push_back(vv_cfeb_cable_length    );
       vvv_cfeb_skew_delay       .push_back(vv_cfeb_skew_delay      );
       vvv_cfeb_timing_corr      .push_back(vv_cfeb_timing_corr     );
@@ -702,13 +693,13 @@ CSCTimingBabyMaker::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       vvv_precision             .push_back(vv_precision            );
       vvv_cfeb_cable_rev        .push_back(vv_cfeb_cable_rev       );
       vvv_anode_bx_offset       .push_back(vv_anode_bx_offset      );
-                                                                            
+
       vvv_chipCorr              .push_back(vv_chipCorr             );
       vvv_cfebCorr              .push_back(vv_cfebCorr             );
       vvv_skewClearDelay        .push_back(vv_skewClearDelay       );
       vvv_cfebCableDelay        .push_back(vv_cfebCableDelay       );
       vvv_chamberCorr           .push_back(vv_chamberCorr          );
-                                                                            
+
       vvv_new_skewClearDelay    .push_back(vv_new_skewClearDelay   );
       vvv_new_cfebCableDelay    .push_back(vv_new_cfebCableDelay   );
       vvv_new_chamberCorr       .push_back(vv_new_chamberCorr      );
@@ -716,21 +707,21 @@ CSCTimingBabyMaker::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       vvv_new_cfeb_cable_rev    .push_back(vv_new_cfeb_cable_rev   );
       vvv_new_cfeb_skew_delay   .push_back(vv_new_cfeb_skew_delay  );
       vvv_new_cfeb_cable_delay  .push_back(vv_new_cfeb_cable_delay );
-      vvv_new_cfebCorr          .push_back(vv_new_cfebCorr         );                
+      vvv_new_cfebCorr          .push_back(vv_new_cfebCorr         );
       vvv_new_chipCorr          .push_back(vv_new_chipCorr         );
 
       if (numCSCrhs_ == 0) continue;
       ++nGoodMus_;
-               
+
       numMatchedCSCsegments->push_back(segment_matches.size());
 
       //
       // fill muon level quantities
-      //    
+      //
       is_global  ->push_back(muIter->isGlobalMuon());
       is_tracker ->push_back(muIter->isTrackerMuon());
       is_sa      ->push_back(muIter->isStandAloneMuon());
-      is_pf      ->push_back(muIter->isPFMuon());        
+      is_pf      ->push_back(muIter->isPFMuon());
       type       ->push_back(muIter->type());
 
       p4->push_back(LorentzVector(muIter->p4()));
@@ -748,20 +739,20 @@ CSCTimingBabyMaker::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
         time->push_back(muIter->time().timeAtIpInOut);
         timeErr->push_back(muIter->time().timeAtIpInOutErr);
       }
-      
+
       const reco::TrackRef siTrack = muIter->innerTrack();
       const reco::TrackRef globalTrack = muIter->globalTrack();
       const reco::TrackRef staTrack = muIter->outerTrack();
 
       double max_angle = -999.;
-      for (muIter2 = mus_h->begin(); muIter2 != mus_h->end(); muIter2++)        
+      for (muIter2 = mus_h->begin(); muIter2 != mus_h->end(); muIter2++)
       {
-        if (muIter == muIter2) continue;            
+        if (muIter == muIter2) continue;
         // if (muIter2->p4().pt() < 10.) continue;
         const reco::TrackRef siTrack2 = muIter2->innerTrack();
-        const reco::TrackRef globalTrack2 = muIter2->globalTrack();
-        const reco::TrackRef staTrack2 = muIter2->outerTrack();
-            
+        // const reco::TrackRef globalTrack2 = muIter2->globalTrack();
+        // const reco::TrackRef staTrack2 = muIter2->outerTrack();
+
         if (siTrack.isNonnull())
         {
           if (siTrack2.isNonnull())
@@ -770,7 +761,7 @@ CSCTimingBabyMaker::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
           }
           else
           {
-            if (fabs(angle(siTrack->momentum(), muIter2->momentum())) > max_angle) max_angle = angle(siTrack->momentum(), muIter2->momentum());                    
+            if (fabs(angle(siTrack->momentum(), muIter2->momentum())) > max_angle) max_angle = angle(siTrack->momentum(), muIter2->momentum());
           }
         }
         else
@@ -781,10 +772,10 @@ CSCTimingBabyMaker::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
           }
           else
           {
-            if (fabs(angle(muIter->momentum(), muIter2->momentum())) > max_angle) max_angle = angle(muIter->momentum(), muIter2->momentum());                    
+            if (fabs(angle(muIter->momentum(), muIter2->momentum())) > max_angle) max_angle = angle(muIter->momentum(), muIter2->momentum());
           }
         }
-      }        
+      }
 
       maxOpeningAngleMuon->push_back(max_angle);
 
@@ -801,11 +792,11 @@ CSCTimingBabyMaker::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
         else
         {
           if (fabs(angle(muIter->momentum(), trkIter->momentum())) > max_angle) max_angle = angle(muIter->momentum(), trkIter->momentum());
-        }            
+        }
       }
 
       maxOpeningAngleTrack->push_back(max_angle);
-        
+
       if (siTrack.isNonnull())
       {
         dz ->push_back(  siTrack->dz(vtx.position()));
@@ -888,7 +879,7 @@ CSCTimingBabyMaker::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       isSegmentAndTrackArbitrated->push_back(vv_isSegmentAndTrackArbitrated);
       numRecHitsInSegment->push_back(vv_numRecHitsInSegment);
       segmentTime->push_back(vv_segmentTime);
-            
+
       endcap                ->push_back(vvv_endcap               );
       station               ->push_back(vvv_station              );
       ring                  ->push_back(vvv_ring                 );
@@ -921,7 +912,7 @@ CSCTimingBabyMaker::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       new_cfeb_skew_delay   ->push_back(vvv_new_cfeb_skew_delay  );
       new_cfeb_cable_delay  ->push_back(vvv_new_cfeb_cable_delay );
       new_cfebCorr          ->push_back(vvv_new_cfebCorr         );
-      new_chipCorr          ->push_back(vvv_new_chipCorr         );               
+      new_chipCorr          ->push_back(vvv_new_chipCorr         );
 
     } // end loop over muons
 
@@ -933,14 +924,14 @@ CSCTimingBabyMaker::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     reco::MuonCollection::const_iterator muIter;
     reco::MuonCollection::const_iterator muIter2;
     for (muIter = mus_h->begin(); muIter != mus_h->end(); muIter++)
-    {        
+    {
       //
       // chamber level quantities
       //
       std::vector<double> v_distToChamberEdge;
       std::vector<double> v_distToChamberEdgeErr;
       std::vector<int> v_numCSCsegmentsInChamber;
-        
+
       //
       // segment level quantities
       //
@@ -948,7 +939,7 @@ CSCTimingBabyMaker::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       std::vector<std::vector<bool> > vv_isSegmentAndTrackArbitrated;
       std::vector<std::vector<int> > vv_numRecHitsInSegment;
       std::vector<std::vector<double> > vv_segmentTime;
-            
+
       //
       // rechit level quantities
       //
@@ -995,7 +986,7 @@ CSCTimingBabyMaker::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       for (chIter = chamber_matches.begin(); chIter != chamber_matches.end(); chIter++)
       {
         int numCSCsegmentsInChamber_ = 0;
-            
+
         std::vector<reco::MuonSegmentMatch> segment_matches = chIter->segmentMatches;
         if (segment_matches.size() == 0) continue;
 
@@ -1006,8 +997,8 @@ CSCTimingBabyMaker::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
         std::vector<bool> v_isSegmentAndTrackArbitrated;
         std::vector<int> v_numRecHitsInSegment;
         std::vector<double> v_segmentTime;
-                
-        
+
+
         //
         // rechit level quantities
         //
@@ -1089,20 +1080,20 @@ CSCTimingBabyMaker::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
           std::vector<int>    v_new_cfeb_skew_delay  ;
           std::vector<int>    v_new_cfeb_cable_delay ;
           std::vector<double> v_new_cfebCorr         ;
-          std::vector<double> v_new_chipCorr         ;                    
+          std::vector<double> v_new_chipCorr         ;
 
           const CSCSegment* segment = segRef.get();
           std::vector<CSCRecHit2D> rechits = segment->specificRecHits();
           std::vector<CSCRecHit2D>::const_iterator rhIter;
           numCSCrhs_ += rechits.size();
           for (rhIter = rechits.begin(); rhIter != rechits.end(); rhIter++)
-          {                                        
+          {
             CSCDetId id = (CSCDetId)rhIter->cscDetId();
             v_endcap  .push_back(id.endcap()       );
             v_station .push_back(id.station()      );
             v_ring    .push_back(id.ring()         );
             v_chamber .push_back(id.chamber()      );
-            v_layer   .push_back(id.layer()        );        
+            v_layer   .push_back(id.layer()        );
             v_rhtime  .push_back(rhIter->tpeak()   );
             v_twire   .push_back(rhIter->wireTime());
             v_nstrips .push_back(rhIter->nStrips());
@@ -1127,12 +1118,12 @@ CSCTimingBabyMaker::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
             int precision_ = theChamberTimingCorrections->precision();
             v_precision.push_back(precision_);
-                        
+
             v_cfebCorr      .push_back(v_cfeb_timing_corr.back() * 1./precision_    );
             v_skewClearDelay.push_back(v_cfeb_skew_delay.back() * 1./precision_     );
             v_cfebCableDelay.push_back(v_cfeb_cable_delay.back() * 25.              );
             v_chamberCorr   .push_back(recoConditions->chamberTimingCorrection(id) );
-                    
+
             unsigned int idCenterStrip = rhIter->nStrips() / 2;
             if (rhIter->nStrips() > 0)
             {
@@ -1149,12 +1140,12 @@ CSCTimingBabyMaker::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
               v_new_cfeb_cable_length.push_back(CSCTimingBabyMaker::getSkewClearCableLengthForME11(id));
               v_new_cfeb_cable_rev   .push_back('D');
               v_new_cfeb_cable_delay .push_back(0);
-              v_new_cfebCorr        .push_back(v_cfeb_timing_corr.back() * 1./precision_);
+              v_new_cfebCorr         .push_back(v_cfeb_timing_corr.back() * 1./precision_);
               int new_skew_delay_ = CSCTimingBabyMaker::getSkewClearCableDelayForME11(id);
-              v_new_cfeb_skew_delay .push_back(new_skew_delay_);                // includes PPIB-ODMB cable + PPIB-DCFEB cable + PPIB_LVDS delays (in 10 ps unit)           
-              v_new_skewClearDelay  .push_back(new_skew_delay_*1./v_precision.back());          // includes PPIB-ODMB cable + PPIB-DCFEB cable + PPIB_LVDS delays            
-              v_new_cfebCableDelay  .push_back(0);
-              v_new_chamberCorr     .push_back(v_new_cfebCorr.back() + v_new_skewClearDelay.back() + v_new_cfebCableDelay.back());
+              v_new_cfeb_skew_delay  .push_back(new_skew_delay_);                // includes PPIB-ODMB cable + PPIB-DCFEB cable + PPIB_LVDS delays (in 10 ps unit)
+              v_new_skewClearDelay   .push_back(new_skew_delay_*1./v_precision.back());          // includes PPIB-ODMB cable + PPIB-DCFEB cable + PPIB_LVDS delays
+              v_new_cfebCableDelay   .push_back(0);
+              v_new_chamberCorr      .push_back(v_new_cfebCorr.back() + v_new_skewClearDelay.back() + v_new_cfebCableDelay.back());
               v_new_chipCorr.push_back(CSCTimingBabyMaker::AVG_CHIP_CORR);
             }
             else
@@ -1167,7 +1158,7 @@ CSCTimingBabyMaker::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
               v_new_skewClearDelay    .push_back(v_skewClearDelay.back()    );
               v_new_cfebCableDelay    .push_back(v_cfebCableDelay.back()    );
               v_new_chamberCorr       .push_back(v_chamberCorr.back()       );
-              v_new_chipCorr           .push_back(v_chipCorr.back()         );
+              v_new_chipCorr          .push_back(v_chipCorr.back()          );
             }
           } // end loop over rechits
 
@@ -1179,17 +1170,17 @@ CSCTimingBabyMaker::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
           v_numRecHitsInSegment.push_back(rechits.size());
           v_segmentTime.push_back(segment->time());
-                    
+
           vv_endcap                .push_back(v_endcap               );
           vv_station               .push_back(v_station              );
           vv_ring                  .push_back(v_ring                 );
           vv_chamber               .push_back(v_chamber              );
           vv_layer                 .push_back(v_layer                );
-                                                                            
+
           vv_rhtime                .push_back(v_rhtime               );
           vv_twire                 .push_back(v_twire                );
           vv_nstrips               .push_back(v_nstrips              );
-                                                                            
+
           vv_cfeb_cable_length     .push_back(v_cfeb_cable_length    );
           vv_cfeb_skew_delay       .push_back(v_cfeb_skew_delay      );
           vv_cfeb_timing_corr      .push_back(v_cfeb_timing_corr     );
@@ -1197,13 +1188,13 @@ CSCTimingBabyMaker::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
           vv_precision             .push_back(v_precision            );
           vv_cfeb_cable_rev        .push_back(v_cfeb_cable_rev       );
           vv_anode_bx_offset       .push_back(v_anode_bx_offset      );
-                                                                            
+
           vv_chipCorr              .push_back(v_chipCorr             );
           vv_cfebCorr              .push_back(v_cfebCorr             );
           vv_skewClearDelay        .push_back(v_skewClearDelay       );
           vv_cfebCableDelay        .push_back(v_cfebCableDelay       );
           vv_chamberCorr           .push_back(v_chamberCorr          );
-                                                                            
+
           vv_new_skewClearDelay    .push_back(v_new_skewClearDelay   );
           vv_new_cfebCableDelay    .push_back(v_new_cfebCableDelay   );
           vv_new_chamberCorr       .push_back(v_new_chamberCorr      );
@@ -1211,11 +1202,11 @@ CSCTimingBabyMaker::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
           vv_new_cfeb_cable_rev    .push_back(v_new_cfeb_cable_rev   );
           vv_new_cfeb_skew_delay   .push_back(v_new_cfeb_skew_delay  );
           vv_new_cfeb_cable_delay  .push_back(v_new_cfeb_cable_delay );
-          vv_new_cfebCorr          .push_back(v_new_cfebCorr         );                
-          vv_new_chipCorr          .push_back(v_new_chipCorr         );                
+          vv_new_cfebCorr          .push_back(v_new_cfebCorr         );
+          vv_new_chipCorr          .push_back(v_new_chipCorr         );
 
-        } // end loop over segment matches            
-            
+        } // end loop over segment matches
+
         if (numCSCsegmentsInChamber_ == 0) continue;
 
         v_distToChamberEdge.push_back(chIter->dist());
@@ -1223,20 +1214,20 @@ CSCTimingBabyMaker::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
         v_numCSCsegmentsInChamber.push_back(numCSCsegmentsInChamber_);
 
         vv_arbitration_mask.push_back(v_arbitration_mask);
-        vv_isSegmentAndTrackArbitrated.push_back(v_isSegmentAndTrackArbitrated);           
-        vv_numRecHitsInSegment.push_back(v_numRecHitsInSegment);                
+        vv_isSegmentAndTrackArbitrated.push_back(v_isSegmentAndTrackArbitrated);
+        vv_numRecHitsInSegment.push_back(v_numRecHitsInSegment);
         vv_segmentTime.push_back(v_segmentTime);
-                
+
         vvv_endcap                .push_back(vv_endcap               );
         vvv_station               .push_back(vv_station              );
         vvv_ring                  .push_back(vv_ring                 );
         vvv_chamber               .push_back(vv_chamber              );
         vvv_layer                 .push_back(vv_layer                );
-                                                                            
+
         vvv_rhtime                .push_back(vv_rhtime               );
         vvv_twire                 .push_back(vv_twire                );
         vvv_nstrips               .push_back(vv_nstrips              );
-                                                                            
+
         vvv_cfeb_cable_length     .push_back(vv_cfeb_cable_length    );
         vvv_cfeb_skew_delay       .push_back(vv_cfeb_skew_delay      );
         vvv_cfeb_timing_corr      .push_back(vv_cfeb_timing_corr     );
@@ -1244,13 +1235,13 @@ CSCTimingBabyMaker::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
         vvv_precision             .push_back(vv_precision            );
         vvv_cfeb_cable_rev        .push_back(vv_cfeb_cable_rev       );
         vvv_anode_bx_offset       .push_back(vv_anode_bx_offset      );
-                                                                            
+
         vvv_chipCorr              .push_back(vv_chipCorr             );
         vvv_cfebCorr              .push_back(vv_cfebCorr             );
         vvv_skewClearDelay        .push_back(vv_skewClearDelay       );
         vvv_cfebCableDelay        .push_back(vv_cfebCableDelay       );
         vvv_chamberCorr           .push_back(vv_chamberCorr          );
-                                                                            
+
         vvv_new_skewClearDelay    .push_back(vv_new_skewClearDelay   );
         vvv_new_cfebCableDelay    .push_back(vv_new_cfebCableDelay   );
         vvv_new_chamberCorr       .push_back(vv_new_chamberCorr      );
@@ -1258,23 +1249,23 @@ CSCTimingBabyMaker::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
         vvv_new_cfeb_cable_rev    .push_back(vv_new_cfeb_cable_rev   );
         vvv_new_cfeb_skew_delay   .push_back(vv_new_cfeb_skew_delay  );
         vvv_new_cfeb_cable_delay  .push_back(vv_new_cfeb_cable_delay );
-        vvv_new_cfebCorr          .push_back(vv_new_cfebCorr         );                
-        vvv_new_chipCorr          .push_back(vv_new_chipCorr         );                
+        vvv_new_cfebCorr          .push_back(vv_new_cfebCorr         );
+        vvv_new_chipCorr          .push_back(vv_new_chipCorr         );
 
       } // end loop over chamber matches
 
       if (numCSCrhs_ == 0) continue;
       ++nGoodMus_;
-               
+
       numMatchedCSCsegments->push_back(numMatchedCSCsegments_);
 
       //
       // fill muon level quantities
-      //    
+      //
       is_global  ->push_back(muIter->isGlobalMuon());
       is_tracker ->push_back(muIter->isTrackerMuon());
       is_sa      ->push_back(muIter->isStandAloneMuon());
-      is_pf      ->push_back(muIter->isPFMuon());        
+      is_pf      ->push_back(muIter->isPFMuon());
       type       ->push_back(muIter->type());
 
       p4->push_back(LorentzVector(muIter->p4()));
@@ -1292,20 +1283,20 @@ CSCTimingBabyMaker::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
         time->push_back(muIter->time().timeAtIpInOut);
         timeErr->push_back(muIter->time().timeAtIpInOutErr);
       }
-      
+
       const reco::TrackRef siTrack = muIter->innerTrack();
       const reco::TrackRef globalTrack = muIter->globalTrack();
       const reco::TrackRef staTrack = muIter->outerTrack();
 
       double max_angle = -999.;
-      for (muIter2 = mus_h->begin(); muIter2 != mus_h->end(); muIter2++)        
+      for (muIter2 = mus_h->begin(); muIter2 != mus_h->end(); muIter2++)
       {
-        if (muIter == muIter2) continue;            
+        if (muIter == muIter2) continue;
         // if (muIter2->p4().pt() < 10.) continue;
         const reco::TrackRef siTrack2 = muIter2->innerTrack();
-        const reco::TrackRef globalTrack2 = muIter2->globalTrack();
-        const reco::TrackRef staTrack2 = muIter2->outerTrack();
-            
+        // const reco::TrackRef globalTrack2 = muIter2->globalTrack();
+        // const reco::TrackRef staTrack2 = muIter2->outerTrack();
+
         if (siTrack.isNonnull())
         {
           if (siTrack2.isNonnull())
@@ -1314,7 +1305,7 @@ CSCTimingBabyMaker::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
           }
           else
           {
-            if (fabs(angle(siTrack->momentum(), muIter2->momentum())) > max_angle) max_angle = angle(siTrack->momentum(), muIter2->momentum());                    
+            if (fabs(angle(siTrack->momentum(), muIter2->momentum())) > max_angle) max_angle = angle(siTrack->momentum(), muIter2->momentum());
           }
         }
         else
@@ -1325,10 +1316,10 @@ CSCTimingBabyMaker::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
           }
           else
           {
-            if (fabs(angle(muIter->momentum(), muIter2->momentum())) > max_angle) max_angle = angle(muIter->momentum(), muIter2->momentum());                    
+            if (fabs(angle(muIter->momentum(), muIter2->momentum())) > max_angle) max_angle = angle(muIter->momentum(), muIter2->momentum());
           }
         }
-      }        
+      }
 
       maxOpeningAngleMuon->push_back(max_angle);
 
@@ -1345,11 +1336,11 @@ CSCTimingBabyMaker::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
         else
         {
           if (fabs(angle(muIter->momentum(), trkIter->momentum())) > max_angle) max_angle = angle(muIter->momentum(), trkIter->momentum());
-        }            
+        }
       }
 
       maxOpeningAngleTrack->push_back(max_angle);
-        
+
       if (siTrack.isNonnull())
       {
         dz ->push_back(  siTrack->dz(vtx.position()));
@@ -1460,7 +1451,7 @@ CSCTimingBabyMaker::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       new_cfeb_skew_delay   ->push_back(vvv_new_cfeb_skew_delay  );
       new_cfeb_cable_delay  ->push_back(vvv_new_cfeb_cable_delay );
       new_cfebCorr          ->push_back(vvv_new_cfebCorr         );
-      new_chipCorr          ->push_back(vvv_new_chipCorr         );               
+      new_chipCorr          ->push_back(vvv_new_chipCorr         );
 
     } // end loop over muons
 
@@ -1478,9 +1469,9 @@ CSCTimingBabyMaker::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
   iEvent.put(std::move(detector_status             ), "detectorstatus"              );
   iEvent.put(std::move(hlt_bits                    ), "hltbits"                     );
   iEvent.put(std::move(hlt_trigNames               ), "hlttrigNames"                );
-  iEvent.put(std::move(hlt_prescales               ), "hltprescales"                ); 
+  iEvent.put(std::move(hlt_prescales               ), "hltprescales"                );
   iEvent.put(std::move(hlt_trigObjs_id             ), "hlttrigObjsid"               );
-  iEvent.put(std::move(hlt_trigObjs_p4             ), "hlttrigObjsp4"               );    
+  iEvent.put(std::move(hlt_trigObjs_p4             ), "hlttrigObjsp4"               );
   iEvent.put(std::move(endcap                      ), "endcap"                      );
   iEvent.put(std::move(station                     ), "station"                     );
   iEvent.put(std::move(ring                        ), "ring"                        );
@@ -1503,7 +1494,7 @@ CSCTimingBabyMaker::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
   iEvent.put(std::move(maxOpeningAngleMuon         ), "maxOpeningAngleMuon"         );
   iEvent.put(std::move(direction                   ), "direction"                   );
   iEvent.put(std::move(time                        ), "time"                        );
-  iEvent.put(std::move(timeErr                     ), "timeErr"                     );                       
+  iEvent.put(std::move(timeErr                     ), "timeErr"                     );
   iEvent.put(std::move(type                        ), "type"                        );
   iEvent.put(std::move(valid_siLayers              ), "validsiLayers"               );
   iEvent.put(std::move(valid_pixelHits             ), "validpixelHits"              );
@@ -1568,11 +1559,11 @@ int CSCTimingBabyMaker::getSkewClearCableLengthForME11 (const CSCDetId &id)
   int station = id.station();
   int chamber = id.chamber();
   int endcap = id.endcap();
-    
+
   assert (station == 1);
   assert(chamber >= 1 && chamber <=36);
   assert (endcap == 1 || endcap == 2);
-    
+
   return (endcap == 1) ? CSCTimingBabyMaker::ME11P_SKEWCLEAR_CABLE_LENGTHS[chamber-1] : CSCTimingBabyMaker::ME11M_SKEWCLEAR_CABLE_LENGTHS[chamber-1];
 }
 
@@ -1630,12 +1621,12 @@ void CSCTimingBabyMaker::fillTriggerObjInfo (unsigned int triggerIndex, std::vec
     // get module name & filter index
     const std::string& moduleLabel = moduleLabels.at(j);
     const unsigned int filterIndex = triggerEvent_h->filterIndex(edm::InputTag(moduleLabel, "", processName));
-      
+
     // these are the filters with trigger objects filled
     if ( filterIndex < nFilters )
-    { 
+    {
       lastFilterIndex = filterIndex;
-   
+
       // get trigger objects & ids
       //unsigned int lastEleFilterIndex = 0;
       const trigger::Vids& triggerIds  = triggerEvent_h->filterIds(filterIndex);
@@ -1643,8 +1634,8 @@ void CSCTimingBabyMaker::fillTriggerObjInfo (unsigned int triggerIndex, std::vec
       assert( triggerIds.size() == triggerKeys.size() );
 
       // True if a filter has hlt objects ( objects with positive trigger id )
-      bool hlt = false;   
-      
+      bool hlt = false;
+
       // Trigger object id for filters associated with a unique trigger object id
       int filterId = -1;
 
@@ -1661,17 +1652,14 @@ void CSCTimingBabyMaker::fillTriggerObjInfo (unsigned int triggerIndex, std::vec
           if (k == 0)
           {                                             // Assuming all trigger ids are the same for this filter
             filterId = id;                            // Filter id for all the objects in this filter
-            if (filterId == 82 || filterId == 92)     // Remember the index of the last filter with all objects having a trigger id of 82 or 92 
+            if (filterId == 82 || filterId == 92)     // Remember the index of the last filter with all objects having a trigger id of 82 or 92
             {
               //lastEleFilterIndex = filterIndex;
             }
           }
-          else
+          else if (id != filterId)
           {
-            if (id != filterId)
-            {
-              mixedTrigIds = true;                    // True if different trigger id's are found in the same filter
-            }
+            mixedTrigIds = true;                    // True if different trigger id's are found in the same filter
           }
         } // end if( id > 0 )
       } // end loop on trigger objects
@@ -1682,11 +1670,11 @@ void CSCTimingBabyMaker::fillTriggerObjInfo (unsigned int triggerIndex, std::vec
         assert (filterId != -1);                        // sanity
         trigObjsToStore[filterId] = filterIndex;        // Store the filter Index ( used to get trigger objects ) for each different trigger type ( filterId )
         if (filterId == 82) trigObjsToStore.erase(92);  // If this is an electron trigger ( filterId 82 or 92 ) we only want the last one ( that is either 82 or 92 )
-        if (filterId == 92) trigObjsToStore.erase(82);  // 
+        if (filterId == 92) trigObjsToStore.erase(82);  //
       }
     } // end if(filterIndex < nFilters)
   }   // end loop over trigger modules
- 
+
   //////////////////////////////////////////////
   // Show the trigger objects we want to save //
   //////////////////////////////////////////////
@@ -1703,17 +1691,17 @@ void CSCTimingBabyMaker::fillTriggerObjInfo (unsigned int triggerIndex, std::vec
     for (unsigned int k = 0; k < triggerKeys.size(); k++)
     {
       // trigger object id
-      int id = triggerIds.at(k);                                                        
+      int id = triggerIds.at(k);
 
       // trigger p4, p4id
       const trigger::TriggerObject& triggerObject = triggerObjects[triggerKeys[k]];
-  
+
       // store trigger id, trigger p4, & trigger object id
       p4s.push_back( LorentzVector( triggerObject.particle().p4() ) );
       ids.push_back(id);
-    } 
+    }
   }
-  // If each filter has trigger objects with the same trigger id, we store the trigger 
+  // If each filter has trigger objects with the same trigger id, we store the trigger
   // objects for the last filter of each distinct trigger object type
   else
   {
@@ -1725,33 +1713,33 @@ void CSCTimingBabyMaker::fillTriggerObjInfo (unsigned int triggerIndex, std::vec
       const trigger::Vids& triggerIds  = triggerEvent_h->filterIds (filterIndex);
       const trigger::Keys& triggerKeys = triggerEvent_h->filterKeys(filterIndex);
       assert( triggerIds.size() == triggerKeys.size() );
-    
+
       // loop on trigger objects
       for (unsigned int k = 0; k < triggerKeys.size(); k++)
       {
         // trigger object id
-        int id = triggerIds.at(k);                                                        
+        int id = triggerIds.at(k);
 
         // trigger p4, p4id
         const trigger::TriggerObject& triggerObject = triggerObjects[ triggerKeys[k] ];
-    
+
         // store trigger id, trigger p4, & trigger object id
         p4s.push_back( LorentzVector( triggerObject.particle().p4() ) );
         ids.push_back(id);
-      } 
+      }
     }
   }
 }
 
 
 // ------------ method called once each job just before starting event loop  ------------
-void 
+void
 CSCTimingBabyMaker::beginJob()
 {
 }
 
 // ------------ method called once each job just after ending the event loop  ------------
-void 
+void
 CSCTimingBabyMaker::endJob() {
   if (useMuonSegmentMatcher_)
   {
@@ -1774,7 +1762,7 @@ CSCTimingBabyMaker::beginRun(edm::Run const& iRun, edm::EventSetup const& iSetup
   }
 }
 
- 
+
 // ------------ method called when ending the processing of a run  ------------
 /*
   void
@@ -1782,7 +1770,7 @@ CSCTimingBabyMaker::beginRun(edm::Run const& iRun, edm::EventSetup const& iSetup
   {
   }
 */
- 
+
 // ------------ method called when starting to processes a luminosity block  ------------
 /*
   void
@@ -1790,7 +1778,7 @@ CSCTimingBabyMaker::beginRun(edm::Run const& iRun, edm::EventSetup const& iSetup
   {
   }
 */
- 
+
 // ------------ method called when ending the processing of a luminosity block  ------------
 /*
   void
@@ -1798,7 +1786,7 @@ CSCTimingBabyMaker::beginRun(edm::Run const& iRun, edm::EventSetup const& iSetup
   {
   }
 */
- 
+
 // ------------ method fills 'descriptions' with the allowed parameters for the module  ------------
 void
 CSCTimingBabyMaker::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
