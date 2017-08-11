@@ -25,6 +25,6 @@ cscTimingAnalyzer = cms.EDAnalyzer('CSCTimingAnalyzer',
                                    outfileName = cms.untracked.string('histos.root'),
                                    timeParamFileName = cms.untracked.string('cscTimingParameters.root'),
                                    timingStudyBabyFileName = cms.untracked.string('timingBaby.root'),
-                                   fpForHeuristicCorrByRing = cms.FileInPath('CSCOfflineTiming/CSCTimingAnalyzer/data/timing_corrections_by_ring.txt'),
-                                   fpForHeuristicCorrByChamber = cms.FileInPath('CSCOfflineTiming/CSCTimingAnalyzer/data/timing_corrections_by_chamber_combinedME11ab.txt'),
+                                   fpForHeuristicCorrByRing = cms.FileInPath('CSCOfflineTiming/CSCTimingAnalyzer/data/timing_corrections_by_ring_combinedME11ab_2017.txt'),
+                                   fpForHeuristicCorrByChamber = cms.FileInPath('CSCOfflineTiming/CSCTimingAnalyzer/data/timing_corrections_by_chamber_combinedME11ab_2017.txt'),
 )

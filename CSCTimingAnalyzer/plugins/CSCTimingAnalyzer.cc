@@ -157,7 +157,7 @@ CSCTimingAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
   if (run > max_run_) return;
 
   if (checkCSCstatus_ && !csc_status) return;
-  if (checkDCSstatus_ && !(csc_status & (detector_status & (0xF << 24)))) return;
+  if (checkDCSstatus_ && !(detector_status & (0xF << 24))) return;
 
   size_t nMuons = p4_h->size();
   for (size_t nmu = 0; nmu < nMuons; nmu++)
