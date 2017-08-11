@@ -47,8 +47,8 @@ void makeSegmentMeanTimingPlot (std::string fname, bool byStation)
     
     TH1F *h1 = new TH1F("h1", "h1", 18, 0, 18.);
     h1->GetXaxis()->SetTitle("Ring");
-    h1->GetYaxis()->SetTitle("mean segment time (ns)");
-    h1->SetTitle("Mean and RMS of segment time for each ring of CSC chambers");
+    h1->GetYaxis()->SetTitle("Mean Segment Time (ns)");
+    h1->SetTitle("Mean and RMS of Segment Time for each ring of CSC chambers");
     h1->GetYaxis()->SetRangeUser(-15,15);
     h1->SetMarkerStyle(4);
     h1->SetTitleFont(42);
@@ -140,9 +140,9 @@ void makeSegmentMeanTimingPlot (std::string fname, bool byStation)
             if (mhist.find(slabel) == mhist.end())
             {
                 mhist[slabel] = new TH1F(slabel.c_str(), slabel.c_str(), GetNumChambers(station, ring), 0, GetNumChambers(station, ring));
-                mhist[slabel]->GetXaxis()->SetTitle("Ring");
-                mhist[slabel]->GetYaxis()->SetTitle("mean segment time (ns)");
-                mhist[slabel]->SetTitle(Form("Mean and RMS of segment time for %s", label.c_str()));
+                mhist[slabel]->GetXaxis()->SetTitle("Chamber");
+                mhist[slabel]->GetYaxis()->SetTitle("Mean Segment Time (ns)");
+                mhist[slabel]->SetTitle(Form("Mean and RMS of Segment Time for %s", label.c_str()));
                 mhist[slabel]->SetMarkerStyle(4);
                 mhist[slabel]->GetYaxis()->SetRangeUser(-15,15);
             }
@@ -227,7 +227,7 @@ void makeSegmentMeanTimingPlot (std::string fname, bool byStation)
             title->SetTextSize(0.052);    
             title->SetTextAlign(11);
 
-            c1.Print(Form("plots/mean_segtime_%s.pdf", item.first.c_str()));
+            // c1.Print(Form("plots/mean_segtime_%s.pdf", item.first.c_str()));
             c1.Print(Form("plots/mean_segtime_%s.png", item.first.c_str()));
         }
     }

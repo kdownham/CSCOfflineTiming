@@ -140,9 +140,9 @@ void makeMeanTimingPlot (std::string fname, bool byStation)
             if (mhist.find(slabel) == mhist.end())
             {
                 mhist[slabel] = new TH1F(slabel.c_str(), slabel.c_str(), GetNumChambers(station, ring), 0, GetNumChambers(station, ring));
-                mhist[slabel]->GetXaxis()->SetTitle("Ring");
-                mhist[slabel]->GetYaxis()->SetTitle("mean rechit time (ns)");
-                mhist[slabel]->SetTitle(Form("Mean and RMS of rechit time for %s", label.c_str()));
+                mhist[slabel]->GetXaxis()->SetTitle("Chamber");
+                mhist[slabel]->GetYaxis()->SetTitle("Mean Cathode Time (ns)");
+                mhist[slabel]->SetTitle(Form("Mean and RMS of Cathode Time for %s", label.c_str()));
                 mhist[slabel]->SetMarkerStyle(4);
                 mhist[slabel]->GetYaxis()->SetRangeUser(-15,15);
             }
