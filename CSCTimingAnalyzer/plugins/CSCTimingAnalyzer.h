@@ -104,7 +104,7 @@ private:
   TFile *outfile_;
 
   // histogram container and tools
-  CSCValHists *histos_;    
+  CSCValHists *histos_;
     
   void fillNm1hists ();
 
@@ -387,6 +387,7 @@ private:
   int        b_chamber               ;
   int        b_cfeb_cable_length     ;
   int        b_cfeb_skew_delay       ;
+  int        b_anode_bx_offset       ;
   int        b_cfeb_cable_delay      ;
   double     b_cfebCorr              ;
   double     b_skewClearDelay        ;
@@ -415,6 +416,7 @@ private:
   std::map<CSCDetId, int>    m_cfeb_cable_delay;
   std::map<CSCDetId, int>    m_cfeb_cable_length;
   std::map<CSCDetId, int>    m_cfeb_skew_delay;
+  std::map<CSCDetId, int>    m_anode_bx_offset;
   std::map<CSCDetId, char>   m_cfeb_cable_rev;
     
   std::map<CSCDetId, double> m_new_cfebCableDelay;

@@ -328,13 +328,13 @@ CSCTimingAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
               CSCDetId tmp_id(endcap, station, 1, chamber);
               histos_->fill1DHistByType(rhtime_corr, "hRHTiming", "recHit Timing", tmp_id, 200, 2, 6, "recHits");
               histos_->fill1DHistByType(nstrips, "hRHNumStrips", "Number of cathod strips", tmp_id, 10, -0.5, 9.5, "recHits");
-              histos_->fill1DHistByType(twire, "hAnodeTiming", "anode Timing", tmp_id, 200, -10, 10, "recHits");
+              histos_->fill1DHistByType(twire, "hAnodeTiming", "anode Timing", tmp_id, 200, -25, 25, "recHits");
             }
             else
             {
               histos_->fill1DHistByType(rhtime_corr, "hRHTiming", "recHit Timing", id, 200, 2, 6, "recHits");
               histos_->fill1DHistByType(nstrips, "hRHNumStrips", "Number of cathod strips", id, 10, -0.5, 9.5, "recHits");
-              histos_->fill1DHistByType(twire, "hAnodeTiming", "anode Timing", id, 200, -10, 10, "recHits");
+              histos_->fill1DHistByType(twire, "hAnodeTiming", "anode Timing", id, 200, -25, 25, "recHits");
             }
             if (makePlotsPerChamber_)
             {
@@ -343,13 +343,13 @@ CSCTimingAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
                 CSCDetId tmp_id(endcap, station, 1, chamber);
                 histos_->fill1DHistByChamber(rhtime_corr, "hRHTiming", "recHit Timing", tmp_id, 200, 2, 6, "recHitsByChamber");
                 histos_->fill1DHistByType(nstrips, "hRHNumStrips", "Number of cathod strips", tmp_id, 10, -0.5, 9.5, "recHits");
-                histos_->fill1DHistByChamber(twire, "hAnodeTiming", "anode Timing", tmp_id, 200, -10, 10, "recHitsByChamber");
+                histos_->fill1DHistByChamber(twire, "hAnodeTiming", "anode Timing", tmp_id, 200, -25, 25, "recHitsByChamber");
               }
               else
               {
                 histos_->fill1DHistByChamber(rhtime_corr, "hRHTiming", "recHit Timing", id, 200, 2, 6, "recHitsByChamber");
                 histos_->fill1DHistByType(nstrips, "hRHNumStrips", "Number of cathod strips", id, 10, -0.5, 9.5, "recHits");
-                histos_->fill1DHistByChamber(twire, "hAnodeTiming", "anode Timing", id, 200, -10, 10, "recHitsByChamber");
+                histos_->fill1DHistByChamber(twire, "hAnodeTiming", "anode Timing", id, 200, -25, 25, "recHitsByChamber");
               }
             }
             if (makePlotsPerLayer_)
@@ -365,13 +365,15 @@ CSCTimingAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
               CSCDetId tmp_id(endcap, station, 1, chamber);                            
               histos_->fill1DHistByType(rhtime_corr, "hRHTiming", "recHit Timing", tmp_id, 200, -2, 2, "recHits");
               histos_->fill1DHistByType(nstrips, "hRHNumStrips", "Number of cathod strips", tmp_id, 10, -0.5, 9.5, "recHits");
-              histos_->fill1DHistByType(twire, "hAnodeTiming", "anode Timing", tmp_id, 200, -10, 10, "recHits");
+              histos_->fill1DHistByType(twire, "hAnodeTiming", "anode Timing", tmp_id, 200, -25, 25, "recHits");
+              histos_->fill1DHistByType(anode_bx_offset, "hAndoeBXOffset", "anode_bx_offset", tmp_id, 100, 800, 900, "recHits");
             }
             else
             {
               histos_->fill1DHistByType(rhtime_corr, "hRHTiming", "recHit Timing", id, 200, -2, 2, "recHits");
               histos_->fill1DHistByType(nstrips, "hRHNumStrips", "Number of cathod strips", id, 10, -0.5, 9.5, "recHits");
-              histos_->fill1DHistByType(twire, "hAnodeTiming", "anode Timing", id, 200, -10, 10, "recHits");
+              histos_->fill1DHistByType(twire, "hAnodeTiming", "anode Timing", id, 200, -25, 25, "recHits");
+              histos_->fill1DHistByType(anode_bx_offset, "hAndoeBXOffset", "anode_bx_offset", id, 100, 800, 900, "recHits");
             }
             if (makePlotsPerChamber_)
             {
@@ -380,13 +382,13 @@ CSCTimingAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
                 CSCDetId tmp_id(endcap, station, 1, chamber);                            
                 histos_->fill1DHistByChamber(rhtime_corr, "hRHTiming", "recHit Timing", tmp_id, 200, -2, 2, "recHitsByChamber");
                 histos_->fill1DHistByType(nstrips, "hRHNumStrips", "Number of cathod strips", tmp_id, 10, -0.5, 9.5, "recHits");
-                histos_->fill1DHistByChamber(twire, "hAnodeTiming", "anode Timing", tmp_id, 200, -10, 10, "recHitsByChamber");
+                histos_->fill1DHistByChamber(twire, "hAnodeTiming", "anode Timing", tmp_id, 200, -25, 25, "recHitsByChamber");
               }
               else
               {
                 histos_->fill1DHistByChamber(rhtime_corr, "hRHTiming", "recHit Timing", id, 200, -2, 2, "recHitsByChamber");
                 histos_->fill1DHistByType(nstrips, "hRHNumStrips", "Number of cathod strips", id, 10, -0.5, 9.5, "recHits");
-                histos_->fill1DHistByChamber(twire, "hAnodeTiming", "anode Timing", id, 200, -10, 10, "recHitsByChamber");
+                histos_->fill1DHistByChamber(twire, "hAnodeTiming", "anode Timing", id, 200, -25, 25, "recHitsByChamber");
               }
             }
             if (makePlotsPerLayer_)
@@ -411,6 +413,11 @@ CSCTimingAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
 
         double tseg = calculateSegmentTime(rhTimes_, wireTimes_);
         histos_->fill1DHistByType(tseg, "hNewSegTime", "new CSC segment time", segid, 200, -100., 100., "Segments");
+
+        // for (auto wt : wireTimes_) {
+        //   histos_->fill1DHistByChamber(wt, "hwireTimes", "Anode Timing after tail cut", id, 200, -10, 10, "recHitsByChamber");
+        //   histos_->fill1DHistByType(wt, "hwireTimes", "Anode Timing", id, 200, -10, 10, "recHits");
+        // }
 
         if (makePlotsPerChamber_)
         {
@@ -467,6 +474,7 @@ void CSCTimingAnalyzer::fillMaps (CSCDetId id)
   m_cfeb_cable_delay[id]  = cfeb_cable_delay;
   m_cfeb_cable_length[id] = cfeb_cable_length;
   m_cfeb_skew_delay[id]   = cfeb_skew_delay;
+  m_anode_bx_offset[id]   = anode_bx_offset;
   m_cfeb_cable_rev[id]    = cfeb_cable_rev;
     
   m_new_cfebCableDelay[id]    = new_cfebCableDelay;
@@ -665,6 +673,7 @@ void CSCTimingAnalyzer::setTimingParamBabyBranches (TTree* tree)
   tree->Branch("cfeb_cable_delay"      , &b_cfeb_cable_delay      );
   tree->Branch("cfeb_cable_length"     , &b_cfeb_cable_length     );
   tree->Branch("cfeb_skew_delay"       , &b_cfeb_skew_delay       );
+  tree->Branch("anode_bx_offset"       , &b_anode_bx_offset       );
   tree->Branch("chamber"               , &b_chamber               );
   tree->Branch("endcap"                , &b_endcap                );
   tree->Branch("new_cfeb_cable_delay"  , &b_new_cfeb_cable_delay  );
@@ -691,6 +700,7 @@ void CSCTimingAnalyzer::setTimingParamValues (const CSCDetId& id)
   b_cfeb_cable_delay      = m_cfeb_cable_delay[id];
   b_cfeb_cable_length     = m_cfeb_cable_length[id];
   b_cfeb_skew_delay       = m_cfeb_skew_delay[id];
+  b_anode_bx_offset       = m_anode_bx_offset[id];
   b_new_cfeb_cable_delay  = m_new_cfeb_cable_delay[id];
   b_new_cfeb_cable_length = m_new_cfeb_cable_length[id];
   b_new_cfeb_skew_delay   = m_new_cfeb_skew_delay[id];
@@ -772,6 +782,7 @@ CSCTimingAnalyzer::endJob()
     printMapToFile(m_cfeb_cable_delay  , "cfeb_cable_delay.txt"  );
     printMapToFile(m_cfeb_cable_length , "cfeb_cable_length.txt" );
     printMapToFile(m_cfeb_skew_delay   , "cfeb_skew_delay.txt"   );
+    printMapToFile(m_anode_bx_offset   , "anode_bx_offset.txt"   );
 
     printMapToFile(m_new_cfebCableDelay    , "new_cfebCableDelay.txt"    );
     printMapToFile(m_new_chipCorr          , "new_chipCorr.txt"          );
