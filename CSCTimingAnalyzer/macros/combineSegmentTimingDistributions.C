@@ -8,7 +8,7 @@
 #include "TPaveText.h"
 #include "TLatex.h"
 
-void combineSegmentTimingDistributions (std::string fname)
+void combineSegmentTimingDistributions (std::string fname, bool no_legend = false)
 {
     TFile file(fname.c_str());
     TDirectoryFile *dir = (TDirectoryFile*)file.Get("Segments");
@@ -99,13 +99,15 @@ void combineSegmentTimingDistributions (std::string fname)
     h2->GetXaxis()->SetRangeUser(-6*rms,6*rms);   
     TH1F* h2norm = (TH1F*)h2->DrawNormalized("hist");
     gPad->Update();
-    cms.Draw();
-    prelim.Draw();
-    data.Draw();
-    lumi.Draw();
+    if (!no_legend) {
+      cms.Draw();
+      prelim.Draw();
+      data.Draw();
+      lumi.Draw();
+    }    
     mean.Draw();
     stdev.Draw();
-    
+
     TPaveText *title = (TPaveText*)gPad->GetPrimitive("title");
     title->SetBorderSize(0);
     title->SetFillColor(0);
@@ -118,7 +120,7 @@ void combineSegmentTimingDistributions (std::string fname)
     title->SetTextSize(0.052);    
     title->SetTextAlign(11);
 
-    // c1.Print("plots/segment_time_all.pdf");
+    c1.Print("plots/segment_time_all.pdf");
     c1.Print("plots/segment_time_all.png");
-    // c1.Print("plots/segment_time_all.root");    
+    c1.Print("plots/segment_time_all.root");    
 }

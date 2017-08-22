@@ -36,7 +36,7 @@ int GetNumChambers (int s, int r)
     return 36;
 }
 
-void makeMeanTimingPlot (std::string fname, bool byStation)
+void makeMeanTimingPlot (std::string fname, bool byStation, bool no_legend = false)
 {    
     TFile file(fname.c_str());
     TDirectoryFile *dir;
@@ -182,11 +182,19 @@ void makeMeanTimingPlot (std::string fname, bool byStation)
     if (byStation)
     {
         h1->Draw("e1x0");
+
+        TF1 line0("line0", "0", h1->GetXaxis()->GetXmin(), h1->GetXaxis()->GetXmax());
+        line0.SetLineColor(13);
+        line0.SetLineStyle(5);
+        line0.Draw("same");
+
         gPad->Update();
-        cms.Draw();
-        prelim.Draw();
-        data.Draw();
-        lumi.Draw();
+        if (!no_legend) {
+          cms.Draw();
+          prelim.Draw();
+          data.Draw();
+          lumi.Draw();
+        }
 
         TPaveText *title = (TPaveText*)gPad->GetPrimitive("title");
         title->SetBorderSize(0);
@@ -200,9 +208,9 @@ void makeMeanTimingPlot (std::string fname, bool byStation)
         title->SetTextSize(0.046);    
         title->SetTextAlign(11);
         
-        // c1.Print("plots/mean_rhtime.pdf");
+        c1.Print("plots/mean_rhtime.pdf");
         c1.Print("plots/mean_rhtime.png");
-        // c1.Print("plots/mean_rhtime.root");
+        c1.Print("plots/mean_rhtime.root");
     }
     else
     {
@@ -210,11 +218,12 @@ void makeMeanTimingPlot (std::string fname, bool byStation)
         {
             item.second->Draw("e1x0");
             gPad->Update();
-            cms.Draw();
-            prelim.Draw();
-            data.Draw();
-            lumi.Draw();
-
+            if (!no_legend) {
+              cms.Draw();
+              prelim.Draw();
+              data.Draw();
+              lumi.Draw();
+            }
             TPaveText *title = (TPaveText*)gPad->GetPrimitive("title");
             title->SetBorderSize(0);
             title->SetFillColor(0);

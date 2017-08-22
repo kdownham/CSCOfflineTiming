@@ -11,7 +11,7 @@
 #include "TPaveStats.h"
 #include "TLatex.h"
 
-void combineRechitTimingDistributions (std::string fname)
+void combineRechitTimingDistributions (std::string fname, bool no_legend = false)
 {
     TFile file(fname.c_str());
     TDirectoryFile *dir = (TDirectoryFile*)file.Get("recHits");
@@ -38,10 +38,10 @@ void combineRechitTimingDistributions (std::string fname)
     }
 
     TH1F *h2 = new TH1F("h2", "h2", 200, -100, 100);
-    h2->GetXaxis()->SetTitle("hit time (ns)");
+    h2->GetXaxis()->SetTitle("cathode time (ns)");
     h2->GetYaxis()->SetTitle("Fraction of Hits/ns");
     h2->GetYaxis()->SetTitleOffset(1.1);
-    h2->SetTitle("CSC Hit Time");
+    h2->SetTitle("CSC Cathode Time");
     h2->SetTitleFont(42);
     h2->SetTitleSize(0.052);    
  
@@ -101,10 +101,12 @@ void combineRechitTimingDistributions (std::string fname)
     h2->GetXaxis()->SetRangeUser(-6*rms,6*rms);   
     TH1F* h2norm = (TH1F*)h2->DrawNormalized("hist");
     gPad->Update();
-    cms.Draw();
-    prelim.Draw();
-    data.Draw();
-    lumi.Draw();
+    if (!no_legend) {
+      cms.Draw();
+      prelim.Draw();
+      data.Draw();
+      lumi.Draw();
+    }
     mean.Draw();
     stdev.Draw();
     
@@ -120,7 +122,7 @@ void combineRechitTimingDistributions (std::string fname)
     title->SetTextSize(0.052);    
     title->SetTextAlign(11);
     
-    // c1.Print("plots/rechit_time_all.pdf");
-    c1.Print("plots/rechit_time_all.png");
-    // c1.Print("plots/rechit_time_all.root");
+    c1.Print("plots/rechit_time_all.pdf");
+    c1.Print("plots/cathode_time_all.png");
+    c1.Print("plots/rechit_time_all.root");
 }

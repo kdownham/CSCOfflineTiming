@@ -11,7 +11,7 @@
 #include "TPaveStats.h"
 #include "TLatex.h"
 
-void makeMuonTimingPlot (std::string fname)
+void makeMuonTimingPlot(std::string fname, bool no_legend = false)
 {
     TFile file(fname.c_str());
     TDirectoryFile *dir = (TDirectoryFile*)file.Get("Muons");
@@ -102,10 +102,12 @@ void makeMuonTimingPlot (std::string fname)
     h2->GetXaxis()->SetRangeUser(-6*rms,6*rms);   
     TH1F* h2norm = (TH1F*)h2->DrawNormalized("hist");
     gPad->Update();
-    cms.Draw();
-    prelim.Draw();
-    data.Draw();
-    lumi.Draw();
+    if (!no_legend) {
+      cms.Draw();
+      prelim.Draw();
+      data.Draw();
+      lumi.Draw();
+    }
     mean.Draw();
     stdev.Draw();
     
@@ -121,7 +123,7 @@ void makeMuonTimingPlot (std::string fname)
     title->SetTextSize(0.052);    
     title->SetTextAlign(11);
     
-    // c1.Print("plots/muon_time_all.pdf");
+    c1.Print("plots/muon_time_all.pdf");
     c1.Print("plots/muon_time_all.png");
-    // c1.Print("plots/muon_time_all.root");
+    c1.Print("plots/muon_time_all.root");
 }
