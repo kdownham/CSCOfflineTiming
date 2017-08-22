@@ -30,12 +30,13 @@ process.source = cms.Source("PoolSource",
                                 # '/store/user/sicheng/csctiming/2017/SingleMuon/v4/170626_204538/0000/test_66.root',
                                 # '/store/user/sicheng/csctiming/2017/SingleMuon/v4/170626_204538/0000/test_67.root',
                                 # '/store/user/fgolf/csc/timing/offline/2016/SingleMuon/v4/170514_042023/0000/test_28.root',
-                                # '/store/user/fgolf/csc/timing/offline/2016/SingleMuon/v4/170514_042023/0000/test_40.root',
-                                '/store/user/sicheng/csctiming/2017/SingleMuon/v4/170811_062223/0000/test_7.root',
-                                '/store/user/sicheng/csctiming/2017/SingleMuon/v4/170811_062223/0000/test_14.root',
-                                '/store/user/sicheng/csctiming/2017/SingleMuon/v4/170811_062223/0000/test_21.root',
-                                '/store/user/sicheng/csctiming/2017/SingleMuon/v4/170811_062223/0000/test_28.root',
-                                '/store/user/sicheng/csctiming/2017/SingleMuon/v4/170811_062223/0000/test_35.root',
+                                '/store/user/fgolf/csc/timing/offline/2016/SingleMuon/v4/170514_042023/0000/test_40.root',
+                                '/store/user/fgolf/csc/timing/offline/2016/SingleMuon/v4/170514_042023/0000/test_54.root',
+                                # '/store/user/sicheng/csctiming/2017/SingleMuon/v4/170811_062223/0000/test_7.root',
+                                # '/store/user/sicheng/csctiming/2017/SingleMuon/v4/170811_062223/0000/test_14.root',
+                                # '/store/user/sicheng/csctiming/2017/SingleMuon/v4/170811_062223/0000/test_21.root',
+                                # '/store/user/sicheng/csctiming/2017/SingleMuon/v4/170811_062223/0000/test_28.root',
+                                # '/store/user/sicheng/csctiming/2017/SingleMuon/v4/170811_062223/0000/test_35.root',
                                 )
 )
 
@@ -46,7 +47,7 @@ import FWCore.ParameterSet.Types as CfgTypes
 
 if applyGoodRunList:
     process.source.lumisToProcess = CfgTypes.untracked(CfgTypes.VLuminosityBlockRange())
-    JSONfile = '/home/users/sicheng/working/CSCtiming/CMSSW_9_2_4/src/CSCOfflineTiming/CSCTimingAnalyzer/test/Cert_297292-297723_13TeV_2017_HCAL_DCS_GOOD.txt'
+    JSONfile = '/home/users/sicheng/working/CSCTiming/CMSSW_9_2_4/src/CSCOfflineTiming/CSCTimingAnalyzer/test/Cert_297292-297723_13TeV_2017_HCAL_DCS_GOOD.txt'
     myLumis = LumiList.LumiList(filename = JSONfile).getCMSSWString().split(',')
     process.source.lumisToProcess.extend(myLumis)
 
@@ -64,7 +65,8 @@ process.cscTimingAnalyzer.checkCSCstatus = cms.untracked.bool(False)
 process.cscTimingAnalyzer.checkDCSstatus = cms.untracked.bool(False)
 process.cscTimingAnalyzer.removeHeuristicCorrection = cms.untracked.bool(False)
 process.cscTimingAnalyzer.applyNewHeuristicCorrectionByRing = cms.untracked.bool(False)
-process.cscTimingAnalyzer.applyNewHeuristicCorrectionByChamber = cms.untracked.bool(True)
+# process.cscTimingAnalyzer.applyNewHeuristicCorrectionByChamber = cms.untracked.bool(True)
+process.cscTimingAnalyzer.applyNewHeuristicCorrectionByChamber = cms.untracked.bool(False)
 
 applyUpdatedME11correctionsName = '_updateME11corrections'
 checkCSCstatusName = '_checkCSCstatus'
@@ -72,7 +74,7 @@ removeHeuristicCorrectionName = '_removeHeuristicCorr'
 # min_pt_name = '_minPt' + str(process.cscTimingAnalyzer.min_pt)
 # max_dz_name = '_maxDz' + str(process.cscTimingAnalyzer.max_dz)
 
-baseFileName = 'histos_testC'
+baseFileName = 'histos_fg2016'
 fileExtension = '.root'
 outfileName = baseFileName
 

@@ -36,25 +36,25 @@ int GetNumChambers (int s, int r)
     return 36;
 }
 
-void makeSegmentMeanTimingPlot (std::string fname, bool byStation, bool no_legend = false)
+void makeAnodeTimingPlot (std::string fname, bool byStation, bool no_legend = false)
 {    
     TFile file(fname.c_str());
     TDirectoryFile *dir;
     if (byStation)
-        dir = (TDirectoryFile*)file.Get("Segments");
+        dir = (TDirectoryFile*)file.Get("recHits");
     else
-        dir = (TDirectoryFile*)file.Get("SegmentsByChamber");
+        dir = (TDirectoryFile*)file.Get("recHitsByChamber");
     
     TH1F *h1 = new TH1F("h1", "h1", 18, 0, 18.);
     h1->GetXaxis()->SetTitle("Ring");
-    h1->GetYaxis()->SetTitle("Mean Segment Time (ns)");
-    h1->SetTitle("Mean and RMS of Segment Time for each ring of CSC chambers");
-    h1->GetYaxis()->SetRangeUser(-15,15);
-    h1->SetMarkerStyle(4);
+    h1->GetYaxis()->SetTitle("mean anode hit time (ns)");
+    h1->SetTitle("Mean and RMS of anode hit time for each ring of CSC chambers");
     h1->SetTitleFont(42);
     h1->SetTitleSize(0.052);    
+    h1->GetYaxis()->SetRangeUser(-15,15);
+    h1->SetMarkerStyle(4);
     h1->GetXaxis()->SetTitleOffset(0.85);
-
+    
     h1->Sumw2();
     h1->SetLineColor(kCyan+3);
     h1->SetFillColor(kCyan+3);
@@ -63,11 +63,15 @@ void makeSegmentMeanTimingPlot (std::string fname, bool byStation, bool no_legen
     
     std::map<std::string, TH1F*> mhist;    
     
+    float mean_ME1X(0);
+    float mean_MEX2(0);
+    float mean_MEX1(0);
+
     TList *hlist = dir->GetListOfKeys();
     for (auto hist : *hlist)
     {
         TString name = hist->GetName();
-        if (!name.Contains("hNewSegTime")) continue;
+        if (!name.Contains("hAnodeTiming")) continue;
         TObject *obj = dir->Get(name.Data());
         if (!obj->InheritsFrom(TH1::Class())) continue;
 
@@ -106,6 +110,11 @@ void makeSegmentMeanTimingPlot (std::string fname, bool byStation, bool no_legen
             h1->SetBinError(bin, rms);
             h1->GetXaxis()->SetBinLabel(bin, label.c_str());
             
+            if (station == 1) mean_ME1X += mean;
+            else if (ring == 1) mean_MEX1 += mean;
+            else if (ring == 2) mean_MEX2 += mean;
+            else std::cout << "Unidentified ring?!!" << endl;
+
             objarray->Delete();            
         }
         else
@@ -141,8 +150,8 @@ void makeSegmentMeanTimingPlot (std::string fname, bool byStation, bool no_legen
             {
                 mhist[slabel] = new TH1F(slabel.c_str(), slabel.c_str(), GetNumChambers(station, ring), 0, GetNumChambers(station, ring));
                 mhist[slabel]->GetXaxis()->SetTitle("Chamber");
-                mhist[slabel]->GetYaxis()->SetTitle("Mean Segment Time (ns)");
-                mhist[slabel]->SetTitle(Form("Mean and RMS of Segment Time for %s", label.c_str()));
+                mhist[slabel]->GetYaxis()->SetTitle("Mean Anode Time (ns)");
+                mhist[slabel]->SetTitle(Form("Mean and RMS of Anode Time for %s", label.c_str()));
                 mhist[slabel]->SetMarkerStyle(4);
                 mhist[slabel]->GetYaxis()->SetRangeUser(-15,15);
             }
@@ -178,7 +187,11 @@ void makeSegmentMeanTimingPlot (std::string fname, bool byStation, bool no_legen
     lumi.SetTextAlign(31);
     lumi.SetTextFont(42);
     lumi.SetTextSize(0.052);    
-    
+        
+    mean_ME1X /= 6;
+    mean_MEX1 /= 6;
+    mean_MEX2 /= 6;
+
     if (byStation)
     {
         h1->Draw("e1x0");
@@ -188,7 +201,22 @@ void makeSegmentMeanTimingPlot (std::string fname, bool byStation, bool no_legen
         line0.SetLineStyle(5);
         line0.Draw("same");
 
-        h1->Draw("e1x0 same");
+        // TF1 line1x("line1x", "-2", h1->GetXaxis()->GetXmin(), h1->GetXaxis()->GetXmax());
+        // line1x.SetLineColor(13);
+        // line1x.SetLineStyle(2);
+        // line1x.Draw("same");
+
+        // TF1 linex1("linex1", "-1.25", h1->GetXaxis()->GetXmin(), h1->GetXaxis()->GetXmax());
+        // linex1.SetLineColor(13);
+        // linex1.SetLineStyle(2);
+        // linex1.Draw("same");
+
+        // TF1 linex2("linex2", "-1.75", h1->GetXaxis()->GetXmin(), h1->GetXaxis()->GetXmax());
+        // linex2.SetLineColor(13);
+        // linex2.SetLineStyle(2);
+        // linex2.Draw("same");
+
+        h1->Draw("e1x0same");
 
         gPad->Update();
         if (!no_legend) {
@@ -197,7 +225,6 @@ void makeSegmentMeanTimingPlot (std::string fname, bool byStation, bool no_legen
           data.Draw();
           lumi.Draw();
         }
-
 
         TPaveText *title = (TPaveText*)gPad->GetPrimitive("title");
         title->SetBorderSize(0);
@@ -211,9 +238,14 @@ void makeSegmentMeanTimingPlot (std::string fname, bool byStation, bool no_legen
         title->SetTextSize(0.046);    
         title->SetTextAlign(11);
         
-        c1.Print("plots/mean_segtime.pdf");
-        c1.Print("plots/mean_segtime.png");
-        c1.Print("plots/mean_segtime.root");
+        c1.Print("plots/mean_anodetime.pdf");
+        c1.Print("plots/mean_anodetime.png");
+        c1.Print("plots/mean_anodetime.root");
+
+        cout << "mean_ME1X = " << mean_ME1X << endl;
+        cout << "mean_MEX1 = " << mean_MEX1 << endl;
+        cout << "mean_MEX2 = " << mean_MEX2 << endl;
+
     }
     else
     {
@@ -227,7 +259,6 @@ void makeSegmentMeanTimingPlot (std::string fname, bool byStation, bool no_legen
               data.Draw();
               lumi.Draw();
             }
-
             TPaveText *title = (TPaveText*)gPad->GetPrimitive("title");
             title->SetBorderSize(0);
             title->SetFillColor(0);
@@ -239,9 +270,9 @@ void makeSegmentMeanTimingPlot (std::string fname, bool byStation, bool no_legen
             title->SetTextFont(42);
             title->SetTextSize(0.052);    
             title->SetTextAlign(11);
-
-            // c1.Print(Form("plots/mean_segtime_%s.pdf", item.first.c_str()));
-            c1.Print(Form("plots/mean_segtime_%s.png", item.first.c_str()));
+            
+            c1.Print(Form("plots/mean_anodetime_%s.pdf", item.first.c_str()));
+            c1.Print(Form("plots/mean_anodetime_%s.png", item.first.c_str()));
         }
     }
 }

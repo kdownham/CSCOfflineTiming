@@ -44,7 +44,7 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 process.source = cms.Source("PoolSource",
                             fileNames = cms.untracked.vstring(
                                 # 'file:/home/users/fgolf/csc/CMSSW_8_0_17/src/test_new.root'
-                                # 'file:/home/users/sicheng/working/CSCtiming/testfile/SingleMuon_296968.root',
+                                # 'file:/home/users/sicheng/working/CSCTiming/testfile/SingleMuon_296968.root',
                                 '/store/data/Run2017B/SingleMuon/AOD/PromptReco-v1/000/297/296/00000/F0DF8991-2259-E711-8ED0-02163E019C8F.root',
                                 '/store/data/Run2017B/SingleMuon/AOD/PromptReco-v1/000/297/292/00000/F2EFD821-2259-E711-9324-02163E011810.root',
                             )

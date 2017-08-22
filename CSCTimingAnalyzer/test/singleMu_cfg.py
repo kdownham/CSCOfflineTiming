@@ -43,7 +43,7 @@ import FWCore.ParameterSet.Types as CfgTypes
 
 if applyGoodRunList:
     process.source.lumisToProcess = CfgTypes.untracked(CfgTypes.VLuminosityBlockRange())
-    JSONfile = '/home/users/sicheng/working/CSCtiming/CMSSW_9_2_4/src/CSCOfflineTiming/CSCTimingAnalyzer/test/Cert_294927-297723_13TeV_PromptReco_Collisions17_JSON.txt'
+    JSONfile = '/home/users/sicheng/working/CSCTiming/CMSSW_9_2_4/src/CSCOfflineTiming/CSCTimingAnalyzer/test/Cert_294927-297723_13TeV_PromptReco_Collisions17_JSON.txt'
     myLumis = LumiList.LumiList(filename = JSONfile).getCMSSWString().split(',')
     process.source.lumisToProcess.extend(myLumis)
 

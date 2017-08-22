@@ -181,12 +181,15 @@ void makeMeanTimingPlot (std::string fname, bool byStation, bool no_legend = fal
         
     if (byStation)
     {
+
         h1->Draw("e1x0");
 
         TF1 line0("line0", "0", h1->GetXaxis()->GetXmin(), h1->GetXaxis()->GetXmax());
         line0.SetLineColor(13);
         line0.SetLineStyle(5);
         line0.Draw("same");
+
+        h1->Draw("e1x0 same");
 
         gPad->Update();
         if (!no_legend) {

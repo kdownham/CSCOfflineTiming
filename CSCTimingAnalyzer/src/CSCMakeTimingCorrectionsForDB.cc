@@ -275,9 +275,19 @@ CSCMakeTimingCorrectionsForDB::analyze(const edm::Event& iEvent, const edm::Even
 
 unsigned int CSCMakeTimingCorrectionsForDB::getUpdatedAnodeBXOffset (CSCDetId id)
 {
-    if (id.station() == 1 && (id.ring() == 1 || id.ring() == 4)) return 830;
-    else if (id.station() > 1 && id.ring() == 1) return 820;
-    else if (id.ring() == 2 || id.ring() == 3) return 828;
+    // if (id.station() == 1 && (id.ring() == 1 || id.ring() == 4)) return 830;
+    // else if (id.station() > 1 && id.ring() == 1) return 820;
+    // else if (id.ring() == 2 || id.ring() == 3) return 828;
+    // return 820;
+
+    // if (id.station() == 1 && id.ring() == 3) return 820;
+    // else if (id.station() > 1 && id.ring() == 1) return 815;
+    // else if (id.ring() == 2 || id.ring() == 1) return 822;
+    // return 820;
+
+    if (id.station() == 1 && id.ring() == 1) return 822;
+    else if (id.station() > 1 && id.ring() == 1) return 815;
+    else if (id.ring() == 2 || id.ring() == 3) return 820;
     return 820;
 }
 

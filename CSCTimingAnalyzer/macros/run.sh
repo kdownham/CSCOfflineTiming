@@ -54,8 +54,22 @@
 # rot makeMuonTimingPlot.C'("/home/users/sicheng/working/CSCTiming/CMSSW_9_2_4/src/CSCOfflineTiming/CSCTimingAnalyzer/test/histos_rereco299649.root")'
 # rot combineRechitTimingDistributions.C'("/home/users/sicheng/working/CSCTiming/CMSSW_9_2_4/src/CSCOfflineTiming/CSCTimingAnalyzer/test/histos_rereco299649.root")'
 # rot combineSegmentTimingDistributions.C'("/home/users/sicheng/working/CSCTiming/CMSSW_9_2_4/src/CSCOfflineTiming/CSCTimingAnalyzer/test/histos_rereco299649.root")'
-rot makeMeanTimingPlot.C'("/home/users/sicheng/working/CSCTiming/CMSSW_9_2_4/src/CSCOfflineTiming/CSCTimingAnalyzer/test/histos_rereco299649.root",true)'
-rot makeSegmentMeanTimingPlot.C'("/home/users/sicheng/working/CSCTiming/CMSSW_9_2_4/src/CSCOfflineTiming/CSCTimingAnalyzer/test/histos_rereco299649.root",true)'
+# rot makeMeanTimingPlot.C'("/home/users/sicheng/working/CSCTiming/CMSSW_9_2_4/src/CSCOfflineTiming/CSCTimingAnalyzer/test/histos_rereco299649.root",true)'
+# rot makeSegmentMeanTimingPlot.C'("/home/users/sicheng/working/CSCTiming/CMSSW_9_2_4/src/CSCOfflineTiming/CSCTimingAnalyzer/test/histos_rereco299649.root",true)'
+# rot makeAnodeTimingPlot.C'("/home/users/sicheng/working/CSCTiming/CMSSW_9_2_4/src/CSCOfflineTiming/CSCTimingAnalyzer/test/histos_rereco299649.root",true)'
+
+# rot makeMuonTimingPlot.C'("/home/users/sicheng/working/CSCTiming/CMSSW_9_2_4/src/CSCOfflineTiming/CSCTimingAnalyzer/test/histos_newBXOffset.root")'
+# rot combineRechitTimingDistributions.C'("/home/users/sicheng/working/CSCTiming/CMSSW_9_2_4/src/CSCOfflineTiming/CSCTimingAnalyzer/test/histos_newBXOffset.root")'
+# rot combineSegmentTimingDistributions.C'("/home/users/sicheng/working/CSCTiming/CMSSW_9_2_4/src/CSCOfflineTiming/CSCTimingAnalyzer/test/histos_newBXOffset.root")'
+# rot makeMeanTimingPlot.C'("/home/users/sicheng/working/CSCTiming/CMSSW_9_2_4/src/CSCOfflineTiming/CSCTimingAnalyzer/test/histos_newBXOffset.root",true)'
+# rot makeSegmentMeanTimingPlot.C'("/home/users/sicheng/working/CSCTiming/CMSSW_9_2_4/src/CSCOfflineTiming/CSCTimingAnalyzer/test/histos_newBXOffset.root",true)'
+# rot makeAnodeTimingPlot.C'("/home/users/sicheng/working/CSCTiming/CMSSW_9_2_4/src/CSCOfflineTiming/CSCTimingAnalyzer/test/histos_newBXOffset.root",true)'
+
+rot makeAnodeTimingPlot.C'("/home/users/sicheng/working/CSCTiming/CMSSW_9_2_4/src/CSCOfflineTiming/CSCTimingAnalyzer/test/histos_fg2016.root",true)'
+
+# rot makeMeanTimingPlot.C'("/home/users/sicheng/working/CSCTiming/CMSSW_9_2_4/src/CSCOfflineTiming/CSCTimingAnalyzer/test/histos_moreStat.root",true)'
+# rot makeSegmentMeanTimingPlot.C'("/home/users/sicheng/working/CSCTiming/CMSSW_9_2_4/src/CSCOfflineTiming/CSCTimingAnalyzer/test/histos_moreStat.root",true)'
+# rot makeAnodeTimingPlot.C'("/home/users/sicheng/working/CSCTiming/CMSSW_9_2_4/src/CSCOfflineTiming/CSCTimingAnalyzer/test/histos_moreStat.root",true)'
 
 # rot dumpPlots.C'("/home/users/sicheng/working/CSCTiming/CMSSW_9_2_4/src/CSCOfflineTiming/CSCTimingAnalyzer/test/histos_newAnodeOffset.root")'
 # rot makeMuonTimingPlot.C'("/home/users/sicheng/working/CSCTiming/CMSSW_9_2_4/src/CSCOfflineTiming/CSCTimingAnalyzer/test/histos_newAnodeOffset.root", true)'
