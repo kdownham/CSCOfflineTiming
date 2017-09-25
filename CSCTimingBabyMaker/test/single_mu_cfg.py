@@ -18,7 +18,7 @@ process.load('Configuration.StandardSequences.EndOfProcess_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 
 # Data Run 2017
-process.GlobalTag.globaltag = '92X_dataRun2_Prompt_v4'
+process.GlobalTag.globaltag = '92X_dataRun2_Prompt_v8'
 
 # Config CSC for postls1
 # process.CSCGeometryESModule.useGangedStripsInME1a = cms.bool(False)
@@ -45,8 +45,9 @@ process.source = cms.Source("PoolSource",
                             fileNames = cms.untracked.vstring(
                                 # 'file:/home/users/fgolf/csc/CMSSW_8_0_17/src/test_new.root'
                                 # 'file:/home/users/sicheng/working/CSCTiming/testfile/SingleMuon_296968.root',
-                                '/store/data/Run2017B/SingleMuon/AOD/PromptReco-v1/000/297/296/00000/F0DF8991-2259-E711-8ED0-02163E019C8F.root',
-                                '/store/data/Run2017B/SingleMuon/AOD/PromptReco-v1/000/297/292/00000/F2EFD821-2259-E711-9324-02163E011810.root',
+                                # '/store/data/Run2017B/SingleMuon/AOD/PromptReco-v1/000/297/296/00000/F0DF8991-2259-E711-8ED0-02163E019C8F.root',
+                                # '/store/data/Run2017B/SingleMuon/AOD/PromptReco-v1/000/297/292/00000/F2EFD821-2259-E711-9324-02163E011810.root',
+                                '/store/data/Run2017D/SingleMuon/AOD/PromptReco-v1/000/302/031/00000/0EF9C572-338F-E711-95D4-02163E01A542.root',
                             )
 )
 
