@@ -51,7 +51,7 @@ void makeAnodeTimingPlot (std::string fname, bool byStation, bool no_legend = fa
     h1->SetTitle("Mean and RMS of anode hit time for each ring of CSC chambers");
     h1->SetTitleFont(42);
     h1->SetTitleSize(0.052);    
-    h1->GetYaxis()->SetRangeUser(-15,15);
+    h1->GetYaxis()->SetRangeUser(-25,25);
     h1->SetMarkerStyle(4);
     h1->GetXaxis()->SetTitleOffset(0.85);
     
@@ -100,8 +100,30 @@ void makeAnodeTimingPlot (std::string fname, bool byStation, bool no_legend = fa
             TString r = station_ring[1];
             if (r.IsDigit()) ring = r.Atoi();            
 
-            double mean = ((TH1*)obj)->GetMean();
-            double rms = ((TH1*)obj)->GetRMS();
+            auto h0 = (TH1*) obj;
+            double mean = h0->GetMean();
+            double rms  = h0->GetRMS();
+            bool modified = false;
+            do {
+              double maxDiff = -1;
+              int maxBin = -1;
+              for (int i = 1; i <= h0->GetNbinsX(); ++i) {
+                if (h0->GetBinContent(i) == 0) continue;
+                double anodeTime = h0->GetBinCenter(i);
+                double diff = fabs(anodeTime - mean);
+                if (diff > maxDiff) {
+                  maxDiff = diff;
+                  maxBin = i;
+                }
+              }
+              if (maxDiff > 26) {
+                h0->SetBinContent(maxBin, 0);
+                mean = h0->GetMean();
+                rms  = h0->GetRMS();
+                modified = true;
+              }
+            } while (modified);
+
             int bin = GetBin(endcap, station, ring);
             std::string label = "ME"+std::string(delim.Data())+std::string(s.Data())+"/"+std::string(r.Data());
             std::cout << "bin = " << bin << " from " << endcap << ", " << station << ", " << ring << std::endl;
@@ -182,7 +204,7 @@ void makeAnodeTimingPlot (std::string fname, bool byStation, bool no_legend = fa
     data.SetTextFont(52);
     data.SetTextSize(0.0456);
 
-    TLatex lumi(0.85, 0.82, "2.89 fb^{-1} (13 TeV)");
+    TLatex lumi(0.85, 0.82, "12.0 fb^{-1} (13 TeV)");
     lumi.SetNDC();
     lumi.SetTextAlign(31);
     lumi.SetTextFont(42);

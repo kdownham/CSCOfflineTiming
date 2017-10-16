@@ -81,7 +81,7 @@ void makeMuonTimingPlot(std::string fname, bool no_legend = false)
     data.SetTextFont(52);
     data.SetTextSize(0.0456);
 
-    TLatex lumi(0.9, 0.93, "2.89 fb^{-1} (13 TeV)");
+    TLatex lumi(0.9, 0.93, "12.0 fb^{-1} (13 TeV)");
     lumi.SetNDC();
     lumi.SetTextAlign(31);
     lumi.SetTextFont(42);

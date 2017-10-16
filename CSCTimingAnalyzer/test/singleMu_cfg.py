@@ -27,9 +27,10 @@ process.source = cms.Source("PoolSource",
                                 # '/store/user/sicheng/csctiming/2017/SingleMuon/v4/170626_204407/0000/test_4.root',
                                 # '/store/user/sicheng/csctiming/2017/SingleMuon/v4/170626_204538/0000/test_21.root',
                                 # '/store/user/sicheng/csctiming/2017/SingleMuon/v4/170626_204538/0000/test_60.root',
-                                '/store/user/sicheng/csctiming/2017/SingleMuon/v4/170626_204538/0000/test_65.root',
-                                '/store/user/sicheng/csctiming/2017/SingleMuon/v4/170626_204538/0000/test_66.root',
+                                # '/store/user/sicheng/csctiming/2017/SingleMuon/v4/170626_204538/0000/test_65.root',
+                                # '/store/user/sicheng/csctiming/2017/SingleMuon/v4/170626_204538/0000/test_66.root',
                                 '/store/user/sicheng/csctiming/2017/SingleMuon/v4/170626_204538/0000/test_67.root',
+                                # '/store/user/sicheng/csctiming/2017/SingleMuon/2017D_v1/170924_061250/0000/test_143.root',
                                 # '/hadoop/cms/store/user/fgolf/csc/timing/offline/2016/SingleMuon/v4/170117_224759/0000/test_256.root',
                                 # '/store/user/fgolf/csc/timing/offline/2016/SingleMuon/v4/170514_042023/0000/test_28.root',
                                 # '/store/user/fgolf/csc/timing/offline/2016/SingleMuon/v4/170514_042023/0000/test_40.root',
@@ -43,7 +44,7 @@ import FWCore.ParameterSet.Types as CfgTypes
 
 if applyGoodRunList:
     process.source.lumisToProcess = CfgTypes.untracked(CfgTypes.VLuminosityBlockRange())
-    JSONfile = '/home/users/sicheng/working/CSCTiming/CMSSW_9_2_4/src/CSCOfflineTiming/CSCTimingAnalyzer/test/Cert_294927-297723_13TeV_PromptReco_Collisions17_JSON.txt'
+    JSONfile = '/home/users/sicheng/working/CSCTiming/CMSSW_9_3_1/src/CSCOfflineTiming/CSCTimingAnalyzer/test/Cert_294927-302654_13TeV_PromptReco_Collisions17_JSON.txt'
     myLumis = LumiList.LumiList(filename = JSONfile).getCMSSWString().split(',')
     process.source.lumisToProcess.extend(myLumis)
 

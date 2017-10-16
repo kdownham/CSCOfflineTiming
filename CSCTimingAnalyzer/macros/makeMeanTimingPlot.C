@@ -173,7 +173,7 @@ void makeMeanTimingPlot (std::string fname, bool byStation, bool no_legend = fal
     data.SetTextFont(52);
     data.SetTextSize(0.0456);
 
-    TLatex lumi(0.85, 0.82, "2.89 fb^{-1} (13 TeV)");
+    TLatex lumi(0.85, 0.82, "12.0 fb^{-1} (13 TeV)");
     lumi.SetNDC();
     lumi.SetTextAlign(31);
     lumi.SetTextFont(42);
