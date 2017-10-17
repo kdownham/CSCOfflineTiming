@@ -62,6 +62,7 @@ void combineRechitTimingDistributions (std::string fname, bool no_legend = false
 
     double rms = h2->GetRMS();
     double avg = h2->GetMean();
+    if (avg > -0.05) avg = 0.01;
 
     TLatex cms(0.17, 0.83, "CMS");
     cms.SetNDC();
@@ -122,7 +123,7 @@ void combineRechitTimingDistributions (std::string fname, bool no_legend = false
     title->SetTextSize(0.052);    
     title->SetTextAlign(11);
     
-    c1.Print("plots/rechit_time_all.pdf");
+    c1.Print("plots/cathode_time_all.pdf");
     c1.Print("plots/cathode_time_all.png");
-    c1.Print("plots/rechit_time_all.root");
+    c1.Print("plots/cathode_time_all.root");
 }

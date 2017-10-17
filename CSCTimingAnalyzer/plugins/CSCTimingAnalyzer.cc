@@ -214,6 +214,7 @@ CSCTimingAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
 
           CSCDetId id(endcap, station, ring, chamber, layer);                    
           double rhtime_corr = rhtime;
+          double twire_corr = twire;
                     
           if (station == 1 && (ring == 1 || ring == 4))
           {
@@ -316,8 +317,14 @@ CSCTimingAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
             rhtime_corr -= (chipCorr + 52.41);
           }
 
+          // Temporary fix for applying twire correction on the fly
+          if (station == 1)   twire_corr += 2;
+          else if (ring == 2) twire_corr += 1.75;
+          else if (ring == 1) twire_corr += 1.50;
+          else std::cout << "WARNING: has left over ring for wire time correction!!\n";
+
           rhTimes_.push_back(rhtime_corr);
-          wireTimes_.push_back(twire);
+          wireTimes_.push_back(twire_corr);
           rhtime_corr /= 50.;                    
 
           // fill histogram per station
@@ -328,13 +335,13 @@ CSCTimingAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
               CSCDetId tmp_id(endcap, station, 1, chamber);
               histos_->fill1DHistByType(rhtime_corr, "hRHTiming", "recHit Timing", tmp_id, 200, 2, 6, "recHits");
               histos_->fill1DHistByType(nstrips, "hRHNumStrips", "Number of cathod strips", tmp_id, 10, -0.5, 9.5, "recHits");
-              histos_->fill1DHistByType(twire, "hAnodeTiming", "anode Timing", tmp_id, 200, -25, 25, "recHits");
+              histos_->fill1DHistByType(twire_corr, "hAnodeTiming", "anode Timing", tmp_id, 200, -25, 25, "recHits");
             }
             else
             {
               histos_->fill1DHistByType(rhtime_corr, "hRHTiming", "recHit Timing", id, 200, 2, 6, "recHits");
               histos_->fill1DHistByType(nstrips, "hRHNumStrips", "Number of cathod strips", id, 10, -0.5, 9.5, "recHits");
-              histos_->fill1DHistByType(twire, "hAnodeTiming", "anode Timing", id, 200, -25, 25, "recHits");
+              histos_->fill1DHistByType(twire_corr, "hAnodeTiming", "anode Timing", id, 200, -25, 25, "recHits");
             }
             if (makePlotsPerChamber_)
             {
@@ -343,13 +350,13 @@ CSCTimingAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
                 CSCDetId tmp_id(endcap, station, 1, chamber);
                 histos_->fill1DHistByChamber(rhtime_corr, "hRHTiming", "recHit Timing", tmp_id, 200, 2, 6, "recHitsByChamber");
                 histos_->fill1DHistByType(nstrips, "hRHNumStrips", "Number of cathod strips", tmp_id, 10, -0.5, 9.5, "recHits");
-                histos_->fill1DHistByChamber(twire, "hAnodeTiming", "anode Timing", tmp_id, 200, -25, 25, "recHitsByChamber");
+                histos_->fill1DHistByChamber(twire_corr, "hAnodeTiming", "anode Timing", tmp_id, 200, -25, 25, "recHitsByChamber");
               }
               else
               {
                 histos_->fill1DHistByChamber(rhtime_corr, "hRHTiming", "recHit Timing", id, 200, 2, 6, "recHitsByChamber");
                 histos_->fill1DHistByType(nstrips, "hRHNumStrips", "Number of cathod strips", id, 10, -0.5, 9.5, "recHits");
-                histos_->fill1DHistByChamber(twire, "hAnodeTiming", "anode Timing", id, 200, -25, 25, "recHitsByChamber");
+                histos_->fill1DHistByChamber(twire_corr, "hAnodeTiming", "anode Timing", id, 200, -25, 25, "recHitsByChamber");
               }
             }
             if (makePlotsPerLayer_)
@@ -365,14 +372,14 @@ CSCTimingAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
               CSCDetId tmp_id(endcap, station, 1, chamber);                            
               histos_->fill1DHistByType(rhtime_corr, "hRHTiming", "recHit Timing", tmp_id, 200, -2, 2, "recHits");
               histos_->fill1DHistByType(nstrips, "hRHNumStrips", "Number of cathod strips", tmp_id, 10, -0.5, 9.5, "recHits");
-              histos_->fill1DHistByType(twire, "hAnodeTiming", "anode Timing", tmp_id, 200, -25, 25, "recHits");
+              histos_->fill1DHistByType(twire_corr, "hAnodeTiming", "anode Timing", tmp_id, 200, -25, 25, "recHits");
               histos_->fill1DHistByType(anode_bx_offset, "hAndoeBXOffset", "anode_bx_offset", tmp_id, 100, 800, 900, "recHits");
             }
             else
             {
               histos_->fill1DHistByType(rhtime_corr, "hRHTiming", "recHit Timing", id, 200, -2, 2, "recHits");
               histos_->fill1DHistByType(nstrips, "hRHNumStrips", "Number of cathod strips", id, 10, -0.5, 9.5, "recHits");
-              histos_->fill1DHistByType(twire, "hAnodeTiming", "anode Timing", id, 200, -25, 25, "recHits");
+              histos_->fill1DHistByType(twire_corr, "hAnodeTiming", "anode Timing", id, 200, -25, 25, "recHits");
               histos_->fill1DHistByType(anode_bx_offset, "hAndoeBXOffset", "anode_bx_offset", id, 100, 800, 900, "recHits");
             }
             if (makePlotsPerChamber_)
@@ -382,13 +389,13 @@ CSCTimingAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
                 CSCDetId tmp_id(endcap, station, 1, chamber);                            
                 histos_->fill1DHistByChamber(rhtime_corr, "hRHTiming", "recHit Timing", tmp_id, 200, -2, 2, "recHitsByChamber");
                 histos_->fill1DHistByType(nstrips, "hRHNumStrips", "Number of cathod strips", tmp_id, 10, -0.5, 9.5, "recHits");
-                histos_->fill1DHistByChamber(twire, "hAnodeTiming", "anode Timing", tmp_id, 200, -25, 25, "recHitsByChamber");
+                histos_->fill1DHistByChamber(twire_corr, "hAnodeTiming", "anode Timing", tmp_id, 200, -25, 25, "recHitsByChamber");
               }
               else
               {
                 histos_->fill1DHistByChamber(rhtime_corr, "hRHTiming", "recHit Timing", id, 200, -2, 2, "recHitsByChamber");
                 histos_->fill1DHistByType(nstrips, "hRHNumStrips", "Number of cathod strips", id, 10, -0.5, 9.5, "recHits");
-                histos_->fill1DHistByChamber(twire, "hAnodeTiming", "anode Timing", id, 200, -25, 25, "recHitsByChamber");
+                histos_->fill1DHistByChamber(twire_corr, "hAnodeTiming", "anode Timing", id, 200, -25, 25, "recHitsByChamber");
               }
             }
             if (makePlotsPerLayer_)

@@ -211,9 +211,9 @@ void makeMeanTimingPlot (std::string fname, bool byStation, bool no_legend = fal
         title->SetTextSize(0.046);    
         title->SetTextAlign(11);
         
-        c1.Print("plots/mean_rhtime.pdf");
-        c1.Print("plots/mean_rhtime.png");
-        c1.Print("plots/mean_rhtime.root");
+        c1.Print("plots/mean_cathodetime.pdf");
+        c1.Print("plots/mean_cathodetime.png");
+        c1.Print("plots/mean_cathodetime.root");
     }
     else
     {
@@ -239,8 +239,8 @@ void makeMeanTimingPlot (std::string fname, bool byStation, bool no_legend = fal
             title->SetTextSize(0.052);    
             title->SetTextAlign(11);
             
-            c1.Print(Form("plots/mean_rhtime_%s.pdf", item.first.c_str()));
-            c1.Print(Form("plots/mean_rhtime_%s.png", item.first.c_str()));
+            c1.Print(Form("plots/mean_cathodetime_%s.pdf", item.first.c_str()));
+            c1.Print(Form("plots/mean_cathodetime_%s.png", item.first.c_str()));
         }
     }
 }
