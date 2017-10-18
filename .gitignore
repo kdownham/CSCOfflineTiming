@@ -16,3 +16,4 @@ __init__.py
 *.bak
 *.db
 *.dat
+/CSCTimingBabyMaker/test/crab*

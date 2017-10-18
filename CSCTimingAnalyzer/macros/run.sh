@@ -61,12 +61,12 @@
 # rot makeSegmentMeanTimingPlot.C'("/home/users/sicheng/working/CSCTiming/CMSSW_9_2_4/src/CSCOfflineTiming/CSCTimingAnalyzer/test/histos_rereco299649.root",true)'
 # rot makeAnodeTimingPlot.C'("/home/users/sicheng/working/CSCTiming/CMSSW_9_2_4/src/CSCOfflineTiming/CSCTimingAnalyzer/test/histos_rereco299649.root",true)'
 
-# rot makeMuonTimingPlot.C'("/home/users/sicheng/working/CSCTiming/rootfiles/histos_agr_rhc_Oct16.root")'
-# rot combineRechitTimingDistributions.C'("/home/users/sicheng/working/CSCTiming/rootfiles/histos_agr_rhc_Oct16.root")'
-# rot combineSegmentTimingDistributions.C'("/home/users/sicheng/working/CSCTiming/rootfiles/histos_agr_rhc_Oct16.root")'
-# rot makeMeanTimingPlot.C'("/home/users/sicheng/working/CSCTiming/rootfiles/histos_agr_rhc_Oct16.root",true)'
-# rot makeSegmentMeanTimingPlot.C'("/home/users/sicheng/working/CSCTiming/rootfiles/histos_agr_rhc_Oct16.root",true)'
-# rot makeAnodeTimingPlot.C'("/home/users/sicheng/working/CSCTiming/rootfiles/histos_agr_rhc_Oct16.root",true)'
+rot makeMuonTimingPlot.C'("/home/users/sicheng/working/CSCTiming/rootfiles/histos_agr_rhc_Oct16.root")'
+rot combineRechitTimingDistributions.C'("/home/users/sicheng/working/CSCTiming/rootfiles/histos_agr_rhc_Oct16.root")'
+rot combineSegmentTimingDistributions.C'("/home/users/sicheng/working/CSCTiming/rootfiles/histos_agr_rhc_Oct16.root")'
+rot makeMeanTimingPlot.C'("/home/users/sicheng/working/CSCTiming/rootfiles/histos_agr_rhc_Oct16.root",true)'
+rot makeSegmentMeanTimingPlot.C'("/home/users/sicheng/working/CSCTiming/rootfiles/histos_agr_rhc_Oct16.root",true)'
+rot makeAnodeTimingPlot.C'("/home/users/sicheng/working/CSCTiming/rootfiles/histos_agr_rhc_Oct16.root",true)'
 rot combineAnodeTimingDistributions.C'("/home/users/sicheng/working/CSCTiming/rootfiles/histos_agr_rhc_Oct16.root")'
 
 # rot makeMuonTimingPlot.C'("/home/users/sicheng/working/CSCTiming/CMSSW_9_2_4/src/CSCOfflineTiming/CSCTimingAnalyzer/test/histos_newBXOffset.root")'
