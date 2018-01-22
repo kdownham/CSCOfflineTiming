@@ -317,12 +317,6 @@ CSCTimingAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
             rhtime_corr -= (chipCorr + 52.41);
           }
 
-          // Temporary fix for applying twire correction on the fly
-          if (station == 1)   twire_corr += 2;
-          else if (ring == 2) twire_corr += 1.75;
-          else if (ring == 1) twire_corr += 1.50;
-          else std::cout << "WARNING: has left over ring for wire time correction!!\n";
-
           rhTimes_.push_back(rhtime_corr);
           wireTimes_.push_back(twire_corr);
           rhtime_corr /= 50.;                    
