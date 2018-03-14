@@ -25,13 +25,28 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1) )
 process.source = cms.Source("PoolSource",
                             # replace 'myfile.root' with the source file you want to use
                             fileNames = cms.untracked.vstring(
-                                '/store/data/Run2016H/SingleMuon/MINIAOD/PromptReco-v3/000/284/036/00000/0E02D50E-989F-E611-A962-FA163EE15C80.root'
+                                'file:/home/users/sicheng/working/CSCTiming/CMSSW_10_1_0_pre2/test/step3_mcdb_bxshift2.root'
+                                # '/store/data/Run2017F/SingleMuon/AOD/17Nov2017-v1/50000/A27C5ABB-F3DE-E711-B8ED-008CFAE45364.root'
                                 # 'none.root'
                             )
 )
 
 # process.options = cms.untracked.PSet( SkipEvent = cms.untracked.vstring('ProductNotFound') )
+# process.load("CSCOfflineTiming.CSCTimingAnalyzer.cscMakeTimingCorrectionsForDB_cfi")
 
-process.load("CSCOfflineTiming.CSCTimingAnalyzer.cscMakeTimingCorrectionsForDB_cfi")
+process.cscMakeTimingCorrectionsForDB = cms.EDAnalyzer(
+    'CSCMakeTimingCorrectionsForDB',
+    # Use output from determineHeuristicCorrections.C
+    heuristicCorrFileName = cms.untracked.string('/home/users/sicheng/working/CSCTiming/CMSSW_10_1_0_pre2/src/CSCOfflineTiming/CSCTimingAnalyzer/data/timing_corrections_by_chamber.txt'),
+    cableLengthFileName = cms.untracked.string('/home/users/sicheng/working/CSCTiming/CMSSW_10_1_0_pre2/src/CSCOfflineTiming/CSCTimingAnalyzer/data/cable_lengths_by_chamber_v2.txt'),
+    outFileName = cms.untracked.string('/home/users/sicheng/working/CSCTiming/CMSSW_10_1_0_pre2/src/CSCOfflineTiming/CSCTimingAnalyzer/data/timing_corrections_by_chamber_unsorted.dat'),
+    outChipFileName = cms.untracked.string('/home/users/sicheng/working/CSCTiming/CMSSW_10_1_0_pre2/src/CSCOfflineTiming/CSCTimingAnalyzer/data/chipSpeed_corrections_for_db.txt'),
+    readBadChannels = cms.bool(True),
+    readBadChambers = cms.bool(True),
+    CSCUseTimingCorrections = cms.bool(True),
+    CSCUseGasGainCorrections = cms.bool(True),
+    verbose = cms.bool(False),
+    updateOnlyNewChambers = cms.untracked.bool(False),
+)
 
 process.p = cms.Path(process.cscMakeTimingCorrectionsForDB)

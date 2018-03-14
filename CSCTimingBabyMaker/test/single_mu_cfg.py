@@ -25,11 +25,6 @@ process.GlobalTag.globaltag = '92X_dataRun2_Prompt_v8'
 # process.CSCIndexerESProducer.AlgoName=cms.string("CSCIndexerPostls1")
 # process.CSCChannelMapperESProducer.AlgoName=cms.string("CSCChannelMapperPostls1")
 
-# automatically name the output file correctly and uniquely
-baseFileName = 'csc_singleMu'
-fileExtension = '.root'
-outfileName = baseFileName
-
 #process.MessageLogger.cerr.threshold = 'ERROR'
 process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 process.MessageLogger.suppressError = cms.untracked.vstring('HLTConfigProvider','cscTimingBabyMaker')
@@ -47,7 +42,8 @@ process.source = cms.Source("PoolSource",
                                 # 'file:/home/users/sicheng/working/CSCTiming/testfile/SingleMuon_296968.root',
                                 # '/store/data/Run2017B/SingleMuon/AOD/PromptReco-v1/000/297/296/00000/F0DF8991-2259-E711-8ED0-02163E019C8F.root',
                                 # '/store/data/Run2017B/SingleMuon/AOD/PromptReco-v1/000/297/292/00000/F2EFD821-2259-E711-9324-02163E011810.root',
-                                '/store/data/Run2017D/SingleMuon/AOD/PromptReco-v1/000/302/031/00000/0EF9C572-338F-E711-95D4-02163E01A542.root',
+                                # 'file:/home/users/sicheng/working/CSCTiming/CMSSW_10_1_0_pre2/test/step3_mcdb_bxshift2.root',
+                                'file:/home/users/sicheng/working/CSCTiming/CMSSW_10_1_0_pre2/test/step3_mcdb_v3.root',
                             )
 )
 
@@ -55,11 +51,14 @@ process.load('CSCOfflineTiming.CSCTimingBabyMaker.cscTimingBabyMaker_cfi')
 process.cscTimingBabyMaker.debug = cms.untracked.bool(False)
 process.cscTimingBabyMaker.useMuonSegmentMatcher = cms.untracked.bool(False)
 
+# automatically name the output file correctly and uniquely
+outfileName = 'test_mcdbv3.root'
+baseFileName = outfileName.split('.')[0]
+outfileName = baseFileName
 if process.cscTimingBabyMaker.useMuonSegmentMatcher:
     outfileName = outfileName + '_useMuonSegmentMatcher'
-outfileName = outfileName+fileExtension
-outfileName = 'test.root'
-print outfileName
+outfileName = outfileName + '.root'
+print 'Output to file: ', outfileName
 
 # From RAW
 process.p = cms.Path(process.cscTimingBabyMaker)

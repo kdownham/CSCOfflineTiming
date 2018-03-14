@@ -2,7 +2,7 @@ import FWCore.ParameterSet.Config as cms
 
 process = cms.Process("CSCTIMINGANALYSIS")
 
-applyGoodRunList = cms.bool(True)
+applyGoodRunList = cms.bool(False)
 
 process.load("FWCore.MessageService.MessageLogger_cfi")
 process.MessageLogger.cerr.FwkReport.reportEvery = 100000
@@ -13,32 +13,12 @@ process.source = cms.Source("PoolSource",
                             # replace 'myfile.root' with the source file you want to use
                             fileNames = cms.untracked.vstring(
                                 # '/store/user/fgolf/csc/timing/offline/SingleMu/v3/150630_025216/0000/csc_singleMu_zeroT_1.root',
-                                # '/store/user/sicheng/csctiming/2017/SingleMuon/v4/170626_204407/0000/test_11.root',
-                                # '/store/user/sicheng/csctiming/2017/SingleMuon/v4/170626_204407/0000/test_2.root',
-                                # '/store/user/sicheng/csctiming/2017/SingleMuon/v4/170626_204407/0000/test_10.root',
-                                # '/store/user/sicheng/csctiming/2017/SingleMuon/v4/170626_204407/0000/test_9.root',
-                                # '/store/user/sicheng/csctiming/2017/SingleMuon/v4/170626_204407/0000/test_3.root',
-                                # '/store/user/sicheng/csctiming/2017/SingleMuon/v4/170626_204407/0000/test_8.root',
-                                # '/store/user/sicheng/csctiming/2017/SingleMuon/v4/170626_204407/0000/test_12.root',
-                                # '/store/user/sicheng/csctiming/2017/SingleMuon/v4/170626_204407/0000/test_7.root',
-                                # '/store/user/sicheng/csctiming/2017/SingleMuon/v4/170626_204407/0000/test_6.root',
-                                # '/store/user/sicheng/csctiming/2017/SingleMuon/v4/170626_204407/0000/test_1.root',
-                                # '/store/user/sicheng/csctiming/2017/SingleMuon/v4/170626_204407/0000/test_5.root',
-                                # '/store/user/sicheng/csctiming/2017/SingleMuon/v4/170626_204407/0000/test_4.root',
-                                # '/store/user/sicheng/csctiming/2017/SingleMuon/v4/170626_204538/0000/test_60.root',
-                                # '/store/user/sicheng/csctiming/2017/SingleMuon/v4/170626_204538/0000/test_65.root',
-                                # '/store/user/sicheng/csctiming/2017/SingleMuon/v4/170626_204538/0000/test_66.root',
-                                # '/store/user/sicheng/csctiming/2017/SingleMuon/v4/170626_204538/0000/test_67.root',
-                                # '/store/user/fgolf/csc/timing/offline/2016/SingleMuon/v4/170514_042023/0000/test_28.root',
-                                # '/store/user/fgolf/csc/timing/offline/2016/SingleMuon/v4/170514_042023/0000/test_40.root',
-                                # '/store/user/fgolf/csc/timing/offline/2016/SingleMuon/v4/170514_042023/0000/test_54.root',
-                                # '/store/user/sicheng/csctiming/2017/SingleMuon/v4/170811_062223/0000/test_7.root',
-                                # '/store/user/sicheng/csctiming/2017/SingleMuon/v4/170811_062223/0000/test_14.root',
-                                # '/store/user/sicheng/csctiming/2017/SingleMuon/v4/170811_062223/0000/test_21.root',
-                                # '/store/user/sicheng/csctiming/2017/SingleMuon/v4/170811_062223/0000/test_28.root',
                                 # '/store/user/sicheng/csctiming/2017/SingleMuon/v4/170811_062223/0000/test_35.root',
-                                '/store/user/sicheng/csctiming/2017/SingleMuon/2017C_v1/171001_231716/0000/test_26.root',
-                                '/store/user/sicheng/csctiming/2017/SingleMuon/2017C_v1/171001_231716/0000/test_14.root',
+                                # '/store/user/sicheng/csctiming/2017/SingleMuon/2017C_v1/171001_231716/0000/test_26.root',
+                                # '/store/user/sicheng/csctiming/2017/SingleMuon/2017C_v1/171001_231716/0000/test_14.root',
+                                # 'file:/home/users/sicheng/working/CSCTiming/CMSSW_10_1_0_pre2/src/CSCOfflineTiming/CSCTimingBabyMaker/test/test_9000.root',
+                                'file:/home/users/sicheng/working/CSCTiming/CMSSW_10_1_0_pre2/src/CSCOfflineTiming/CSCTimingBabyMaker/test/test_mcdbv3.root',
+                                # '/store/user/sicheng/csctiming/MonteCarlo/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/DYJetsToLL/180312_031243/0000/test_DYjets_92X_196.root',
                                 )
 )
 
@@ -68,8 +48,8 @@ process.cscTimingAnalyzer.checkCSCstatus = cms.untracked.bool(False)
 process.cscTimingAnalyzer.checkDCSstatus = cms.untracked.bool(False)
 process.cscTimingAnalyzer.removeHeuristicCorrection = cms.untracked.bool(False)
 process.cscTimingAnalyzer.applyNewHeuristicCorrectionByRing = cms.untracked.bool(False)
-process.cscTimingAnalyzer.applyNewHeuristicCorrectionByChamber = cms.untracked.bool(True)
-process.cscTimingAnalyzer.makeNminus1hists = cms.untracked.bool(True)
+process.cscTimingAnalyzer.applyNewHeuristicCorrectionByChamber = cms.untracked.bool(False)
+process.cscTimingAnalyzer.makeNminus1hists = cms.untracked.bool(False)
 process.cscTimingAnalyzer.writeTimingStudyBabyTree = cms.untracked.bool(False)
 process.cscTimingAnalyzer.removeMatchedStationsRequirement = cms.untracked.bool(False);
 
@@ -79,7 +59,7 @@ removeHeuristicCorrectionName = '_removeHeuristicCorr'
 # min_pt_name = '_minPt' + str(process.cscTimingAnalyzer.min_pt)
 # max_dz_name = '_maxDz' + str(process.cscTimingAnalyzer.max_dz)
 
-baseFileName = 'histos_testCorrectWireTime'
+baseFileName = 'histos_mcdbv3'
 fileExtension = '.root'
 outfileName = baseFileName
 

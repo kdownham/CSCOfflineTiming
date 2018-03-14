@@ -173,7 +173,7 @@ CSCMakeTimingCorrectionsForDB::analyze(const edm::Event& iEvent, const edm::Even
         std::cerr << "Failed to open file " << outFileName << " for writing." << std::endl;
     }
 
-    FILE *oldfile = fopen("old.txt", "w+");
+    FILE *oldfile = fopen("timecorr_old_unsorted.dat", "w+");
     if (oldfile)
     {
         std::cerr << "Failed to open file old.txt for writing." << std::endl;
@@ -184,7 +184,8 @@ CSCMakeTimingCorrectionsForDB::analyze(const edm::Event& iEvent, const edm::Even
         if (item.first.ring() == 4) continue;
         if (oldfile)
         {
-            fprintf(oldfile, "%hd %c %hd %c %hd %hd %d %hd\n",
+            fprintf(oldfile, "%d %hd %c %hd %c %hd %hd %d %hd\n",
+                    item.second+1,
                     mvals[item.second].cfeb_length, mvals[item.second].cfeb_rev,
                     mvals[item.second].alct_length, mvals[item.second].alct_rev,
                     mvals[item.second].cfeb_tmb_skew_delay,
