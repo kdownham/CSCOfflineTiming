@@ -63,6 +63,7 @@ void makeAnodeTimingPlot (std::string fname, bool byStation, bool no_legend = fa
     
     std::map<std::string, TH1F*> mhist;    
     
+    float means[5][4];
     float mean_ME1X(0);
     float mean_MEX2(0);
     float mean_MEX1(0);
@@ -126,7 +127,7 @@ void makeAnodeTimingPlot (std::string fname, bool byStation, bool no_legend = fa
 
             int bin = GetBin(endcap, station, ring);
             std::string label = "ME"+std::string(delim.Data())+std::string(s.Data())+"/"+std::string(r.Data());
-            std::cout << "bin = " << bin << " from " << endcap << ", " << station << ", " << ring << std::endl;
+            std::cout << "bin " << std::setw(2) << bin << " for " << label << " has mean: " << mean <<  std::endl;
             
             h1->SetBinContent(bin, mean);
             h1->SetBinError(bin, rms);
@@ -136,6 +137,9 @@ void makeAnodeTimingPlot (std::string fname, bool byStation, bool no_legend = fa
             else if (ring == 1) mean_MEX1 += mean;
             else if (ring == 2) mean_MEX2 += mean;
             else std::cout << "Unidentified ring?!!" << endl;
+
+            if (endcap == 1) means[station][ring] = mean;
+            else if (endcap == 2) means[station][ring] += mean;
 
             objarray->Delete();            
         }
@@ -267,6 +271,12 @@ void makeAnodeTimingPlot (std::string fname, bool byStation, bool no_legend = fa
         cout << "mean_ME1X = " << mean_ME1X << endl;
         cout << "mean_MEX1 = " << mean_MEX1 << endl;
         cout << "mean_MEX2 = " << mean_MEX2 << endl;
+
+        for (int i : {1,2,3,4}) {
+          for (int j : {1,2})
+            cout << "Avg mean for ME " << i << "/" << j << " is: " << means[i][j] / 2 << ", const to be shifted by: " << means[i][j] * 2 << endl;
+          if (i == 1) cout << "Avg mean for ME " << 1 << "/" << 3 << " is: " << means[1][3] / 2 << ", const to be shifted by: " << means[1][3] * 2 << endl;
+        }
 
     }
     else

@@ -62,7 +62,7 @@ void combineRechitTimingDistributions (std::string fname, bool no_legend = false
 
     double rms = h2->GetRMS();
     double avg = h2->GetMean();
-    if (avg > -0.05) avg = 0.01;
+    // if (avg > -0.05) avg = 0.01;
 
     TLatex cms(0.17, 0.83, "CMS");
     cms.SetNDC();

@@ -63,6 +63,8 @@ void makeMeanTimingPlot (std::string fname, bool byStation, bool no_legend = fal
     
     std::map<std::string, TH1F*> mhist;    
     
+    float means[5][4];
+
     TList *hlist = dir->GetListOfKeys();
     for (auto hist : *hlist)
     {
@@ -100,12 +102,15 @@ void makeMeanTimingPlot (std::string fname, bool byStation, bool no_legend = fal
             double rms = ((TH1*)obj)->GetRMS() * 50.;
             int bin = GetBin(endcap, station, ring);
             std::string label = "ME"+std::string(delim.Data())+std::string(s.Data())+"/"+std::string(r.Data());
-            std::cout << "bin = " << bin << " from " << endcap << ", " << station << ", " << ring << std::endl;
+            std::cout << "bin " << std::setw(2) << bin << " for " << label << " has mean: " << mean <<  std::endl;
             
             h1->SetBinContent(bin, mean);
             h1->SetBinError(bin, rms);
             h1->GetXaxis()->SetBinLabel(bin, label.c_str());
             
+            if (endcap == 1) means[station][ring] = mean;
+            else if (endcap == 2) means[station][ring] += mean;
+
             objarray->Delete();            
         }
         else
@@ -214,6 +219,13 @@ void makeMeanTimingPlot (std::string fname, bool byStation, bool no_legend = fal
         c1.Print("plots/mean_cathodetime.pdf");
         c1.Print("plots/mean_cathodetime.png");
         c1.Print("plots/mean_cathodetime.root");
+
+        for (int i : {1,2,3,4}) {
+          for (int j : {1,2})
+            cout << "Avg mean for ME " << i << "/" << j << " is: " << means[i][j] / 2 << ", const to be shifted by: " << means[i][j] * 50 << endl;
+          if (i == 1) cout << "Avg mean for ME " << 1 << "/" << 3 << " is: " << means[1][3] / 2 << ", const to be shifted by: " << means[1][3] * 50 << endl;
+        }
+
     }
     else
     {

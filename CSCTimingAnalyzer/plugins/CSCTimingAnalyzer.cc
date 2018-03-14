@@ -6,8 +6,7 @@
 const double CSCTimingAnalyzer::ME11_AVG_HEURISTIC_CORR = -235.8;
 const double CSCTimingAnalyzer::NON_ME11_AVG_HEURISTIC_CORR = -217.;
 
-CSCTimingAnalyzer::CSCTimingAnalyzer(const edm::ParameterSet& iConfig)
-{
+CSCTimingAnalyzer::CSCTimingAnalyzer(const edm::ParameterSet& iConfig) {
   makeChamberTimingCorrectionValueHists_ = iConfig.getUntrackedParameter<bool>("makeChamberTimingCorrectionValueHists" , false );
   makePlotsPerChamber_                   = iConfig.getUntrackedParameter<bool>("makePlotsPerChamber"                   , false );
   makePlotsPerLayer_                     = iConfig.getUntrackedParameter<bool>("makePlotsPerLayer"                     , false );
@@ -34,21 +33,18 @@ CSCTimingAnalyzer::CSCTimingAnalyzer(const edm::ParameterSet& iConfig)
   timeParamFileName_                     = iConfig.getUntrackedParameter<std::string>("timeParamFileName", "cscTimingParameters.root");
   timingStudyBabyFileName_               = iConfig.getUntrackedParameter<std::string>("timingStudyBabyFileName", "timingBaby.root");
   fpForHeuristicCorrByRing_              = iConfig.getParameter<edm::FileInPath>("fpForHeuristicCorrByRing");
-  fpForHeuristicCorrByChamber_           = iConfig.getParameter<edm::FileInPath>("fpForHeuristicCorrByChamber");    
-    
+  fpForHeuristicCorrByChamber_           = iConfig.getParameter<edm::FileInPath>("fpForHeuristicCorrByChamber");
+
   fileForHeuristicCorrByRing_            = fpForHeuristicCorrByRing_.fullPath();
   fileForHeuristicCorrByChamber_         = fpForHeuristicCorrByChamber_.fullPath();
-    
+
   histos_  = new CSCValHists();
   outfile_ = new TFile(outfileName_.c_str(), "RECREATE");
 
-  if (writeTimingStudyBabyTree_)
-  {
+  if (writeTimingStudyBabyTree_) {
     babyFile = new TFile(timingStudyBabyFileName_.c_str(), "RECREATE");
     babyTree = new TTree("tree", "baby tree for timing studies");
-  }
-  else
-  {
+  } else {
     babyFile = 0;
     babyTree = 0;
   }
@@ -73,7 +69,7 @@ CSCTimingAnalyzer::CSCTimingAnalyzer(const edm::ParameterSet& iConfig)
   maxOpeningAngleTrack_token        = consumes<std::vector<double> >                                           (edm::InputTag ("cscTimingBabyMaker" , "maxOpeningAngleTrack"       )) ;
   maxOpeningAngleMuon_token         = consumes<std::vector<double> >                                           (edm::InputTag ("cscTimingBabyMaker" , "maxOpeningAngleMuon"        )) ;
   time_token                        = consumes<std::vector<double> >                                           (edm::InputTag ("cscTimingBabyMaker" , "time"                       )) ;
-  timeErr_token                     = consumes<std::vector<double> >                                           (edm::InputTag ("cscTimingBabyMaker" , "timeErr"                    )) ;  
+  timeErr_token                     = consumes<std::vector<double> >                                           (edm::InputTag ("cscTimingBabyMaker" , "timeErr"                    )) ;
   type_token                        = consumes<std::vector<int> >                                              (edm::InputTag ("cscTimingBabyMaker" , "type"                       )) ;
   valid_siLayers_token              = consumes<std::vector<int> >                                              (edm::InputTag ("cscTimingBabyMaker" , "validsiLayers"              )) ;
   valid_pixelHits_token             = consumes<std::vector<int> >                                              (edm::InputTag ("cscTimingBabyMaker" , "validpixelHits"             )) ;
@@ -142,16 +138,15 @@ CSCTimingAnalyzer::~CSCTimingAnalyzer()
 //
 
 // ------------ method called for each event  ------------
-void
-CSCTimingAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
+void CSCTimingAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
   loadBranches(iEvent);
   if (!run_h.isValid()) return;
 
-   
+
   getVars();
   if (debug_)
-    printf("\n\nrun, lumi, evt, csc_status: %d, %d, %llu, %d\n\n", run, lumi, evt, csc_status); 
+    printf("\n\nrun, lumi, evt, csc_status: %d, %d, %llu, %d\n\n", run, lumi, evt, csc_status);
 
   if (run < min_run_) return;
   if (run > max_run_) return;
@@ -160,8 +155,7 @@ CSCTimingAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
   if (checkDCSstatus_ && !(detector_status & (0xF << 24))) return;
 
   size_t nMuons = p4_h->size();
-  for (size_t nmu = 0; nmu < nMuons; nmu++)
-  {
+  for (size_t nmu = 0; nmu < nMuons; nmu++) {
     getVars(nmu);
     if (debug_)
       printf("\n\tMuon %zd: eta = %4.2f, is_global = %d, numMatchedStations = %d, numMatchedCSCsegments = %d\n", nmu, p4.eta(), is_global, numMatchedStations, numMatchedCSCsegments);
@@ -173,37 +167,32 @@ CSCTimingAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
     if (!CSCTimingAnalyzer::isPOGmuonTight()) continue;
     bool isGoodMuWithArbitratedSegment = false;
     size_t nChambers = numCSCsegmentsInChamber_h->at(nmu).size();
-    for (size_t nch = 0; nch < nChambers; nch++)
-    {
+    for (size_t nch = 0; nch < nChambers; nch++) {
       getVars(nmu, nch);
       if (debug_)
         printf("\t\tchamber %zd: numCSCsegmentsInChamber = %d\n", nch, numCSCsegmentsInChamber);
 
       size_t nSegments = numRecHitsInSegment_h->at(nmu).at(nch).size();
-      if (nSegments > 0)
-      {
+      if (nSegments > 0) {
         histos_->fill1DHist(std::min(std::max(distToChamberEdge,-59.9),9.9), "hChamberEdgeDist", "muon quality", 140, -60, 10, "Muons");
         histos_->fill1DHist(std::min(std::max(distToChamberEdge/distToChamberEdgeErr,-2.99),0.99), "hChamberEdgeSigmas", "muon quality", 40, -3, 1, "Muons");
       }
-      for (size_t nseg = 0; nseg < nSegments; nseg++)
-      {
+      for (size_t nseg = 0; nseg < nSegments; nseg++) {
         getVars(nmu, nch, nseg);
         if (debug_)
           printf("\t\t\tsegment %zd: isSegmentAndTrackArbitrated = %d, numRecHitsInSegment = %d\n", nseg, isSegmentAndTrackArbitrated, numRecHitsInSegment);
 
         // only use arbitrated segments
         if (!isSegmentAndTrackArbitrated) continue;
-        isGoodMuWithArbitratedSegment = true;                
-                
+        isGoodMuWithArbitratedSegment = true;
+
         size_t nRecHits = station_h->at(nmu).at(nch).at(nseg).size();
         histos_->fill1DHist(numRecHitsInSegment, "hNumRHinSegment", "segment quality", 10, -0.5, 9.5, "Muons");
         std::vector<double> rhTimes_;
         std::vector<double> wireTimes_;
-        for (size_t nrh = 0; nrh < nRecHits; nrh++)
-        {
+        for (size_t nrh = 0; nrh < nRecHits; nrh++) {
           getVars(nmu,nch,nseg,nrh);
-          if (debug_)
-          {
+          if (debug_) {
             printf("\t\t\t\trechit %zd: (endcap,station,ring,chamber) = (%d,%d,%d,%d) has (cathode,anode) time = (%4.2f,%4.2f)\n", nrh, endcap, station, ring, chamber, rhtime, twire);
             printf("\t\t\t\t\tnstrips = %d, chipCorr = %4.2f, cfebDelay = %4.2f, skewClearDelay = %4.2f, heuristic = %4.2f\n", nstrips, chipCorr, cfebCableDelay, skewClearDelay, chamberCorr-cfebCableDelay-skewClearDelay);
             printf("\t\t\t\t\tnstrips = %d, new_chipCorr = %4.2f, new_cfebDelay = %4.2f, new_skewClearDelay = %4.2f, heuristic = %4.2f\n", nstrips, new_chipCorr, new_cfebCableDelay, new_skewClearDelay, chamberCorr-cfebCableDelay-skewClearDelay);
@@ -212,49 +201,43 @@ CSCTimingAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
           if (makeChamberTimingCorrectionValueHists_ || printTimeCorrectionParametersToFile_ || writeTimeCorrectionParametersToTree_)
             fillMaps(CSCDetId(endcap, station, ring, chamber));
 
-          CSCDetId id(endcap, station, ring, chamber, layer);                    
+          CSCDetId id(endcap, station, ring, chamber, layer);
           double rhtime_corr = rhtime;
           double twire_corr = twire;
-                    
-          if (station == 1 && (ring == 1 || ring == 4))
-          {
-            if (applyUpdatedME11corrections_)
-            {
+
+          bool is_ME11 = (station == 1 && (ring == 1 || ring == 4));
+          if (is_ME11) {
+            if (applyUpdatedME11corrections_) {
               // use average chip correction
               // rhtime_corr += (new_chipCorr - chipCorr);
-                            
+
               // update CFEB cable delay
               // rhtime_corr += (new_cfebCableDelay - cfebCableDelay);
-                            
+
               // update skewclear delay
               rhtime_corr += (new_skewClearDelay - skewClearDelay);
-                            
+
               if (removeHeuristicCorrection_)
                 rhtime_corr -= (new_chamberCorr - new_cfebCableDelay - new_skewClearDelay);
-              else if (applyNewHeuristicCorrectionByRing_)
-              {
+              else if (applyNewHeuristicCorrectionByRing_) {
                 rhtime_corr -= (new_chamberCorr - new_cfebCableDelay - new_skewClearDelay); // first remove old hueristic correction
                 CSCDetId tmp_id(endcap,station,ring,0);
                 if (m_new_heuristicCorr.find(tmp_id) != m_new_heuristicCorr.end())
                   rhtime_corr += m_new_heuristicCorr[tmp_id]; // now apply new hueristic correction
-                else                                       
-                  rhtime_corr += (station == 1 && (ring == 1 || ring == 4)) ? CSCTimingAnalyzer::ME11_AVG_HEURISTIC_CORR : CSCTimingAnalyzer::NON_ME11_AVG_HEURISTIC_CORR; // now apply new hueristic correction                                            
+                else
+                  rhtime_corr += is_ME11 ? CSCTimingAnalyzer::ME11_AVG_HEURISTIC_CORR : CSCTimingAnalyzer::NON_ME11_AVG_HEURISTIC_CORR; // now apply new hueristic correction
 
-                // if (endcap == 1 && station == 1 && ring == 3 && chamber == 16)
-                // {
+                // if (endcap == 1 && station == 1 && ring == 3 && chamber == 16) // {
                 //     rhtime_corr += 25.; // this affectively changes the cable delay from 1 to 0
                 // }
               }
-              else if (applyNewHeuristicCorrectionByChamber_)
-              {
-                if (station == 1 && (ring == 4))
-                {
-                  if (verbose_)
-                  {
+              else if (applyNewHeuristicCorrectionByChamber_) {
+                if (station == 1 && (ring == 4)) {
+                  if (verbose_) {
                     CSCDetId tmp_id(endcap,station,ring,chamber);
                     if (m_new_heuristicCorr.find(tmp_id) != m_new_heuristicCorr.end())
                       printf("correction for e=%d, c=%d is %4.2f\n", endcap, chamber, m_new_heuristicCorr[tmp_id]);
-                    else                                       
+                    else
                       printf("correction for ME+1/1/1 is %4.2f\n", CSCTimingAnalyzer::ME11_AVG_HEURISTIC_CORR);
                   }
                 }
@@ -262,145 +245,119 @@ CSCTimingAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
                 CSCDetId tmp_id(endcap,station,ring,chamber);
                 if (m_new_heuristicCorr.find(tmp_id) != m_new_heuristicCorr.end())
                   rhtime_corr += m_new_heuristicCorr[tmp_id]; // now apply new hueristic correction
-                else                                       
-                  rhtime_corr += (station == 1 && (ring == 1 || ring == 4)) ? CSCTimingAnalyzer::ME11_AVG_HEURISTIC_CORR : CSCTimingAnalyzer::NON_ME11_AVG_HEURISTIC_CORR; // now apply new hueristic correction                               
+                else
+                  rhtime_corr += is_ME11 ? CSCTimingAnalyzer::ME11_AVG_HEURISTIC_CORR : CSCTimingAnalyzer::NON_ME11_AVG_HEURISTIC_CORR; // now apply new hueristic correction
               }
             }
-            else if (removeHeuristicCorrection_)
-            {
+            else if (removeHeuristicCorrection_) {
+              // std::cout << __FILE__ << ':' << __LINE__ << ": chamberCorr= " << chamberCorr << ", cfebCableDelay= " << cfebCableDelay << ": skewClearDelay= " << skewClearDelay << std::endl;
               rhtime_corr -= (chamberCorr - cfebCableDelay - skewClearDelay);
             }
-            else if (applyNewHeuristicCorrectionByRing_)
-            {
+            else if (applyNewHeuristicCorrectionByRing_) {
               rhtime_corr -= (chamberCorr - cfebCableDelay - skewClearDelay); // first remove old hueristic correction
               CSCDetId tmp_id(endcap,station,ring,0);
               if (m_new_heuristicCorr.find(tmp_id) != m_new_heuristicCorr.end())
                 rhtime_corr += m_new_heuristicCorr[tmp_id]; // now apply new hueristic correction
-              else                                       
-                rhtime_corr += (station == 1 && (ring == 1 || ring == 4)) ? CSCTimingAnalyzer::ME11_AVG_HEURISTIC_CORR : CSCTimingAnalyzer::NON_ME11_AVG_HEURISTIC_CORR; // now apply new hueristic correction
+              else
+                rhtime_corr += is_ME11 ? CSCTimingAnalyzer::ME11_AVG_HEURISTIC_CORR : CSCTimingAnalyzer::NON_ME11_AVG_HEURISTIC_CORR; // now apply new hueristic correction
             }
-            else if (applyNewHeuristicCorrectionByChamber_)
-            {
+            else if (applyNewHeuristicCorrectionByChamber_) {
               rhtime_corr -= (chamberCorr - cfebCableDelay - skewClearDelay); // first remove old hueristic correction
               CSCDetId tmp_id(endcap,station,ring,chamber);
               if (m_new_heuristicCorr.find(tmp_id) != m_new_heuristicCorr.end())
                 rhtime_corr += m_new_heuristicCorr[tmp_id]; // now apply new hueristic correction
-              else                                       
-                rhtime_corr += (station == 1 && (ring == 1 || ring == 4)) ? CSCTimingAnalyzer::ME11_AVG_HEURISTIC_CORR : CSCTimingAnalyzer::NON_ME11_AVG_HEURISTIC_CORR; // now apply new hueristic correction                               
+              else
+                rhtime_corr += is_ME11 ? CSCTimingAnalyzer::ME11_AVG_HEURISTIC_CORR : CSCTimingAnalyzer::NON_ME11_AVG_HEURISTIC_CORR; // now apply new hueristic correction
             }
           }
-          else if (removeHeuristicCorrection_)
-          {
+          else if (removeHeuristicCorrection_) {
             rhtime_corr -= (chamberCorr - cfebCableDelay - skewClearDelay);
           }
-          else if (applyNewHeuristicCorrectionByRing_)
-          {
+          else if (applyNewHeuristicCorrectionByRing_) {
             rhtime_corr -= (chamberCorr - cfebCableDelay - skewClearDelay); // first remove old hueristic correction
             CSCDetId tmp_id(endcap,station,ring,0);
             if (m_new_heuristicCorr.find(tmp_id) != m_new_heuristicCorr.end())
               rhtime_corr += m_new_heuristicCorr[tmp_id]; // now apply new hueristic correction
-            else                                       
-              rhtime_corr += (station == 1 && (ring == 1 || ring == 4)) ? CSCTimingAnalyzer::ME11_AVG_HEURISTIC_CORR : CSCTimingAnalyzer::NON_ME11_AVG_HEURISTIC_CORR; // now apply new hueristic correction
+            else
+              rhtime_corr += is_ME11 ? CSCTimingAnalyzer::ME11_AVG_HEURISTIC_CORR : CSCTimingAnalyzer::NON_ME11_AVG_HEURISTIC_CORR; // now apply new hueristic correction
           }
-          else if (applyNewHeuristicCorrectionByChamber_)
-          {
+          else if (applyNewHeuristicCorrectionByChamber_) {
             rhtime_corr -= (chamberCorr - cfebCableDelay - skewClearDelay); // first remove old hueristic correction
             CSCDetId tmp_id(endcap,station,ring,chamber);
             if (m_new_heuristicCorr.find(tmp_id) != m_new_heuristicCorr.end())
               rhtime_corr += m_new_heuristicCorr[tmp_id]; // now apply new hueristic correction
-            else                                       
-              rhtime_corr += (station == 1 && (ring == 1 || ring == 4)) ? CSCTimingAnalyzer::ME11_AVG_HEURISTIC_CORR : CSCTimingAnalyzer::NON_ME11_AVG_HEURISTIC_CORR; // now apply new hueristic correction                               
+            else
+              rhtime_corr += is_ME11 ? CSCTimingAnalyzer::ME11_AVG_HEURISTIC_CORR : CSCTimingAnalyzer::NON_ME11_AVG_HEURISTIC_CORR; // now apply new hueristic correction
           }
 
-          if (endcap == 2 && station == 1 && ring == 3 && chamber == 3 && chipCorr < -60)
-          {
+          if (endcap == 2 && station == 1 && ring == 3 && chamber == 3 && chipCorr < -60) {
             rhtime_corr -= (chipCorr + 52.41);
           }
 
           rhTimes_.push_back(rhtime_corr);
           wireTimes_.push_back(twire_corr);
-          rhtime_corr /= 50.;                    
+          rhtime_corr /= 50.;
 
           // fill histogram per station
-          if (removeHeuristicCorrection_)
-          {
-            if (combineME11ab_ && station == 1 && ring == 4)
-            {
+          if (removeHeuristicCorrection_) {
+            if (combineME11ab_ && station == 1 && ring == 4) {
               CSCDetId tmp_id(endcap, station, 1, chamber);
               histos_->fill1DHistByType(rhtime_corr, "hRHTiming", "recHit Timing", tmp_id, 200, 2, 6, "recHits");
               histos_->fill1DHistByType(nstrips, "hRHNumStrips", "Number of cathod strips", tmp_id, 10, -0.5, 9.5, "recHits");
               histos_->fill1DHistByType(twire_corr, "hAnodeTiming", "anode Timing", tmp_id, 200, -25, 25, "recHits");
-            }
-            else
-            {
+            } else {
               histos_->fill1DHistByType(rhtime_corr, "hRHTiming", "recHit Timing", id, 200, 2, 6, "recHits");
               histos_->fill1DHistByType(nstrips, "hRHNumStrips", "Number of cathod strips", id, 10, -0.5, 9.5, "recHits");
               histos_->fill1DHistByType(twire_corr, "hAnodeTiming", "anode Timing", id, 200, -25, 25, "recHits");
             }
-            if (makePlotsPerChamber_)
-            {
-              if (combineME11ab_ && station == 1 && ring == 4)
-              {
+            if (makePlotsPerChamber_) {
+              if (combineME11ab_ && station == 1 && ring == 4) {
                 CSCDetId tmp_id(endcap, station, 1, chamber);
                 histos_->fill1DHistByChamber(rhtime_corr, "hRHTiming", "recHit Timing", tmp_id, 200, 2, 6, "recHitsByChamber");
                 histos_->fill1DHistByType(nstrips, "hRHNumStrips", "Number of cathod strips", tmp_id, 10, -0.5, 9.5, "recHits");
                 histos_->fill1DHistByChamber(twire_corr, "hAnodeTiming", "anode Timing", tmp_id, 200, -25, 25, "recHitsByChamber");
-              }
-              else
-              {
+              } else {
                 histos_->fill1DHistByChamber(rhtime_corr, "hRHTiming", "recHit Timing", id, 200, 2, 6, "recHitsByChamber");
                 histos_->fill1DHistByType(nstrips, "hRHNumStrips", "Number of cathod strips", id, 10, -0.5, 9.5, "recHits");
                 histos_->fill1DHistByChamber(twire_corr, "hAnodeTiming", "anode Timing", id, 200, -25, 25, "recHitsByChamber");
               }
             }
-            if (makePlotsPerLayer_)
-            {
+            if (makePlotsPerLayer_) {
               histos_->fill1DHistByLayer(rhtime_corr, "hRHTiming", "recHit Timing", id, 200, 2, 6, "recHitsByLayer");
               histos_->fill1DHistByType(nstrips, "hRHNumStrips", "Number of cathod strips", id, 10, -0.5, 9.5, "recHits");
             }
-          }
-          else
-          {
-            if (combineME11ab_ && station == 1 && ring == 4)
-            {
-              CSCDetId tmp_id(endcap, station, 1, chamber);                            
+          } else {
+            if (combineME11ab_ && station == 1 && ring == 4) {
+              CSCDetId tmp_id(endcap, station, 1, chamber);
               histos_->fill1DHistByType(rhtime_corr, "hRHTiming", "recHit Timing", tmp_id, 200, -2, 2, "recHits");
               histos_->fill1DHistByType(nstrips, "hRHNumStrips", "Number of cathod strips", tmp_id, 10, -0.5, 9.5, "recHits");
               histos_->fill1DHistByType(twire_corr, "hAnodeTiming", "anode Timing", tmp_id, 200, -25, 25, "recHits");
               histos_->fill1DHistByType(anode_bx_offset, "hAndoeBXOffset", "anode_bx_offset", tmp_id, 100, 800, 900, "recHits");
-            }
-            else
-            {
+            } else {
               histos_->fill1DHistByType(rhtime_corr, "hRHTiming", "recHit Timing", id, 200, -2, 2, "recHits");
               histos_->fill1DHistByType(nstrips, "hRHNumStrips", "Number of cathod strips", id, 10, -0.5, 9.5, "recHits");
               histos_->fill1DHistByType(twire_corr, "hAnodeTiming", "anode Timing", id, 200, -25, 25, "recHits");
               histos_->fill1DHistByType(anode_bx_offset, "hAndoeBXOffset", "anode_bx_offset", id, 100, 800, 900, "recHits");
             }
-            if (makePlotsPerChamber_)
-            {
-              if (combineME11ab_ && station == 1 && ring == 4)
-              {
-                CSCDetId tmp_id(endcap, station, 1, chamber);                            
+            if (makePlotsPerChamber_) {
+              if (combineME11ab_ && station == 1 && ring == 4) {
+                CSCDetId tmp_id(endcap, station, 1, chamber);
                 histos_->fill1DHistByChamber(rhtime_corr, "hRHTiming", "recHit Timing", tmp_id, 200, -2, 2, "recHitsByChamber");
                 histos_->fill1DHistByType(nstrips, "hRHNumStrips", "Number of cathod strips", tmp_id, 10, -0.5, 9.5, "recHits");
                 histos_->fill1DHistByChamber(twire_corr, "hAnodeTiming", "anode Timing", tmp_id, 200, -25, 25, "recHitsByChamber");
-              }
-              else
-              {
+              } else {
                 histos_->fill1DHistByChamber(rhtime_corr, "hRHTiming", "recHit Timing", id, 200, -2, 2, "recHitsByChamber");
                 histos_->fill1DHistByType(nstrips, "hRHNumStrips", "Number of cathod strips", id, 10, -0.5, 9.5, "recHits");
                 histos_->fill1DHistByChamber(twire_corr, "hAnodeTiming", "anode Timing", id, 200, -25, 25, "recHitsByChamber");
               }
             }
-            if (makePlotsPerLayer_)
-            {
+            if (makePlotsPerLayer_) {
               histos_->fill1DHistByLayer(rhtime_corr, "hRHTiming", "recHit Timing", id, 200, -2, 2, "recHitsByLayer");
               histos_->fill1DHistByType(nstrips, "hRHNumStrips", "Number of cathod strips", id, 10, -0.5, 9.5, "recHits");
             }
           }
 
-          if (writeTimingStudyBabyTree_)
-          {
+          if (writeTimingStudyBabyTree_) {
             b_rhtime = rhtime_corr ;
             babyTree->Fill();
           }
@@ -409,7 +366,7 @@ CSCTimingAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
 
         int ring_ = ring;
         if (combineME11ab_ && station == 1 && ring == 4) ring_ = 1;
-        CSCDetId segid(endcap, station, ring_, chamber, layer);                                    
+        CSCDetId segid(endcap, station, ring_, chamber, layer);
         histos_->fill1DHistByType(segmentTime, "hSegTime", "CSC segment time", segid, 200, -100., 100., "Segments");
 
         double tseg = calculateSegmentTime(rhTimes_, wireTimes_);
@@ -420,17 +377,15 @@ CSCTimingAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
         //   histos_->fill1DHistByType(wt, "hwireTimes", "Anode Timing", id, 200, -10, 10, "recHits");
         // }
 
-        if (makePlotsPerChamber_)
-        {
-          histos_->fill1DHistByChamber(segmentTime, "hSegTime", "CSC segment time", segid, 200, -100., 100., "SegmentsByChamber");                
+        if (makePlotsPerChamber_) {
+          histos_->fill1DHistByChamber(segmentTime, "hSegTime", "CSC segment time", segid, 200, -100., 100., "SegmentsByChamber");
           histos_->fill1DHistByChamber(tseg, "hNewSegTime", "new CSC segment time", segid, 200, -100., 100., "SegmentsByChamber");
         }
       } // loop over segments
     } // loop over chambers
 
 
-    if (isGoodMuWithArbitratedSegment)
-    {
+    if (isGoodMuWithArbitratedSegment) {
       histos_->fill1DHist(is_tracker                            , "hMuIsTracker"            , "muon quality" , 4   , -1.5 , 2.5 , "Muons");
       histos_->fill1DHist(is_sa                                 , "hMuIsSA"                 , "muon quality" , 4   , -1.5 , 2.5 , "Muons");
       histos_->fill1DHist(is_pf                                 , "hMuIsPF"                 , "muon quality" , 4   , -1.5 , 2.5 , "Muons");
@@ -443,7 +398,7 @@ CSCTimingAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
       if (direction < 0)
         histos_->fill1DHist(time                                , "hMuTimeN"                , "muon quality" , 200 , -100., 100., "Muons");
       else
-        histos_->fill1DHist(time                                , "hMuTimeP"                , "muon quality" , 200 , -100., 100., "Muons");        
+        histos_->fill1DHist(time                                , "hMuTimeP"                , "muon quality" , 200 , -100., 100., "Muons");
 
       // histos_->fill1DHist(is_global             , "hMuIsGlobal"             , "muon quality" , 4 , -1.5 , 2.5 , "Muons");
       // histos_->fill1DHist(dz                    , "hMuDz"                   , "muon quality" , 300, -30 , 30 , "Muons");
@@ -463,7 +418,7 @@ CSCTimingAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
 
   } // loop over muons
 
-    // histos_->fill1DHist(nRecHits, "hRHnrechits", "recHits per event (all chambers)", 151, -0.5, 150.5, "recHits");    
+  // histos_->fill1DHist(nRecHits, "hRHnrechits", "recHits per event (all chambers)", 151, -0.5, 150.5, "recHits");
 }
 
 void CSCTimingAnalyzer::fillMaps (CSCDetId id)
@@ -477,7 +432,7 @@ void CSCTimingAnalyzer::fillMaps (CSCDetId id)
   m_cfeb_skew_delay[id]   = cfeb_skew_delay;
   m_anode_bx_offset[id]   = anode_bx_offset;
   m_cfeb_cable_rev[id]    = cfeb_cable_rev;
-    
+
   m_new_cfebCableDelay[id]    = new_cfebCableDelay;
   m_new_cfebCorr[id]          = new_cfebCorr;
   m_new_chamberCorr[id]       = new_chamberCorr;
@@ -486,7 +441,7 @@ void CSCTimingAnalyzer::fillMaps (CSCDetId id)
   m_new_cfeb_cable_length[id] = new_cfeb_cable_length;
   m_new_cfeb_skew_delay[id]   = new_cfeb_skew_delay;
   m_new_cfeb_cable_rev[id]    = new_cfeb_cable_rev;
-    
+
   m_chipCorr[id].insert(chipCorr);
   m_new_chipCorr[id].insert(new_chipCorr);
 }
@@ -505,7 +460,7 @@ void CSCTimingAnalyzer::fill1DHistFromMapByType (std::map<CSCDetId, int>& m, std
 {
   for (const auto& item : m)
     histos_->fill1DHistByType(item.second, name, title, item.first, binsx, xmin, xmax, folder);
-  return;    
+  return;
 }
 
 void CSCTimingAnalyzer::fill1DHistFromMapByType (std::map<CSCDetId, std::set<double> >& m, std::string name, std::string title,
@@ -514,7 +469,7 @@ void CSCTimingAnalyzer::fill1DHistFromMapByType (std::map<CSCDetId, std::set<dou
   for (const auto& item : m)
     for (const auto& val : item.second)
       histos_->fill1DHistByType(val, name, title, item.first, binsx, xmin, xmax, folder);
-  return;    
+  return;
 }
 
 void CSCTimingAnalyzer::fill1DHistFromMapByChamber (std::map<CSCDetId, double>& m, std::string name, std::string title,
@@ -531,7 +486,7 @@ void CSCTimingAnalyzer::fill1DHistFromMapByChamber (std::map<CSCDetId, int>& m, 
 {
   for (const auto& item : m)
     histos_->fill1DHistByChamber(item.second, name, title, item.first, binsx, xmin, xmax, folder);
-  return;    
+  return;
 }
 
 void CSCTimingAnalyzer::fill1DHistFromMapByChamber (std::map<CSCDetId, std::set<double> >& m, std::string name, std::string title,
@@ -540,13 +495,13 @@ void CSCTimingAnalyzer::fill1DHistFromMapByChamber (std::map<CSCDetId, std::set<
   for (const auto& item : m)
     for (const auto& val : item.second)
       histos_->fill1DHistByChamber(val, name, title, item.first, binsx, xmin, xmax, folder);
-  return;    
+  return;
 }
 
 void CSCTimingAnalyzer::fill1DdiffHistFromMapsByType (std::map<CSCDetId, double>& m1, std::map<CSCDetId, double>& m2, std::string name, std::string title,
                                                       int binsx, float xmin, float xmax, std::string folder)
 {
-  std::map<CSCDetId, double> diff_map;    
+  std::map<CSCDetId, double> diff_map;
   for (const auto& item: m1)
     diff_map[item.first] = item.second - m2[item.first];
 
@@ -557,7 +512,7 @@ void CSCTimingAnalyzer::fill1DdiffHistFromMapsByType (std::map<CSCDetId, double>
     minx = getMinHistValFromMap(diff_map);
     maxx = getMaxHistValFromMap(diff_map);
   }
-    
+
   for (const auto& item: diff_map)
     histos_->fill1DHistByType(item.second, name, title, item.first, binsx, minx, maxx, folder);
   return;
@@ -566,7 +521,7 @@ void CSCTimingAnalyzer::fill1DdiffHistFromMapsByType (std::map<CSCDetId, double>
 void CSCTimingAnalyzer::fill1DdiffHistFromMapsByType (std::map<CSCDetId, int>& m1, std::map<CSCDetId, int>& m2, std::string name, std::string title,
                                                       int binsx, float xmin, float xmax, std::string folder)
 {
-  std::map<CSCDetId, int> diff_map;    
+  std::map<CSCDetId, int> diff_map;
   for (const auto& item: m1)
     diff_map[item.first] = item.second - m2[item.first];
 
@@ -577,14 +532,14 @@ void CSCTimingAnalyzer::fill1DdiffHistFromMapsByType (std::map<CSCDetId, int>& m
     minx = getMinHistValFromMap(diff_map);
     maxx = getMaxHistValFromMap(diff_map);
   }
-    
+
   for (const auto& item: diff_map)
     histos_->fill1DHistByType(item.second, name, title, item.first, binsx, minx, maxx, folder);
   return;
-}    
+}
 
 void CSCTimingAnalyzer::fillHistosFromMaps ()
-{    
+{
   return;
 }
 
@@ -656,7 +611,7 @@ void CSCTimingAnalyzer::printMapToFile (const std::map<CSCDetId, std::set<double
     outfile << std::endl;
   }
   outfile.close();
-  return;    
+  return;
 }
 
 void CSCTimingAnalyzer::setTimingParamBabyBranches (TTree* tree)
@@ -684,7 +639,7 @@ void CSCTimingAnalyzer::setTimingParamBabyBranches (TTree* tree)
   tree->Branch("ring"                  , &b_ring                  );
   tree->Branch("station"               , &b_station               );
   tree->Branch("cfeb_cable_rev"        , &b_cfeb_cable_rev        );
-  tree->Branch("new_cfeb_cable_rev"    , &b_new_cfeb_cable_rev    );    
+  tree->Branch("new_cfeb_cable_rev"    , &b_new_cfeb_cable_rev    );
   return;
 }
 
@@ -709,12 +664,12 @@ void CSCTimingAnalyzer::setTimingParamValues (const CSCDetId& id)
 
   b_cfeb_cable_rev = m_cfeb_cable_rev[id];
   b_new_cfeb_cable_rev = m_new_cfeb_cable_rev[id];
-    
+
   b_chipCorr.clear();
-  std::copy(m_chipCorr[id].begin(), m_chipCorr[id].end(), std::back_inserter(b_chipCorr));    
+  std::copy(m_chipCorr[id].begin(), m_chipCorr[id].end(), std::back_inserter(b_chipCorr));
 
   b_new_chipCorr.clear();
-  std::copy(m_new_chipCorr[id].begin(), m_new_chipCorr[id].end(), std::back_inserter(b_new_chipCorr));    
+  std::copy(m_new_chipCorr[id].begin(), m_new_chipCorr[id].end(), std::back_inserter(b_new_chipCorr));
 
   b_endcap  = id.endcap();
   b_station = id.station();
@@ -753,7 +708,7 @@ void CSCTimingAnalyzer::setTimingStudyBabyBranches (TTree* tree)
 }
 
 // ------------ method called once each job just before starting event loop  ------------
-void 
+void
 CSCTimingAnalyzer::beginJob()
 {
   if (applyNewHeuristicCorrectionByChamber_ || applyNewHeuristicCorrectionByRing_)
@@ -767,14 +722,13 @@ CSCTimingAnalyzer::beginJob()
 }
 
 // ------------ method called once each job just after ending the event loop  ------------
-void 
-CSCTimingAnalyzer::endJob() 
+void
+CSCTimingAnalyzer::endJob()
 {
   if (makeChamberTimingCorrectionValueHists_)
     fillHistosFromMaps();
 
-  if (printTimeCorrectionParametersToFile_)
-  {
+  if (printTimeCorrectionParametersToFile_) {
     printMapToFile(m_cfebCableDelay    , "cfebCableDelay.txt"    );
     printMapToFile(m_cfebCorr          , "cfebCorr.txt"          );
     printMapToFile(m_chipCorr          , "chipCorr.txt"          );
@@ -792,16 +746,14 @@ CSCTimingAnalyzer::endJob()
     printMapToFile(m_new_skewClearDelay    , "new_skewClearDelay.txt"    );
     printMapToFile(m_new_cfeb_cable_delay  , "new_cfeb_cable_delay.txt"  );
     printMapToFile(m_new_cfeb_cable_length , "new_cfeb_cable_length.txt" );
-    printMapToFile(m_new_cfeb_skew_delay   , "new_cfeb_skew_delay.txt"   );        
+    printMapToFile(m_new_cfeb_skew_delay   , "new_cfeb_skew_delay.txt"   );
   }
 
-  if (writeTimeCorrectionParametersToTree_)
-  {
+  if (writeTimeCorrectionParametersToTree_) {
     TFile* outfile = new TFile(timeParamFileName_.c_str(), "RECREATE");
     TTree* outtree = new TTree("TimingParameters", "timing parameters tree");
     setTimingParamBabyBranches(outtree);
-    for (const auto item : m_cfebCorr)
-    {
+    for (const auto item : m_cfebCorr) {
       const CSCDetId& id = item.first;
       setTimingParamValues(id);
       outtree->Fill();
@@ -811,8 +763,7 @@ CSCTimingAnalyzer::endJob()
     outfile->Close();
   }
 
-  if (writeTimingStudyBabyTree_)
-  {
+  if (writeTimingStudyBabyTree_) {
     babyFile->cd();
     babyTree->Write();
     babyFile->Close();
@@ -821,80 +772,80 @@ CSCTimingAnalyzer::endJob()
 
 void CSCTimingAnalyzer::loadBranches (const edm::Event& event)
 {
-  event.getByToken(run_token                        , run_h                        );                        
-  event.getByToken(lumi_token                       , lumi_h                       );                       
-  event.getByToken(evt_token                        , evt_h                        );                        
-  event.getByToken(bfield_token                     , bfield_h                     );                     
-  event.getByToken(csc_status_token                 , csc_status_h                 );                 
-  event.getByToken(detector_status_token            , detector_status_h            );            
-  event.getByToken(is_global_token                  , is_global_h                  );                  
-  event.getByToken(is_tracker_token                 , is_tracker_h                 );                 
-  event.getByToken(is_sa_token                      , is_sa_h                      );                      
-  event.getByToken(is_pf_token                      , is_pf_h                      );                      
-  event.getByToken(p4_token                         , p4_h                         );                         
-  event.getByToken(dz_token                         , dz_h                         );                         
-  event.getByToken(d0_token                         , d0_h                         );                         
-  event.getByToken(dz_bs_token                      , dz_bs_h                      );                         
-  event.getByToken(d0_bs_token                      , d0_bs_h                      );                         
-  event.getByToken(gfit_chi2_token                  , gfit_chi2_h                  );                  
-  event.getByToken(gfit_ndof_token                  , gfit_ndof_h                  );                  
-  event.getByToken(maxOpeningAngleTrack_token       , maxOpeningAngleTrack_h       );       
+  event.getByToken(run_token                        , run_h                        );
+  event.getByToken(lumi_token                       , lumi_h                       );
+  event.getByToken(evt_token                        , evt_h                        );
+  event.getByToken(bfield_token                     , bfield_h                     );
+  event.getByToken(csc_status_token                 , csc_status_h                 );
+  event.getByToken(detector_status_token            , detector_status_h            );
+  event.getByToken(is_global_token                  , is_global_h                  );
+  event.getByToken(is_tracker_token                 , is_tracker_h                 );
+  event.getByToken(is_sa_token                      , is_sa_h                      );
+  event.getByToken(is_pf_token                      , is_pf_h                      );
+  event.getByToken(p4_token                         , p4_h                         );
+  event.getByToken(dz_token                         , dz_h                         );
+  event.getByToken(d0_token                         , d0_h                         );
+  event.getByToken(dz_bs_token                      , dz_bs_h                      );
+  event.getByToken(d0_bs_token                      , d0_bs_h                      );
+  event.getByToken(gfit_chi2_token                  , gfit_chi2_h                  );
+  event.getByToken(gfit_ndof_token                  , gfit_ndof_h                  );
+  event.getByToken(maxOpeningAngleTrack_token       , maxOpeningAngleTrack_h       );
   event.getByToken(maxOpeningAngleMuon_token        , maxOpeningAngleMuon_h        );
   event.getByToken(time_token                       , time_h                       );
   event.getByToken(timeErr_token                    , timeErr_h                    );
-  event.getByToken(type_token                       , type_h                       );                       
-  event.getByToken(valid_siLayers_token             , valid_siLayers_h             );             
-  event.getByToken(valid_pixelHits_token            , valid_pixelHits_h            );            
-  event.getByToken(charge_token                     , charge_h                     );                     
-  event.getByToken(trk_charge_token                 , trk_charge_h                 );                 
-  event.getByToken(gfit_validSTAhits_token          , gfit_validSTAhits_h          );          
-  event.getByToken(gfit_validSiHits_token           , gfit_validSiHits_h           );           
-  event.getByToken(sta_validHits_token              , sta_validHits_h              );              
-  event.getByToken(numMatchedStations_token         , numMatchedStations_h         );         
-  event.getByToken(numMatchedCSCsegments_token      , numMatchedCSCsegments_h      );      
+  event.getByToken(type_token                       , type_h                       );
+  event.getByToken(valid_siLayers_token             , valid_siLayers_h             );
+  event.getByToken(valid_pixelHits_token            , valid_pixelHits_h            );
+  event.getByToken(charge_token                     , charge_h                     );
+  event.getByToken(trk_charge_token                 , trk_charge_h                 );
+  event.getByToken(gfit_validSTAhits_token          , gfit_validSTAhits_h          );
+  event.getByToken(gfit_validSiHits_token           , gfit_validSiHits_h           );
+  event.getByToken(sta_validHits_token              , sta_validHits_h              );
+  event.getByToken(numMatchedStations_token         , numMatchedStations_h         );
+  event.getByToken(numMatchedCSCsegments_token      , numMatchedCSCsegments_h      );
   event.getByToken(station_mask_token               , station_mask_h               );
   event.getByToken(direction_token                  , direction_h                  );
-  event.getByToken(distToChamberEdge_token          , distToChamberEdge_h          );          
-  event.getByToken(distToChamberEdgeErr_token       , distToChamberEdgeErr_h       );       
-  event.getByToken(numCSCsegmentsInChamber_token    , numCSCsegmentsInChamber_h    );    
-  event.getByToken(arbitration_mask_token           , arbitration_mask_h           );           
+  event.getByToken(distToChamberEdge_token          , distToChamberEdge_h          );
+  event.getByToken(distToChamberEdgeErr_token       , distToChamberEdgeErr_h       );
+  event.getByToken(numCSCsegmentsInChamber_token    , numCSCsegmentsInChamber_h    );
+  event.getByToken(arbitration_mask_token           , arbitration_mask_h           );
   event.getByToken(isSegmentAndTrackArbitrated_token, isSegmentAndTrackArbitrated_h);
   event.getByToken(numRecHitsInSegment_token        , numRecHitsInSegment_h        );
   event.getByToken(segmentTime_token                , segmentTime_h                );
-  event.getByToken(endcap_token                     , endcap_h                     );                     
-  event.getByToken(station_token                    , station_h                    );                    
-  event.getByToken(ring_token                       , ring_h                       );                       
-  event.getByToken(chamber_token                    , chamber_h                    );                    
-  event.getByToken(layer_token                      , layer_h                      );                      
+  event.getByToken(endcap_token                     , endcap_h                     );
+  event.getByToken(station_token                    , station_h                    );
+  event.getByToken(ring_token                       , ring_h                       );
+  event.getByToken(chamber_token                    , chamber_h                    );
+  event.getByToken(layer_token                      , layer_h                      );
   event.getByToken(nstrips_token                    , nstrips_h                    );
-  event.getByToken(rhtime_token                     , rhtime_h                     );                     
-  event.getByToken(twire_token                      , twire_h                      );                      
-  event.getByToken(cfeb_cable_length_token          , cfeb_cable_length_h          );          
-  event.getByToken(cfeb_skew_delay_token            , cfeb_skew_delay_h            );            
-  event.getByToken(cfeb_timing_corr_token           , cfeb_timing_corr_h           );           
-  event.getByToken(cfeb_cable_delay_token           , cfeb_cable_delay_h           );           
-  event.getByToken(precision_token                  , precision_h                  );                  
-  event.getByToken(cfeb_cable_rev_token             , cfeb_cable_rev_h             );             
-  event.getByToken(anode_bx_offset_token            , anode_bx_offset_h            );            
+  event.getByToken(rhtime_token                     , rhtime_h                     );
+  event.getByToken(twire_token                      , twire_h                      );
+  event.getByToken(cfeb_cable_length_token          , cfeb_cable_length_h          );
+  event.getByToken(cfeb_skew_delay_token            , cfeb_skew_delay_h            );
+  event.getByToken(cfeb_timing_corr_token           , cfeb_timing_corr_h           );
+  event.getByToken(cfeb_cable_delay_token           , cfeb_cable_delay_h           );
+  event.getByToken(precision_token                  , precision_h                  );
+  event.getByToken(cfeb_cable_rev_token             , cfeb_cable_rev_h             );
+  event.getByToken(anode_bx_offset_token            , anode_bx_offset_h            );
   event.getByToken(chipCorr_token                   , cfebCorr_h                   );
   event.getByToken(cfebCorr_token                   , chipCorr_h                   );
-  event.getByToken(skewClearDelay_token             , skewClearDelay_h             );             
-  event.getByToken(cfebCableDelay_token             , cfebCableDelay_h             );             
-  event.getByToken(chamberCorr_token                , chamberCorr_h                );                
-  event.getByToken(new_skewClearDelay_token         , new_skewClearDelay_h         );         
-  event.getByToken(new_cfebCableDelay_token         , new_cfebCableDelay_h         );         
-  event.getByToken(new_chamberCorr_token            , new_chamberCorr_h            );            
-  event.getByToken(new_cfeb_cable_length_token      , new_cfeb_cable_length_h      );      
-  event.getByToken(new_cfeb_cable_rev_token         , new_cfeb_cable_rev_h         );         
-  event.getByToken(new_cfeb_skew_delay_token        , new_cfeb_skew_delay_h        );        
-  event.getByToken(new_cfeb_cable_delay_token       , new_cfeb_cable_delay_h       );       
+  event.getByToken(skewClearDelay_token             , skewClearDelay_h             );
+  event.getByToken(cfebCableDelay_token             , cfebCableDelay_h             );
+  event.getByToken(chamberCorr_token                , chamberCorr_h                );
+  event.getByToken(new_skewClearDelay_token         , new_skewClearDelay_h         );
+  event.getByToken(new_cfebCableDelay_token         , new_cfebCableDelay_h         );
+  event.getByToken(new_chamberCorr_token            , new_chamberCorr_h            );
+  event.getByToken(new_cfeb_cable_length_token      , new_cfeb_cable_length_h      );
+  event.getByToken(new_cfeb_cable_rev_token         , new_cfeb_cable_rev_h         );
+  event.getByToken(new_cfeb_skew_delay_token        , new_cfeb_skew_delay_h        );
+  event.getByToken(new_cfeb_cable_delay_token       , new_cfeb_cable_delay_h       );
   event.getByToken(new_cfebCorr_token               , new_cfebCorr_h               );
   event.getByToken(new_chipCorr_token               , new_chipCorr_h               );
   event.getByToken(hlt_bits_token                   , hlt_bits_h                   );
   event.getByToken(hlt_trigNames_token              , hlt_trigNames_h              );
   event.getByToken(hlt_prescales_token              , hlt_prescales_h              );
   event.getByToken(hlt_trigObjs_id_token            , hlt_trigObjs_id_h            );
-  event.getByToken(hlt_trigObjs_p4_token            , hlt_trigObjs_p4_h            );    
+  event.getByToken(hlt_trigObjs_p4_token            , hlt_trigObjs_p4_h            );
   return;
 }
 
@@ -917,8 +868,7 @@ void CSCTimingAnalyzer::getVars (size_t muon_index, size_t chamber_index, size_t
   //
   if (debug_)
     printf("requesting muon %zd of event %llu which has %zd muons\n", muon_index, evt, is_global_h->size());
-  if (muon_index < is_global_h->size())
-  {
+  if (muon_index < is_global_h->size()) {
     is_global                   = is_global_h->at(muon_index)  ;
     is_tracker                  = is_tracker_h->at(muon_index) ;
     is_sa                       = is_sa_h->at(muon_index)      ;
@@ -949,16 +899,14 @@ void CSCTimingAnalyzer::getVars (size_t muon_index, size_t chamber_index, size_t
 
     if (debug_)
       printf("requesting chamber %zd of muon %zd which has %zd chambers\n", chamber_index, muon_index, numCSCsegmentsInChamber_h->at(muon_index).size());
-    if (chamber_index < numCSCsegmentsInChamber_h->at(muon_index).size())
-    {
+    if (chamber_index < numCSCsegmentsInChamber_h->at(muon_index).size()) {
       distToChamberEdge           = distToChamberEdge_h->at(muon_index).at(chamber_index) ;
       distToChamberEdgeErr        = distToChamberEdgeErr_h->at(muon_index).at(chamber_index) ;
       numCSCsegmentsInChamber     = numCSCsegmentsInChamber_h->at(muon_index).at(chamber_index) ;
 
       if (debug_)
         printf("requesting segment %zd of muon %zd, chamber %zd which has %zd segments\n", segment_index, muon_index, chamber_index, numRecHitsInSegment_h->at(muon_index).at(chamber_index).size());
-      if (segment_index < numRecHitsInSegment_h->at(muon_index).at(chamber_index).size())
-      {
+      if (segment_index < numRecHitsInSegment_h->at(muon_index).at(chamber_index).size()) {
         arbitration_mask            = arbitration_mask_h->at(muon_index).at(chamber_index).at(segment_index) ;
         isSegmentAndTrackArbitrated = isSegmentAndTrackArbitrated_h->at(muon_index).at(chamber_index).at(segment_index) ;
         numRecHitsInSegment         = numRecHitsInSegment_h->at(muon_index).at(chamber_index).at(segment_index) ;
@@ -966,8 +914,7 @@ void CSCTimingAnalyzer::getVars (size_t muon_index, size_t chamber_index, size_t
 
         if (debug_)
           printf("requesting rechit %zd of muon %zd, chamber %zd, segment %zd which has %zd rechits\n", rechit_index, muon_index, chamber_index, segment_index, endcap_h->at(muon_index).at(chamber_index).at(segment_index).size());
-        if (rechit_index < endcap_h->at(muon_index).at(chamber_index).at(segment_index).size())
-        {
+        if (rechit_index < endcap_h->at(muon_index).at(chamber_index).at(segment_index).size()) {
           endcap                      = endcap_h->at(muon_index).at(chamber_index).at(segment_index).at(rechit_index)                ;
           station                     = station_h->at(muon_index).at(chamber_index).at(segment_index).at(rechit_index)               ;
           ring                        = ring_h->at(muon_index).at(chamber_index).at(segment_index).at(rechit_index)                  ;
@@ -1134,21 +1081,17 @@ bool CSCTimingAnalyzer::isPOGmuonTight ()
 
 bool CSCTimingAnalyzer::readHeuristicCorrectionsFromFile ()
 {
-  if (applyNewHeuristicCorrectionByChamber_)
-  {
+  if (applyNewHeuristicCorrectionByChamber_) {
     std::ifstream infile(fileForHeuristicCorrByChamber_.c_str());
-    if (!infile)
-    {
+    if (!infile) {
       std::cout << "Failed to read heuristic corrections from file " << fileForHeuristicCorrByChamber_ << std::endl;
       return false;
     }
     if (verbose_)
       std::cout << "Successfully opened file " << fileForHeuristicCorrByChamber_ << std::endl;
     bool is_first = true;
-    while (!infile.eof())
-    {
-      if (is_first)
-      {
+    while (!infile.eof()) {
+      if (is_first) {
         is_first = false;
         continue;
       }
@@ -1166,30 +1109,25 @@ bool CSCTimingAnalyzer::readHeuristicCorrectionsFromFile ()
     }
     infile.close();
 
-    if (verbose_)
-    {
+    if (verbose_) {
       printf("\nprinting new corrections read into map from file...\n\n");
       for (auto item : m_new_heuristicCorr)
         printf("e = %d, s = %d, r = %d, c = %d, corr = %4.2f\n", item.first.endcap(), item.first.station(), item.first.ring(), item.first.chamber(), item.second);
     }
-        
+
     return true;
   }
-  else if (applyNewHeuristicCorrectionByRing_)
-  {
+  else if (applyNewHeuristicCorrectionByRing_) {
     std::ifstream infile(fileForHeuristicCorrByRing_.c_str());
-    if (!infile)
-    {
+    if (!infile) {
       std::cout << "Failed to read heuristic corrections from file " << fileForHeuristicCorrByRing_ << std::endl;
       return false;
     }
     if (verbose_)
       std::cout << "Successfully opened file " << fileForHeuristicCorrByRing_ << std::endl;
     bool is_first = true;
-    while (!infile.eof())
-    {
-      if (is_first)
-      {
+    while (!infile.eof()) {
+      if (is_first) {
         is_first = false;
         continue;
       }
@@ -1201,7 +1139,7 @@ bool CSCTimingAnalyzer::readHeuristicCorrectionsFromFile ()
       if (debug_)
         std::cout << endcap_ << "\t" << station_ << "\t" << ring_ << "\t" << chamber_ << "\t" << corr_ << std::endl;
       CSCDetId id_(endcap_, station_, ring_, chamber_);
-      m_new_heuristicCorr[id_] = corr_;            
+      m_new_heuristicCorr[id_] = corr_;
       if (combineME11ab_ && station_ == 1 && ring_ == 1)
         m_new_heuristicCorr[CSCDetId(endcap_, station_, 4, chamber_)] = corr_;
     }
@@ -1231,27 +1169,24 @@ void CSCTimingAnalyzer::fillNm1hists ()
   cutParams[Cuts::NLAYERS]   = valid_siLayers;
 
   int cutDecisions[100];
-  cutDecisions[Cuts::IS_GLOBAL] = isGlobalMuon();      
-  cutDecisions[Cuts::CHI2]      = passesGlobalChi2();  
+  cutDecisions[Cuts::IS_GLOBAL] = isGlobalMuon();
+  cutDecisions[Cuts::CHI2]      = passesGlobalChi2();
   cutDecisions[Cuts::STA_HITS]  = passesGlobalSAhits();
-  cutDecisions[Cuts::NSTATIONS] = passesNumStations(); 
-  cutDecisions[Cuts::D0]        = passesD0();          
-  cutDecisions[Cuts::DZ]        = passesDZ();          
-  cutDecisions[Cuts::NPIXELS]   = passesPixelHits();   
-  cutDecisions[Cuts::NLAYERS]   = passesSiLayers();    
+  cutDecisions[Cuts::NSTATIONS] = passesNumStations();
+  cutDecisions[Cuts::D0]        = passesD0();
+  cutDecisions[Cuts::DZ]        = passesDZ();
+  cutDecisions[Cuts::NPIXELS]   = passesPixelHits();
+  cutDecisions[Cuts::NLAYERS]   = passesSiLayers();
 
   // build mask of cuts passed
   unsigned int cuts_passed = 0;
-  for (size_t idx = 0; idx < Cuts::NCUTS; idx++)
-  {
+  for (size_t idx = 0; idx < Cuts::NCUTS; idx++) {
     cuts_passed |= (cutDecisions[idx] << idx);
   }
 
-  for (size_t idx = 0; idx < Cuts::NCUTS; idx++)
-  {        
+  for (size_t idx = 0; idx < Cuts::NCUTS; idx++) {
     unsigned int cuts_to_pass = (~(1 << idx) & ((1<<Cuts::NCUTS)-1));
-    if ((cuts_passed & cuts_to_pass) == cuts_to_pass)
-    {
+    if ((cuts_passed & cuts_to_pass) == cuts_to_pass) {
       histos_->fill1DHist(std::max(std::min(cutParams[idx],BIN_EDGE_HIGH[idx]-0.01),BIN_EDGE_LOW[idx]+0.01), HIST_NAMES[idx].c_str(), "muon quality", NBINS[idx], BIN_EDGE_LOW[idx], BIN_EDGE_HIGH[idx], "MuonNM1Hists");
     }
   }
@@ -1261,31 +1196,26 @@ double CSCTimingAnalyzer::calculateSegmentTime (std::vector<double>& rhts, std::
 {
   float averageTime=0;
   std::vector<float> wireTimes;
-  for (unsigned int idx = 0; idx < rhts.size(); idx++)
-  {
+  for (unsigned int idx = 0; idx < rhts.size(); idx++) {
     averageTime += rhts.at(idx);
     averageTime += wts.at(idx);
   }
   averageTime=averageTime/(2*rhts.size());
- 
+
   //The wire times have a long tail that has to be pruned.  The strip times (tpeak) are fine
   bool modified = true;
-  while (modified)
-  {
+  while (modified) {
     modified = false;
     double maxDiff = -1;
     unsigned int maxHit = 0;
-    for (unsigned int idx = 0; idx < wts.size(); idx++)
-    {
+    for (unsigned int idx = 0; idx < wts.size(); idx++) {
       float diff = fabs(wts.at(idx) - averageTime);
-      if (diff > maxDiff)
-      {
+      if (diff > maxDiff) {
         maxDiff = diff;
         maxHit = idx;
       }
     }
-    if (maxDiff > 26)
-    {
+    if (maxDiff > 26) {
       int N=rhts.size()+wts.size();
       averageTime=(averageTime*N-(wts.at(maxHit)))/(N-1);
       wts.erase(wts.begin()+maxHit);
