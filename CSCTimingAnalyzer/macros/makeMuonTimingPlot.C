@@ -11,7 +11,7 @@
 #include "TPaveStats.h"
 #include "TLatex.h"
 
-void makeMuonTimingPlot(std::string fname, bool no_legend = false)
+void makeMuonTimingPlot(std::string fname, float kLumi = 10.3, bool no_legend = false)
 {
     TFile file(fname.c_str());
     TDirectoryFile *dir = (TDirectoryFile*)file.Get("Muons");
@@ -75,13 +75,13 @@ void makeMuonTimingPlot(std::string fname, bool no_legend = false)
     prelim.SetTextFont(52);
     prelim.SetTextSize(0.0456);
 
-    TLatex data(0.17, 0.76, "Data 2017");
+    TLatex data(0.17, 0.76, "Data 2018");
     data.SetNDC();
     data.SetTextAlign(13);
     data.SetTextFont(52);
     data.SetTextSize(0.0456);
 
-    TLatex lumi(0.9, 0.93, "12.0 fb^{-1} (13 TeV)");
+    TLatex lumi(0.9, 0.93, Form("%.1f fb^{-1} (13 TeV)", kLumi));
     lumi.SetNDC();
     lumi.SetTextAlign(31);
     lumi.SetTextFont(42);

@@ -154,6 +154,9 @@ void CSCTimingAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
   if (checkCSCstatus_ && !csc_status) return;
   if (checkDCSstatus_ && !(detector_status & (0xF << 24))) return;
 
+  // Include the run number for the events
+  histos_->fill1DHist(run, "hRunNum", "run number", 100000, 300000, 400000, "Muons");
+
   size_t nMuons = p4_h->size();
   for (size_t nmu = 0; nmu < nMuons; nmu++) {
     getVars(nmu);

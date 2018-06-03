@@ -36,7 +36,7 @@ int GetNumChambers (int s, int r)
     return 36;
 }
 
-void makeAnodeTimingPlot (std::string fname, bool byStation, bool no_legend = false)
+void makeAnodeTimingPlot (std::string fname, bool byStation, float kLumi = 10.3, bool no_legend = false)
 {    
     TFile file(fname.c_str());
     TDirectoryFile *dir;
@@ -202,13 +202,13 @@ void makeAnodeTimingPlot (std::string fname, bool byStation, bool no_legend = fa
     prelim.SetTextFont(52);
     prelim.SetTextSize(0.0456);
 
-    TLatex data(0.17, 0.76, "Data 2017");
+    TLatex data(0.17, 0.76, "Data 2018");
     data.SetNDC();
     data.SetTextAlign(13);
     data.SetTextFont(52);
     data.SetTextSize(0.0456);
 
-    TLatex lumi(0.85, 0.82, "12.0 fb^{-1} (13 TeV)");
+    TLatex lumi(0.85, 0.82, Form("%.1f fb^{-1} (13 TeV)", kLumi));
     lumi.SetNDC();
     lumi.SetTextAlign(31);
     lumi.SetTextFont(42);
