@@ -58,7 +58,7 @@ void combineAnodeTimingDistributions (std::string fname, float kLumi = 10.3, boo
       }
     } while (modified);
 
-    TH1F *h2 = new TH1F("h2", "h2", 5, -31.25, 31.25);
+    TH1F *h2 = new TH1F("h2", "h2", 25, -31.25, 31.25);
     h2->GetXaxis()->SetTitle("anode time (ns)");
     h2->GetYaxis()->SetTitle("Fraction of Hits/ns");
     h2->GetYaxis()->SetTitleOffset(1.1);
@@ -109,13 +109,13 @@ void combineAnodeTimingDistributions (std::string fname, float kLumi = 10.3, boo
     lumi.SetTextFont(42);
     lumi.SetTextSize(0.052);    
 
-    TLatex mean(0.7, 0.81, Form("Mean  %2.1f", avg));
+    TLatex mean(0.66, 0.81, Form("Mean  %2.1f ns", avg));
     mean.SetNDC();
     mean.SetTextAlign(11);
     mean.SetTextFont(61);
     mean.SetTextSize(0.06);
 
-    TLatex stdev(0.7, 0.76, Form("RMS   %2.1f", rms));
+    TLatex stdev(0.66, 0.76, Form("RMS   %s%2.1f ns", (avg<0)? " ":"", rms));
     stdev.SetNDC();
     stdev.SetTextAlign(11);
     stdev.SetTextFont(61);

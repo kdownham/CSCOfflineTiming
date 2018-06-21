@@ -2,7 +2,7 @@ import FWCore.ParameterSet.Config as cms
 
 process = cms.Process("CSCTIMINGANALYSIS")
 
-applyGoodRunList = cms.bool(False)
+applyGoodRunList = cms.bool(True)
 
 process.load("FWCore.MessageService.MessageLogger_cfi")
 process.MessageLogger.cerr.FwkReport.reportEvery = 100000
@@ -17,8 +17,9 @@ process.source = cms.Source("PoolSource",
                                 # '/store/user/sicheng/csctiming/2017/SingleMuon/2017C_v1/171001_231716/0000/test_26.root',
                                 # '/store/user/sicheng/csctiming/2017/SingleMuon/2017C_v1/171001_231716/0000/test_14.root',
                                 # 'file:/home/users/sicheng/working/CSCTiming/CMSSW_10_1_0_pre2/src/CSCOfflineTiming/CSCTimingBabyMaker/test/test_9000.root',
-                                'file:/home/users/sicheng/working/CSCTiming/CMSSW_10_1_0_pre2/src/CSCOfflineTiming/CSCTimingBabyMaker/test/test_mcdbv3.root',
+                                # 'file:/home/users/sicheng/working/CSCTiming/CMSSW_10_1_0_pre2/src/CSCOfflineTiming/CSCTimingBabyMaker/test/test_mcdbv3.root',
                                 # '/store/user/sicheng/csctiming/MonteCarlo/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/DYJetsToLL/180312_031243/0000/test_DYjets_92X_196.root',
+                                '/store/user/sicheng/csctiming/2018/SingleMuon/2018A_PromptReco_v1/180527_145849/0000/cscTimingBaby_185.root',
                                 )
 )
 
@@ -29,8 +30,7 @@ import FWCore.ParameterSet.Types as CfgTypes
 
 if applyGoodRunList:
     process.source.lumisToProcess = CfgTypes.untracked(CfgTypes.VLuminosityBlockRange())
-    JSONfile = '/home/users/sicheng/working/CSCTiming/CMSSW_9_3_1/src/CSCOfflineTiming/CSCTimingAnalyzer/test/Cert_294927-302654_13TeV_PromptReco_Collisions17_JSON.txt'
-    # JSONfile = '/home/users/sicheng/working/CSCTiming/CMSSW_9_2_4/src/CSCOfflineTiming/CSCTimingAnalyzer/test/Cert_297292-297723_13TeV_2017_HCAL_DCS_GOOD.txt'
+    JSONfile = '/home/users/sicheng/working/CSCTiming/CMSSW_10_1_5/src/CSCOfflineTiming/CSCTimingAnalyzer/test/Cert_314472-316723_13TeV_PromptReco_Collisions18_JSON.txt'
     myLumis = LumiList.LumiList(filename = JSONfile).getCMSSWString().split(',')
     process.source.lumisToProcess.extend(myLumis)
 
@@ -59,7 +59,7 @@ removeHeuristicCorrectionName = '_removeHeuristicCorr'
 # min_pt_name = '_minPt' + str(process.cscTimingAnalyzer.min_pt)
 # max_dz_name = '_maxDz' + str(process.cscTimingAnalyzer.max_dz)
 
-baseFileName = 'histos_mcdbv3'
+baseFileName = 'histos'
 fileExtension = '.root'
 outfileName = baseFileName
 
