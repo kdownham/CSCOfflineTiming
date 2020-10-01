@@ -11,7 +11,7 @@
 #include "TPaveStats.h"
 #include "TLatex.h"
 
-void makeMuonTimingPlot(std::string fname, float kLumi = 10.3, bool no_legend = false)
+void makeMuonTimingPlot(std::string fname, float kLumi = 0.0, bool no_legend = false)
 {
     TFile file(fname.c_str());
     TDirectoryFile *dir = (TDirectoryFile*)file.Get("Muons");
@@ -98,6 +98,11 @@ void makeMuonTimingPlot(std::string fname, float kLumi = 10.3, bool no_legend = 
     stdev.SetTextAlign(11);
     stdev.SetTextFont(61);
     stdev.SetTextSize(0.06);
+
+    double rmserr = h2->GetRMSError();
+    double avgerr = h2->GetMeanError();
+    cout << "Mean: " << avg << " +- " << avgerr << endl;
+    cout << "RMS: " << rms << " +- " << rmserr << endl;
 
     h2->GetXaxis()->SetRangeUser(-6*rms,6*rms);   
     TH1F* h2norm = (TH1F*)h2->DrawNormalized("hist");

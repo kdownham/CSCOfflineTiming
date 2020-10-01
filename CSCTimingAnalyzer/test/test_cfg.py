@@ -16,10 +16,15 @@ process.source = cms.Source("PoolSource",
                                 # '/store/user/sicheng/csctiming/2017/SingleMuon/v4/170811_062223/0000/test_35.root',
                                 # '/store/user/sicheng/csctiming/2017/SingleMuon/2017C_v1/171001_231716/0000/test_26.root',
                                 # '/store/user/sicheng/csctiming/2017/SingleMuon/2017C_v1/171001_231716/0000/test_14.root',
-                                # 'file:/home/users/sicheng/working/CSCTiming/CMSSW_10_1_0_pre2/src/CSCOfflineTiming/CSCTimingBabyMaker/test/test_9000.root',
-                                # 'file:/home/users/sicheng/working/CSCTiming/CMSSW_10_1_0_pre2/src/CSCOfflineTiming/CSCTimingBabyMaker/test/test_mcdbv3.root',
+                                # 'file:~/working/CSCTiming/CMSSW_10_1_0_pre2/src/CSCOfflineTiming/CSCTimingBabyMaker/test/test_9000.root',
+                                # 'file:~/working/CSCTiming/CMSSW_10_1_0_pre2/src/CSCOfflineTiming/CSCTimingBabyMaker/test/test_mcdbv3.root',
                                 # '/store/user/sicheng/csctiming/MonteCarlo/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/DYJetsToLL/180312_031243/0000/test_DYjets_92X_196.root',
-                                '/store/user/sicheng/csctiming/2018/SingleMuon/2018A_PromptReco_v1/180527_145849/0000/cscTimingBaby_185.root',
+                                'file:/home/users/sicheng/working/CSCTiming/CMSSW_10_2_5/src/CSCOfflineTiming/CSCTimingBabyMaker/test/test_run324201_part1.root',
+                                'file:/home/users/sicheng/working/CSCTiming/CMSSW_10_2_5/src/CSCOfflineTiming/CSCTimingBabyMaker/test/test_run324201_part2.root',
+                                'file:/home/users/sicheng/working/CSCTiming/CMSSW_10_2_5/src/CSCOfflineTiming/CSCTimingBabyMaker/test/test_run324201_part3.root',
+                                'file:/home/users/sicheng/working/CSCTiming/CMSSW_10_2_5/src/CSCOfflineTiming/CSCTimingBabyMaker/test/test_run324201_part4.root',
+                                'file:/home/users/sicheng/working/CSCTiming/CMSSW_10_2_5/src/CSCOfflineTiming/CSCTimingBabyMaker/test/test_run324201_part5.root',
+                                # '/store/user/sicheng/csctiming/2018/SingleMuon/2018A_PromptReco_v1/180527_145849/0000/cscTimingBaby_185.root',
                                 )
 )
 
@@ -30,7 +35,7 @@ import FWCore.ParameterSet.Types as CfgTypes
 
 if applyGoodRunList:
     process.source.lumisToProcess = CfgTypes.untracked(CfgTypes.VLuminosityBlockRange())
-    JSONfile = '/home/users/sicheng/working/CSCTiming/CMSSW_10_1_5/src/CSCOfflineTiming/CSCTimingAnalyzer/test/Cert_314472-316723_13TeV_PromptReco_Collisions18_JSON.txt'
+    JSONfile = '/home/users/sicheng/working/CSCTiming/CMSSW_10_2_5/src/CSCOfflineTiming/CSCTimingAnalyzer/test/Cert_314472-325175_13TeV_PromptReco_Collisions18_JSON.txt'
     myLumis = LumiList.LumiList(filename = JSONfile).getCMSSWString().split(',')
     process.source.lumisToProcess.extend(myLumis)
 

@@ -18,7 +18,9 @@ process.load('Configuration.StandardSequences.EndOfProcess_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 
 # Data Run 2017
-process.GlobalTag.globaltag = '92X_dataRun2_Prompt_v8'
+process.GlobalTag.globaltag = '102X_dataRun2_Prompt_v1'
+# process.GlobalTag.globaltag = '102X_dataRun2_Sep2018Rereco_v1'
+
 
 # Config CSC for postls1
 # process.CSCGeometryESModule.useGangedStripsInME1a = cms.bool(False)
@@ -42,8 +44,17 @@ process.source = cms.Source("PoolSource",
                                 # 'file:/home/users/sicheng/working/CSCTiming/testfile/SingleMuon_296968.root',
                                 # '/store/data/Run2017B/SingleMuon/AOD/PromptReco-v1/000/297/296/00000/F0DF8991-2259-E711-8ED0-02163E019C8F.root',
                                 # '/store/data/Run2017B/SingleMuon/AOD/PromptReco-v1/000/297/292/00000/F2EFD821-2259-E711-9324-02163E011810.root',
-                                # 'file:/home/users/sicheng/working/CSCTiming/CMSSW_10_1_0_pre2/test/step3_mcdb_bxshift2.root',
-                                'file:/home/users/sicheng/working/CSCTiming/CMSSW_10_1_0_pre2/test/step3_mcdb_v3.root',
+                                '/store/data/Run2018D/SingleMuon/AOD/PromptReco-v2/000/324/201/00000/C84C0657-BD67-9C4F-8706-35862F536F89.root',
+                                '/store/data/Run2018D/SingleMuon/AOD/PromptReco-v2/000/324/201/00000/C8FAD63A-8098-BE44-BDE4-1994868A6050.root',
+                                '/store/data/Run2018D/SingleMuon/AOD/PromptReco-v2/000/324/201/00000/7BF72F9B-C5CA-F64B-9E3B-3966EBE7D486.root',
+                                '/store/data/Run2018D/SingleMuon/AOD/PromptReco-v2/000/324/201/00000/25A89671-8774-BA46-BD03-7FFB21218EF7.root',
+                                '/store/data/Run2018D/SingleMuon/AOD/PromptReco-v2/000/324/201/00000/EFEA0E80-5CD6-8244-87C2-2D593E143C59.root',
+                                '/store/data/Run2018D/SingleMuon/AOD/PromptReco-v2/000/324/201/00000/A7CACFC2-752D-174D-8AB4-A8819272087E.root',
+                                '/store/data/Run2018D/SingleMuon/AOD/PromptReco-v2/000/324/201/00000/C6FDD8FB-BB1B-D042-9B6B-8F9270A673FC.root',
+                                '/store/data/Run2018D/SingleMuon/AOD/PromptReco-v2/000/324/201/00000/50620513-D858-DA40-B143-8F97EFB2D8C4.root',
+                                '/store/data/Run2018D/SingleMuon/AOD/PromptReco-v2/000/324/201/00000/8030DE1B-1EBE-594E-9D6D-A021C4453C65.root',
+                                '/store/data/Run2018D/SingleMuon/AOD/PromptReco-v2/000/324/201/00000/CA21A7A4-689E-BD42-A0D5-81A49D179124.root',
+
                             )
 )
 
