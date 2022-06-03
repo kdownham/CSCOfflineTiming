@@ -1,7 +1,7 @@
 import FWCore.ParameterSet.Config as cms
 
 from Configuration.StandardSequences.Eras import eras
-
+print 'process'
 process = cms.Process("CSCTIMING",eras.Run2_2017)
 
 process.load('Configuration.StandardSequences.Services_cff')
@@ -18,8 +18,11 @@ process.load('Configuration.StandardSequences.EndOfProcess_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 
 # Data Run 2017
-process.GlobalTag.globaltag = '102X_dataRun2_Prompt_v1'
+#from Configuration.AlCa.GlobalTag import GlobalTag
+#process.GlobalTag.globaltag = '102X_dataRun2_Prompt_v1'
 # process.GlobalTag.globaltag = '102X_dataRun2_Sep2018Rereco_v1'
+from Configuration.AlCa.GlobalTag import GlobalTag
+process.GlobalTag.globaltag = "112X_dataRun2_v7"
 
 
 # Config CSC for postls1
@@ -63,7 +66,7 @@ process.cscTimingBabyMaker.debug = cms.untracked.bool(False)
 process.cscTimingBabyMaker.useMuonSegmentMatcher = cms.untracked.bool(False)
 
 # automatically name the output file correctly and uniquely
-outfileName = 'test_mcdbv3.root'
+outfileName = 'test_mcdbv3_test.root'
 baseFileName = outfileName.split('.')[0]
 outfileName = baseFileName
 if process.cscTimingBabyMaker.useMuonSegmentMatcher:
@@ -73,13 +76,14 @@ print 'Output to file: ', outfileName
 
 # From RAW
 process.p = cms.Path(process.cscTimingBabyMaker)
-
+print '1'
 process.out = cms.OutputModule("PoolOutputModule",
                                fileName = cms.untracked.string(outfileName),
                                outputCommands = cms.untracked.vstring('drop *',
                                                                       'keep *_*_*_CSCTIMING'))
-
+print '2'
 process.e = cms.EndPath(process.out)
-
+print '3'
 # Schedule definition
 process.schedule = cms.Schedule(process.p,process.e)
+print '4'

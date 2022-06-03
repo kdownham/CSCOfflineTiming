@@ -11,7 +11,8 @@ process.load("Configuration.StandardSequences.Reconstruction_cff")
 process.load('Configuration.StandardSequences.EndOfProcess_cff')
 
 # Express for 711 MWGR July 2014
-process.GlobalTag.globaltag = 'GR_E_V38::All'
+#process.GlobalTag.globaltag = 'GR_E_V38::All'
+process.GlobalTag.globaltag = 'GR_P_V55'
 
 # Config CSC for postls1
 process.CSCGeometryESModule.useGangedStripsInME1a = cms.bool(False)
