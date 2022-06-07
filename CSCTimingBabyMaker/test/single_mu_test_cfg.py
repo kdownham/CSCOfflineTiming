@@ -12,7 +12,8 @@ process.load('Configuration.StandardSequences.EndOfProcess_cff')
 
 # Express for 711 MWGR July 2014
 #process.GlobalTag.globaltag = 'GR_E_V38::All'
-process.GlobalTag.globaltag = '101X_dataRun2_Prompt_v11'
+from Configuration.AlCa.GlobalTag import GlobalTag
+process.GlobalTag.globaltag = '123X_dataRun3_Prompt_v8'
 
 # Config CSC for postls1
 process.CSCGeometryESModule.useGangedStripsInME1a = cms.bool(False)
@@ -37,9 +38,7 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
 
 process.source = cms.Source("PoolSource",
                             fileNames = cms.untracked.vstring(
-                                '/store/data/Run2018B/SingleMuon/AOD/PromptReco-v2/000/318/820/00000/50043584-317C-E811-8635-FA163EFC186C.root',
-                                '/store/data/Run2018B/SingleMuon/AOD/PromptReco-v2/000/318/820/00000/8A56B34C-317C-E811-A60F-FA163E667F65.root',
-                                '/store/data/Run2018B/SingleMuon/AOD/PromptReco-v2/000/318/816/00000/666FADCA-327C-E811-A542-FA163E58351A.root')
+                                '/store/data/Run2022A/Cosmics/AOD/PromptReco-v1/000/352/396/00000/b589ed40-7580-4fd2-aacc-1b4042de20fe.root')
 )
 
 process.load('CSCOfflineTiming.CSCTimingBabyMaker.cscTimingBabyMaker_cfi')
