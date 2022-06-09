@@ -13,7 +13,7 @@ process.load('Configuration.StandardSequences.EndOfProcess_cff')
 # Express for 711 MWGR July 2014
 #process.GlobalTag.globaltag = 'GR_E_V38::All'
 from Configuration.AlCa.GlobalTag import GlobalTag
-process.GlobalTag.globaltag = '123X_dataRun3_Prompt_v8'
+process.GlobalTag.globaltag = '101X_dataRun2_Prompt_v11'
 
 # Config CSC for postls1
 process.CSCGeometryESModule.useGangedStripsInME1a = cms.bool(False)
@@ -36,9 +36,14 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
 # process.options = cms.untracked.PSet(SkipEvent = cms.untracked.vstring('LogicError'))
 
 
+#process.source = cms.Source("PoolSource",
+#                            fileNames = cms.untracked.vstring(
+#                                'root://cmsxrootd.fnal.gov//store/data/Run2018B/SingleMuon/AOD/PromptReco-v2/000/318/820/00000/50043584-317C-E811-8635-FA163EFC186C.root')
+#)
+
 process.source = cms.Source("PoolSource",
                             fileNames = cms.untracked.vstring(
-                                '/store/data/Run2022A/Cosmics/AOD/PromptReco-v1/000/352/396/00000/b589ed40-7580-4fd2-aacc-1b4042de20fe.root')
+                                'file:/eos/cms/store/data/Run2018B/SingleMuon/AOD/12Nov2019_UL2018-v2/100002/FEF56649-A6CA-5A49-8F7F-3C3264742A21.root')
 )
 
 process.load('CSCOfflineTiming.CSCTimingBabyMaker.cscTimingBabyMaker_cfi')
@@ -54,10 +59,16 @@ print outfileName
 # From RAW
 process.p = cms.Path(process.cscTimingBabyMaker)
 
-process.out = cms.OutputModule("PoolOutputModule",
+#process.out = cms.OutputModule("PoolOutputModule",
+#                               fileName = cms.untracked.string(outfileName),
+#                               outputCommands = cms.untracked.vstring('drop *',
+#                                                                      'keep *_*_*_CSCTIMING'))
+
+process.out = cms.OutputModule("Merged",
                                fileName = cms.untracked.string(outfileName),
                                outputCommands = cms.untracked.vstring('drop *',
                                                                       'keep *_*_*_CSCTIMING'))
+
 
 process.e = cms.EndPath(process.out)
 

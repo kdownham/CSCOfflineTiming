@@ -22,7 +22,7 @@ process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 #process.GlobalTag.globaltag = '102X_dataRun2_Prompt_v1'
 # process.GlobalTag.globaltag = '102X_dataRun2_Sep2018Rereco_v1'
 from Configuration.AlCa.GlobalTag import GlobalTag
-process.GlobalTag.globaltag = "112X_dataRun2_v7"
+process.GlobalTag.globaltag = "102X_dataRun2_Prompt_v1"
 
 
 # Config CSC for postls1
