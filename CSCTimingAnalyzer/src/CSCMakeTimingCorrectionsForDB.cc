@@ -21,8 +21,9 @@ CSCMakeTimingCorrectionsForDB::CSCMakeTimingCorrectionsForDB(const edm::Paramete
     cableLengthFileName = iConfig.getUntrackedParameter<std::string>("cableLengthFileName", "");
     outFileName = iConfig.getUntrackedParameter<std::string>("outFileName", "");
     outChipFileName = iConfig.getUntrackedParameter<std::string>("outChipFileName", "");
-    edm::ConsumesCollector iC = consumesCollector(); // Added this line for extra argumet for following line
-    recoConditions = new CSCRecoConditions(iConfig,iC);
+    //edm::ConsumesCollector iC = consumesCollector(); // Added this line for extra argumet for following line
+    //recoConditions = new CSCRecoConditions(iConfig,iC);
+    recoConditions = new CSCRecoConditions(iConfig);
     updateOnlyNewChambers_ = iConfig.getUntrackedParameter<bool>("updateOnlyNewChambers", false);
 }
 

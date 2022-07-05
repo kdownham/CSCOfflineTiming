@@ -13,7 +13,7 @@ process.load('Configuration.StandardSequences.EndOfProcess_cff')
 # Express for 711 MWGR July 2014
 #process.GlobalTag.globaltag = 'GR_E_V38::All'
 from Configuration.AlCa.GlobalTag import GlobalTag
-process.GlobalTag.globaltag = '101X_dataRun2_Prompt_v11'
+process.GlobalTag.globaltag = '106X_dataRun2_v26'
 
 # Config CSC for postls1
 process.CSCGeometryESModule.useGangedStripsInME1a = cms.bool(False)
@@ -43,7 +43,7 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
 
 process.source = cms.Source("PoolSource",
                             fileNames = cms.untracked.vstring(
-                                'file:/eos/cms/store/data/Run2018B/SingleMuon/AOD/12Nov2019_UL2018-v2/100002/FEF56649-A6CA-5A49-8F7F-3C3264742A21.root')
+                                'file:/eos/cms/store/data/Run2018D/Charmonium/AOD/12Nov2019_UL2018-v1/110002/366041D9-52D4-524D-B407-212037FCDD67.root')
 )
 
 process.load('CSCOfflineTiming.CSCTimingBabyMaker.cscTimingBabyMaker_cfi')
@@ -64,7 +64,7 @@ process.p = cms.Path(process.cscTimingBabyMaker)
 #                               outputCommands = cms.untracked.vstring('drop *',
 #                                                                      'keep *_*_*_CSCTIMING'))
 
-process.out = cms.OutputModule("Merged",
+process.out = cms.OutputModule("PoolOutputModule",
                                fileName = cms.untracked.string(outfileName),
                                outputCommands = cms.untracked.vstring('drop *',
                                                                       'keep *_*_*_CSCTIMING'))

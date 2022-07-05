@@ -40,15 +40,17 @@ const unsigned int CSCTimingBabyMaker::ME11M_SKEWCLEAR_CABLE_LENGTHS[36] = {1150
 CSCTimingBabyMaker::CSCTimingBabyMaker(const edm::ParameterSet& iConfig) :
   isLoaded_(false)
 {
-  edm::ConsumesCollector iC = consumesCollector();
-  recoConditions = new CSCRecoConditions(iConfig,iC);
+  //edm::ConsumesCollector iC = consumesCollector();
+  //recoConditions = new CSCRecoConditions(iConfig,iC);
+  recoConditions = new CSCRecoConditions(iConfig);
 
   edm::ParameterSet muonServiceProxyParameters = iConfig.getParameter<edm::ParameterSet>("ServiceParameters");
-  UseEventSetupIn useEventSetupIn = UseEventSetupIn::Event;
-  muonServiceProxy = new MuonServiceProxy(muonServiceProxyParameters,iC,useEventSetupIn);
+  //UseEventSetupIn useEventSetupIn = UseEventSetupIn::Event;
+  //muonServiceProxy = new MuonServiceProxy(muonServiceProxyParameters,iC,useEventSetupIn);
+  muonServiceProxy = new MuonServiceProxy(muonServiceProxyParameters);
 
   edm::ParameterSet muonSegmentMatchParameters = iConfig.getParameter<edm::ParameterSet>("MatchParameters");
-  //edm::ConsumesCollector iC = consumesCollector();
+  edm::ConsumesCollector iC = consumesCollector();
   muonSegmentMatcher = new MuonSegmentMatcher(muonSegmentMatchParameters, iC);
 
   mu_token  = consumes<reco::MuonCollection>(iConfig.getParameter<edm::InputTag>("muonTag"));
