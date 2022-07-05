@@ -2,7 +2,8 @@ import FWCore.ParameterSet.Config as cms
 
 process = cms.Process("CSCTIMINGANALYSIS")
 
-applyGoodRunList = cms.bool(True)
+#applyGoodRunList = cms.bool(True)
+applyGoodRunList = cms.bool(False)
 
 process.load("FWCore.MessageService.MessageLogger_cfi")
 process.MessageLogger.cerr.FwkReport.reportEvery = 100000
@@ -29,7 +30,7 @@ process.source = cms.Source("PoolSource",
                                 # '/store/user/sicheng/csctiming/2017/SingleMuon/v4/170626_204538/0000/test_60.root',
                                 # '/store/user/sicheng/csctiming/2017/SingleMuon/v4/170626_204538/0000/test_65.root',
                                 # '/store/user/sicheng/csctiming/2017/SingleMuon/v4/170626_204538/0000/test_66.root',
-                                '/store/user/sicheng/csctiming/2017/SingleMuon/v4/170626_204538/0000/test_67.root',
+                                'file:/afs/cern.ch/user/k/kdownham/CSC_Validation/CMSSW_10_6_4_patch1/src/CSCOfflineTiming/CSCTimingBabyMaker/test/csc_singleMu_test_useMuonSegmentMatcher.root',
                                 # '/store/user/sicheng/csctiming/2017/SingleMuon/2017D_v1/170924_061250/0000/test_143.root',
                                 # '/hadoop/cms/store/user/fgolf/csc/timing/offline/2016/SingleMuon/v4/170117_224759/0000/test_256.root',
                                 # '/store/user/fgolf/csc/timing/offline/2016/SingleMuon/v4/170514_042023/0000/test_28.root',
