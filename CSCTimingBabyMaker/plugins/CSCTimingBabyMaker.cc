@@ -42,12 +42,13 @@ CSCTimingBabyMaker::CSCTimingBabyMaker(const edm::ParameterSet& iConfig) :
 {
   //edm::ConsumesCollector iC = consumesCollector();
   //recoConditions = new CSCRecoConditions(iConfig,iC);
-  recoConditions = new CSCRecoConditions(iConfig);
+  recoConditions = new CSCRecoConditions(iConfig,consumesCollector());
 
   edm::ParameterSet muonServiceProxyParameters = iConfig.getParameter<edm::ParameterSet>("ServiceParameters");
   //UseEventSetupIn useEventSetupIn = UseEventSetupIn::Event;
   //muonServiceProxy = new MuonServiceProxy(muonServiceProxyParameters,iC,useEventSetupIn);
-  muonServiceProxy = new MuonServiceProxy(muonServiceProxyParameters);
+  //muonServiceProxy = new MuonServiceProxy(muonServiceProxyParameters);
+  muonServiceProxy = new MuonServiceProxy(muonServiceProxyParameters,consumesCollector());
 
   edm::ParameterSet muonSegmentMatchParameters = iConfig.getParameter<edm::ParameterSet>("MatchParameters");
   edm::ConsumesCollector iC = consumesCollector();

@@ -23,7 +23,7 @@ CSCMakeTimingCorrectionsForDB::CSCMakeTimingCorrectionsForDB(const edm::Paramete
     outChipFileName = iConfig.getUntrackedParameter<std::string>("outChipFileName", "");
     //edm::ConsumesCollector iC = consumesCollector(); // Added this line for extra argumet for following line
     //recoConditions = new CSCRecoConditions(iConfig,iC);
-    recoConditions = new CSCRecoConditions(iConfig);
+    recoConditions = new CSCRecoConditions(iConfig,consumesCollector());
     updateOnlyNewChambers_ = iConfig.getUntrackedParameter<bool>("updateOnlyNewChambers", false);
 }
 
