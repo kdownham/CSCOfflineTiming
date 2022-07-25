@@ -5,4 +5,4 @@
 <use name="RecoLocalMuon/CSCRecHitD"/>
 <use name="CalibMuon/CSCCalibration"/>
 <flags EDM_PLUGIN="1"/>
-<Flags CXXFLAGS="-g"/>
+<flags CXXFLAGS="-g"/>

@@ -3,4 +3,4 @@
 <use name="FWCore/ParameterSet"/>
 <use name="/afs/cern.ch/user/k/kdownham/CSC_Validation/CMSSW_12_3_6/src/RecoLocalMuon/CSCValidation"/>
 <flags EDM_PLUGIN="1"/>
-<Flags CXXFLAGS="-g"/>
+<flags CXXFLAGS="-g"/>
