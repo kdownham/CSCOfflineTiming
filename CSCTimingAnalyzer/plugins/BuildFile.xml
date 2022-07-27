@@ -1,6 +1,6 @@
 <use name="FWCore/Framework"/>
 <use name="FWCore/PluginManager"/>
 <use name="FWCore/ParameterSet"/>
-<use name="/afs/cern.ch/user/k/kdownham/CSC_Validation/CMSSW_12_3_6/src/RecoLocalMuon/CSCValidation"/>
+<use name="RecoLocalMuon/CSCValidation"/>
 <flags EDM_PLUGIN="1"/>
 <flags CXXFLAGS="-g"/>
