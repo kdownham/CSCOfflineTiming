@@ -8,7 +8,8 @@
 #include "DataFormats/CSCRecHit/interface/CSCRecHit2D.h"
 #include "CalibMuon/CSCCalibration/interface/CSCChannelMapperRecord.h"
 #include "CalibMuon/CSCCalibration/interface/CSCChannelMapperBase.h"
-#include "RecoLocalMuon/CSCRecHitD/src/CSCRecoConditions.h"
+//#include "RecoLocalMuon/CSCRecHitD/src/CSCRecoConditions.h"
+#include "CSCRecoConditions.h"
 #include "CondFormats/DataRecord/interface/CSCChamberTimeCorrectionsRcd.h"
 #include "CondFormats/CSCObjects/interface/CSCChamberTimeCorrections.h"
 #include "CalibMuon/CSCCalibration/interface/CSCIndexerRecord.h"
@@ -197,6 +198,7 @@ CSCTimingBabyMaker::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
 
   iEvent.getByToken(trgEvent_token, triggerEvent_h);
+  std::cout << "Is the trigger event valid? " << triggerEvent_h.isValid() << std::endl;
   if (!triggerEvent_h.isValid())
     throw cms::Exception("CSCTimingBabyMaker::filter: error getting TriggerEvent product from Event!"  );
 
@@ -215,6 +217,9 @@ CSCTimingBabyMaker::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
   if (!trigResults_h.isValid())
     throw cms::Exception("CSCTimingBabyMaker::filter: error getting TriggerResults product from Event!"  );
 
+  std::cout << "Size of trigResults_h = " << trigResults_h->size() << std::endl;
+  std::cout << "Size of hltConfig = " << hltConfig.size() << std::endl; 
+ 
   assert( trigResults_h->size()==hltConfig.size() );
   unsigned int nTriggers = trigResults_h->size();
 

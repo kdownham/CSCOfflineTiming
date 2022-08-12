@@ -32,7 +32,8 @@
 
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 
-#include "RecoLocalMuon/CSCValidation/src/CSCValHists.h"
+//#include "RecoLocalMuon/CSCValidation/src/CSCValHists.h"
+#include "CSCValHists.h"
 
 #include "DataFormats/Math/interface/LorentzVector.h"
 

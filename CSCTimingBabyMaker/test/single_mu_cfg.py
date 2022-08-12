@@ -1,7 +1,7 @@
 import FWCore.ParameterSet.Config as cms
 
 from Configuration.StandardSequences.Eras import eras
-print 'process'
+#print 'process'
 process = cms.Process("CSCTIMING",eras.Run2_2017)
 
 process.load('Configuration.StandardSequences.Services_cff')
@@ -72,18 +72,18 @@ outfileName = baseFileName
 if process.cscTimingBabyMaker.useMuonSegmentMatcher:
     outfileName = outfileName + '_useMuonSegmentMatcher'
 outfileName = outfileName + '.root'
-print 'Output to file: ', outfileName
+#print 'Output to file: ', outfileName
 
 # From RAW
 process.p = cms.Path(process.cscTimingBabyMaker)
-print '1'
+#print '1'
 process.out = cms.OutputModule("PoolOutputModule",
                                fileName = cms.untracked.string(outfileName),
                                outputCommands = cms.untracked.vstring('drop *',
                                                                       'keep *_*_*_CSCTIMING'))
-print '2'
+#print '2'
 process.e = cms.EndPath(process.out)
-print '3'
+#print '3'
 # Schedule definition
 process.schedule = cms.Schedule(process.p,process.e)
-print '4'
+#print '4'
