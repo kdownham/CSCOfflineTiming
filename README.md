@@ -23,7 +23,16 @@ Then add the following three lines to the bottom of the buildfiles:
 <lib name="1"/>
 </export>
 ```
-Save and close these files, then go back to your source (src) directory and build
+Save and close these files.
+
+Now go to `RecoLocalMuon/CSCRecHitD/python` and add the following file to this directory
+
+https://cmssdt.cern.ch/lxr/source/cfipython/RecoLocalMuon/CSCRecHitD/cscRecHitDProducer_cfi.py
+
+(running the ntuple maker without this file will cause it to crash)
+
+
+Finally, go back to your source (src) directory and build
 ```
 scram b -j 12
 ```
