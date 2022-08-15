@@ -5,7 +5,7 @@ User need to follow the instructions from the [TWiki](https://twiki.cern.ch/twik
 ## Setup
 Check out the `setup.sh` script at the same level where you want your CMSSW release to be
 ```
-curl -L https://git.io/vdTDj > setup.sh
+curl -L https://raw.githubusercontent.com/kdownham/CSCOfflineTiming/master/setup.sh > setup.sh
 # Modify the CMSSW version in setup.sh
 # edit setup.sh
 . setup.sh
