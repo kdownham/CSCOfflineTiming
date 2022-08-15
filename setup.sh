@@ -16,7 +16,7 @@ git cms-addpkg RecoLocalMuon/CSCValidation
 git cms-addpkg RecoMuon/TrackingTools
 git cms-addpkg CondCore/CondDB
 
-git clone git@github.com:wsicheng/CSCOfflineTiming.git
+git clone https://github.com/kdownham/CSCOfflineTiming.git
 #./CSCOfflineTiming/CSCTimingBabyMaker/setup/setup.sh
 #./CSCOfflineTiming/CSCTimingAnalyzer/setup/setup.sh
 
