@@ -36,7 +36,7 @@ Finally, go back to your source (src) directory and build
 ```
 scram b -j 12
 ```
-##Running the ntuple maker
+## Running the ntuple maker
 Configuration files for running the ntuple maker are in `CSCOfflineTiming/CSCTimingBabyMaker/test`.
 An example configuration file for running is `single_mu_test_cfg.py`. To run the ntuple maker, modify 
 line 44 of this file with an existing data file path on eos and then modify line 18 with the corresponding
