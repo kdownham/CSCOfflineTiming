@@ -6,14 +6,14 @@
 #include "DataFormats/MuonReco/interface/Muon.h"
 #include "DataFormats/MuonReco/interface/MuonSegmentMatch.h"
 #include "DataFormats/CSCRecHit/interface/CSCRecHit2D.h"
-#include "CalibMuon/CSCCalibration/interface/CSCChannelMapperRecord.h"
-#include "CalibMuon/CSCCalibration/interface/CSCChannelMapperBase.h"
+//#include "CalibMuon/CSCCalibration/interface/CSCChannelMapperRecord.h"
+//#include "CalibMuon/CSCCalibration/interface/CSCChannelMapperBase.h"
 //#include "RecoLocalMuon/CSCRecHitD/src/CSCRecoConditions.h"
 #include "CSCRecoConditions.h"
-#include "CondFormats/DataRecord/interface/CSCChamberTimeCorrectionsRcd.h"
-#include "CondFormats/CSCObjects/interface/CSCChamberTimeCorrections.h"
-#include "CalibMuon/CSCCalibration/interface/CSCIndexerRecord.h"
-#include "CalibMuon/CSCCalibration/interface/CSCIndexerBase.h"
+//#include "CondFormats/DataRecord/interface/CSCChamberTimeCorrectionsRcd.h"
+//#include "CondFormats/CSCObjects/interface/CSCChamberTimeCorrections.h"
+//#include "CalibMuon/CSCCalibration/interface/CSCIndexerRecord.h"
+//#include "CalibMuon/CSCCalibration/interface/CSCIndexerBase.h"
 #include "FWCore/Common/interface/TriggerNames.h"
 #include "RecoMuon/TrackingTools/interface/MuonServiceProxy.h"
 #include "RecoMuon/TrackingTools/interface/MuonSegmentMatcher.h"
@@ -65,6 +65,10 @@ CSCTimingBabyMaker::CSCTimingBabyMaker(const edm::ParameterSet& iConfig) :
   useMuonSegmentMatcher_ = iConfig.getUntrackedParameter<bool>("useMuonSegmentMatcher", false);
   fillTriggerObjects_ = iConfig.getUntrackedParameter<bool>("fillTriggerObjects", false);
   debug_ = iConfig.getUntrackedParameter<bool>("debug", false);
+
+  chamberTimingCorrections_token = iC.esConsumes<CSCChamberTimeCorrections, CSCChamberTimeCorrectionsRcd>();
+  indexer_token = iC.esConsumes<CSCIndexerBase, CSCIndexerRecord>();
+  mapper_token = iC.esConsumes<CSCChannelMapperBase, CSCChannelMapperRecord>();
 
   processName = iConfig.getUntrackedParameter<std::string>("processName", "");
   prunedTriggerNames = iConfig.getUntrackedParameter<std::vector<std::string> > ("prunedTriggerNames");
@@ -198,7 +202,7 @@ CSCTimingBabyMaker::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
 
   iEvent.getByToken(trgEvent_token, triggerEvent_h);
-  std::cout << "Is the trigger event valid? " << triggerEvent_h.isValid() << std::endl;
+  if (debug_) std::cout << "Is the trigger event valid? " << triggerEvent_h.isValid() << std::endl;
   if (!triggerEvent_h.isValid())
     throw cms::Exception("CSCTimingBabyMaker::filter: error getting TriggerEvent product from Event!"  );
 
@@ -217,8 +221,10 @@ CSCTimingBabyMaker::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
   if (!trigResults_h.isValid())
     throw cms::Exception("CSCTimingBabyMaker::filter: error getting TriggerResults product from Event!"  );
 
-  std::cout << "Size of trigResults_h = " << trigResults_h->size() << std::endl;
-  std::cout << "Size of hltConfig = " << hltConfig.size() << std::endl; 
+  if (debug_){
+    std::cout << "Size of trigResults_h = " << trigResults_h->size() << std::endl;
+    std::cout << "Size of hltConfig = " << hltConfig.size() << std::endl;
+  }
  
   assert( trigResults_h->size()==hltConfig.size() );
   unsigned int nTriggers = trigResults_h->size();
@@ -334,9 +340,10 @@ CSCTimingBabyMaker::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
   if (!isLoaded_)
   {
     recoConditions->initializeEvent(iSetup);
-    iSetup.get<CSCChamberTimeCorrectionsRcd>().get(theChamberTimingCorrections);
-    iSetup.get<CSCIndexerRecord>().get(indexer);
-    iSetup.get<CSCChannelMapperRecord>().get(mapper);
+    theChamberTimingCorrections = iSetup.getHandle(chamberTimingCorrections_token);
+    indexer = iSetup.getHandle(indexer_token);
+    mapper = iSetup.getHandle(mapper_token);
+    
     isLoaded_ = true;
   }
 
@@ -378,6 +385,7 @@ CSCTimingBabyMaker::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
     if (trigResults_h->accept(idx))
     {
+      if (debug_) std::cout << "trigger fired: " << name << std::endl;
       hlt_bits->SetBitNumber(idx);
 
       if (fillTriggerObjects_ && isPrunedTrigger(name))
@@ -1658,6 +1666,7 @@ void CSCTimingBabyMaker::fillTriggerObjInfo (unsigned int triggerIndex, std::vec
         // hlt objects
         if (id > 0)
         {
+         if (debug_) std::cout << " k = " << k << " module label = " << moduleLabel << " filter index = " << filterIndex << " trigger id = " << id << std::endl;
           hlt = true;                                   // True if a filter has hlt objects ( objects with positive trigger id )
           if (k == 0)
           {                                             // Assuming all trigger ids are the same for this filter
@@ -1677,8 +1686,12 @@ void CSCTimingBabyMaker::fillTriggerObjInfo (unsigned int triggerIndex, std::vec
       //
       if (hlt)                                            // only store hlt objects
       {
-        assert (filterId != -1);                        // sanity
-        trigObjsToStore[filterId] = filterIndex;        // Store the filter Index ( used to get trigger objects ) for each different trigger type ( filterId )
+        //assert (filterId != -1);                        // sanity
+        //trigObjsToStore[filterId] = filterIndex;        // Store the filter Index ( used to get trigger objects ) for each different trigger type ( filterId )
+        // SV, Aug 18, 2022: Some modules of tau triggers do not
+        // contain any valid objects, resulting in filterId = -1.
+        // Replace assert by an if statement to avoid aborts.
+        if (filterId > 0) trigObjsToStore[filterId] = filterIndex;
         if (filterId == 82) trigObjsToStore.erase(92);  // If this is an electron trigger ( filterId 82 or 92 ) we only want the last one ( that is either 82 or 92 )
         if (filterId == 92) trigObjsToStore.erase(82);  //
       }

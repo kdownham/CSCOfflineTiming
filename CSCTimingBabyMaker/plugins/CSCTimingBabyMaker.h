@@ -30,6 +30,13 @@
 #include "FWCore/Framework/interface/ESHandle.h"
 //#include "FWCore/Utilities/interface/EDGetToken.h"
 
+#include "CondFormats/CSCObjects/interface/CSCChamberTimeCorrections.h"
+#include "CondFormats/DataRecord/interface/CSCChamberTimeCorrectionsRcd.h"
+#include "CalibMuon/CSCCalibration/interface/CSCIndexerBase.h"
+#include "CalibMuon/CSCCalibration/interface/CSCIndexerRecord.h"
+#include "CalibMuon/CSCCalibration/interface/CSCChannelMapperBase.h"
+#include "CalibMuon/CSCCalibration/interface/CSCChannelMapperRecord.h"
+
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 
 #include "HLTrigger/HLTcore/interface/HLTConfigProvider.h"
@@ -47,9 +54,9 @@
 typedef math::XYZTLorentzVectorD LorentzVector;
 
 class CSCRecoConditions;
-class CSCChamberTimeCorrections;
-class CSCIndexerBase;
-class CSCChannelMapperBase;
+//class CSCChamberTimeCorrections;
+//class CSCIndexerBase;
+//class CSCChannelMapperBase;
 class MuonSegmentMatcher;
 class MuonServiceProxy;
 
@@ -84,8 +91,14 @@ private:
 
   // ----------member data ---------------------------
   edm::ESHandle<CSCChamberTimeCorrections> theChamberTimingCorrections;
+  edm::ESGetToken<CSCChamberTimeCorrections, CSCChamberTimeCorrectionsRcd> chamberTimingCorrections_token;
+
   edm::ESHandle<CSCIndexerBase> indexer;
+  edm::ESGetToken<CSCIndexerBase, CSCIndexerRecord> indexer_token;
+
   edm::ESHandle<CSCChannelMapperBase> mapper;
+  edm::ESGetToken<CSCChannelMapperBase, CSCChannelMapperRecord> mapper_token;
+
   CSCRecoConditions *recoConditions;
   MuonServiceProxy *muonServiceProxy;
   MuonSegmentMatcher *muonSegmentMatcher;
