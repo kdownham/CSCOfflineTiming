@@ -125,7 +125,7 @@ void combineSegmentTimingDistributions(std::string fname, float kLumi = 0.0, boo
     title->SetTextSize(0.052);    
     title->SetTextAlign(11);
 
-    c1.Print("plots/segment_time_all.pdf");
-    c1.Print("plots/segment_time_all.png");
-    c1.Print("plots/segment_time_all.root");    
+    c1.Print("plots/segment_time_all_newCorrByRing.pdf");
+    c1.Print("plots/segment_time_all_newCorrByRing.png");
+    c1.Print("plots/segment_time_all_newCorrByRing.root");    
 }

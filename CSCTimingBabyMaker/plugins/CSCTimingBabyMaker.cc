@@ -204,7 +204,7 @@ CSCTimingBabyMaker::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
   iEvent.getByToken(trgEvent_token, triggerEvent_h);
   if (debug_) std::cout << "Is the trigger event valid? " << triggerEvent_h.isValid() << std::endl;
   if (!triggerEvent_h.isValid())
-    throw cms::Exception("CSCTimingBabyMaker::filter: error getting TriggerEvent product from Event!"  );
+    throw cms::Exception("CSCTimingBabyMaker::filter: error getting TriggerEvent product from Event!");
 
   if (processName == "") {
     // This line is important as it makes sure it is never called
@@ -219,13 +219,13 @@ CSCTimingBabyMaker::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
   iEvent.getByToken(trgResults_token, trigResults_h);
   if (!trigResults_h.isValid())
-    throw cms::Exception("CSCTimingBabyMaker::filter: error getting TriggerResults product from Event!"  );
+    throw cms::Exception("CSCTimingBabyMaker::filter: error getting TriggerResults product from Event!");
 
-  if (debug_){
+  if (debug_) {
     std::cout << "Size of trigResults_h = " << trigResults_h->size() << std::endl;
     std::cout << "Size of hltConfig = " << hltConfig.size() << std::endl;
   }
- 
+
   assert( trigResults_h->size()==hltConfig.size() );
   unsigned int nTriggers = trigResults_h->size();
 
@@ -340,10 +340,17 @@ CSCTimingBabyMaker::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
   if (!isLoaded_)
   {
     recoConditions->initializeEvent(iSetup);
+    //iSetup.get<CSCChamberTimeCorrectionsRcd>().get(theChamberTimingCorrections);
     theChamberTimingCorrections = iSetup.getHandle(chamberTimingCorrections_token);
+
+    // iSetup.get<CSCIndexerRecord>().get(indexer);
+    // edm::ESHandle<CSCIndexerBase> indexer = iSetup.getHandle(indexer_token);
     indexer = iSetup.getHandle(indexer_token);
+
+    //iSetup.get<CSCChannelMapperRecord>().get(mapper);
+    //edm::ESHandle<CSCChannelMapperBase> mapper = iSetup.getHandle(mapper_token);
     mapper = iSetup.getHandle(mapper_token);
-    
+
     isLoaded_ = true;
   }
 
@@ -613,6 +620,19 @@ CSCTimingBabyMaker::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
             v_chipCorr.push_back(CSCTimingBabyMaker::AVG_CHIP_CORR);
           }
 
+	  if (debug_) {
+	    std::cout << "CSC endcap " << id.endcap() << " chamber " << id.station() << "/"
+		      << id.ring() << "/" << id.chamber() << std::endl;
+	    std::cout << " RecHit on layer " << id.layer() << ": tpeak = " << rhIter->tpeak()
+		      << " cfeb_length = " << v_cfeb_cable_length.back()
+		      << " cfeb_rev = " << v_cfeb_cable_rev.back()
+		      << " cfeb_tmb_skew_delay = " << v_skewClearDelay.back()
+		      << " cfeb_cable_delay = " << v_cfebCableDelay.back()
+		      << " cfeb_timing_corr = " << v_cfebCorr.back()
+		      << " chamberCorr = " << v_skewClearDelay.back()+v_cfebCableDelay.back()+v_cfebCorr.back()
+		      << " chip_correction = " << v_chipCorr.back() << std::endl;
+	  }
+
           if (id.station() == 1 && (id.ring() == 1 || id.ring() == 4))
           {
             v_new_cfeb_cable_length.push_back(CSCTimingBabyMaker::getSkewClearCableLengthForME11(id));
@@ -625,6 +645,15 @@ CSCTimingBabyMaker::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
             v_new_cfebCableDelay  .push_back(0);
             v_new_chamberCorr     .push_back(v_new_cfebCorr.back() + v_new_skewClearDelay.back() + v_new_cfebCableDelay.back());
             v_new_chipCorr.push_back(CSCTimingBabyMaker::AVG_CHIP_CORR);
+
+	    if (debug_) {
+	      std::cout << "  -- new delays: "
+			<< " cfeb_length = " << v_new_cfeb_cable_length.back()
+			<< " cfeb_rev = " << v_new_cfeb_cable_rev.back()
+			<< " cfeb_tmb_skew_delay = " << v_new_skewClearDelay.back()
+			<< " chamberCorr = " << v_new_chamberCorr.back()
+			<< " chip_correction = " << v_new_chipCorr.back() << std::endl;
+	    }
           }
           else
           {
@@ -1666,7 +1695,10 @@ void CSCTimingBabyMaker::fillTriggerObjInfo (unsigned int triggerIndex, std::vec
         // hlt objects
         if (id > 0)
         {
-         if (debug_) std::cout << " k = " << k << " module label = " << moduleLabel << " filter index = " << filterIndex << " trigger id = " << id << std::endl;
+	  if (debug_) 
+	    std::cout << " k = " << k << " module label = " << moduleLabel
+		      << " filter index = " << filterIndex << " trigger id = " << id << std::endl;
+
           hlt = true;                                   // True if a filter has hlt objects ( objects with positive trigger id )
           if (k == 0)
           {                                             // Assuming all trigger ids are the same for this filter
@@ -1686,12 +1718,12 @@ void CSCTimingBabyMaker::fillTriggerObjInfo (unsigned int triggerIndex, std::vec
       //
       if (hlt)                                            // only store hlt objects
       {
-        //assert (filterId != -1);                        // sanity
-        //trigObjsToStore[filterId] = filterIndex;        // Store the filter Index ( used to get trigger objects ) for each different trigger type ( filterId )
-        // SV, Aug 18, 2022: Some modules of tau triggers do not
-        // contain any valid objects, resulting in filterId = -1.
-        // Replace assert by an if statement to avoid aborts.
-        if (filterId > 0) trigObjsToStore[filterId] = filterIndex;
+	// SV, Aug 18, 2022: Some modules of tau triggers do not
+	// contain any valid objects, resulting in filterId = -1.
+	// Replace assert by an if statement to avoid aborts.
+        //assert (filterId != -1); // sanity 
+	if (filterId > 0)
+	  trigObjsToStore[filterId] = filterIndex;        // Store the filter Index ( used to get trigger objects ) for each different trigger type ( filterId )
         if (filterId == 82) trigObjsToStore.erase(92);  // If this is an electron trigger ( filterId 82 or 92 ) we only want the last one ( that is either 82 or 92 )
         if (filterId == 92) trigObjsToStore.erase(82);  //
       }
@@ -1785,14 +1817,12 @@ CSCTimingBabyMaker::beginRun(edm::Run const& iRun, edm::EventSetup const& iSetup
   }
 }
 
-
 // ------------ method called when ending the processing of a run  ------------
-/*
-  void
-  CSCTimingBabyMaker::endRun(edm::Run const&, edm::EventSetup const&)
-  {
-  }
-*/
+void
+CSCTimingBabyMaker::endRun(edm::Run const&, edm::EventSetup const&)
+{
+}
+
 
 // ------------ method called when starting to processes a luminosity block  ------------
 /*

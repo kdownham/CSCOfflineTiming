@@ -23,7 +23,7 @@
 
 // user include files
 #include "FWCore/Framework/interface/Frameworkfwd.h"
-#include "FWCore/Framework/interface/EDFilter.h"
+#include "FWCore/Framework/interface/one/EDFilter.h"
 
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
@@ -64,7 +64,7 @@ class MuonServiceProxy;
 // class declaration
 //
 
-class CSCTimingBabyMaker : public edm::EDFilter {
+class CSCTimingBabyMaker : public edm::one::EDFilter<edm::one::WatchRuns> {
 public:
   explicit CSCTimingBabyMaker(const edm::ParameterSet&);
   ~CSCTimingBabyMaker();
@@ -77,7 +77,7 @@ private:
   virtual void endJob() override;
       
   virtual void beginRun(edm::Run const&, edm::EventSetup const&) override;
-  //virtual void endRun(edm::Run const&, edm::EventSetup const&) override;
+  virtual void endRun(edm::Run const&, edm::EventSetup const&) override;
   //virtual void beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) override;
   //virtual void endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) override;
 

@@ -11,7 +11,7 @@
 #include "TPaveStats.h"
 #include "TLatex.h"
 
-void combineRechitTimingDistributions(std::string fname, float kLumi = 10.3, bool no_legend = false)
+void combineRechitTimingDistributions(std::string fname,float kLumi = 10.3, bool no_legend = false)
 {
     TFile file(fname.c_str());
     TDirectoryFile *dir = (TDirectoryFile*)file.Get("recHits");
@@ -128,7 +128,7 @@ void combineRechitTimingDistributions(std::string fname, float kLumi = 10.3, boo
     title->SetTextSize(0.052);    
     title->SetTextAlign(11);
     
-    c1.Print("plots/cathode_time_all.pdf");
-    c1.Print("plots/cathode_time_all.png");
-    c1.Print("plots/cathode_time_all.root");
+    c1.Print("plots/cathode_time_all_newCorrByRing.pdf");
+    c1.Print("plots/cathode_time_all_newCorrByRing.png");
+    c1.Print("plots/cathode_time_all_newCorrByRing.root");
 }

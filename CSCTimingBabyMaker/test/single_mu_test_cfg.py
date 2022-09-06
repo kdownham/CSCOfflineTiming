@@ -22,31 +22,27 @@ process.CSCIndexerESProducer.AlgoName=cms.string("CSCIndexerPostls1")
 process.CSCChannelMapperESProducer.AlgoName=cms.string("CSCChannelMapperPostls1")
 
 # automatically name the output file correctly and uniquely
-baseFileName = 'csc_singleMu_test'
+baseFileName = 'csc_test_validation'
 fileExtension = '.root'
 outfileName = baseFileName
 
 #process.MessageLogger.cerr.threshold = 'ERROR'
-process.MessageLogger.cerr.FwkReport.reportEvery = 100
+process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 
 
 # Standard configs
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10000) )
-# process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1) )
 # process.options = cms.untracked.PSet( SkipEvent = cms.untracked.vstring('ProductNotFound') )
 # process.options = cms.untracked.PSet(SkipEvent = cms.untracked.vstring('LogicError'))
 
 
 process.source = cms.Source("PoolSource",
                             fileNames = cms.untracked.vstring(
-#                                'root://eoscms.cern.ch://eos/cms/tier0//store/data/Run2022C/Cosmics/AOD/PromptReco-v1/000/356/535/00000/e7219d5f-e9e1-46c9-8a9e-2d7b06538ea4.root')
-				'file:/eos/cms/tier0/store/data/Run2022C/Muon/AOD/PromptReco-v1/000/357/441/00000/025f379d-da24-47dd-a6e5-2e442df43c26.root')
+				#'file:/eos/cms/tier0/store/data/Run2022C/Muon/AOD/PromptReco-v1/000/357/441/00000/025f379d-da24-47dd-a6e5-2e442df43c26.root')
+				'file:/eos/cms/store/user/valuev/CSCOfflineTiming/Run2022D/Muon/AOD/PromptReco-v2/000/357/756/00000/003135f1-2cce-43b1-aebd-1774fddca64f.root')
 )
 
-#process.source = cms.Source("PoolSource",
-#                            fileNames = cms.untracked.vstring(
-#                                'file:/eos/cms/store/data/Run2018D/Charmonium/AOD/12Nov2019_UL2018-v1/110002/366041D9-52D4-524D-B407-212037FCDD67.root')
-#)
+
 
 process.load('CSCOfflineTiming.CSCTimingBabyMaker.cscTimingBabyMaker_cfi')
 process.cscTimingBabyMaker.debug = cms.untracked.bool(False)

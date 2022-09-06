@@ -161,7 +161,7 @@ void CSCTimingAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
   for (size_t nmu = 0; nmu < nMuons; nmu++) {
     getVars(nmu);
     if (debug_)
-      printf("\n\tMuon %zd: eta = %4.2f, is_global = %d, numMatchedStations = %d, numMatchedCSCsegments = %d\n", nmu, p4.eta(), is_global, numMatchedStations, numMatchedCSCsegments);
+      printf("\n\tMuon %zd: eta = %4.2f, pT = %4.2f, is_global = %d, numMatchedStations = %d, numMatchedCSCsegments = %d\n", nmu, p4.eta(), p4.pt(), is_global, numMatchedStations, numMatchedCSCsegments);
 
     if (p4.pt() < min_pt_) continue;
     if (requireInsideOutMuons_ && direction < 0) continue;
@@ -255,6 +255,7 @@ void CSCTimingAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
             else if (removeHeuristicCorrection_) {
               // std::cout << __FILE__ << ':' << __LINE__ << ": chamberCorr= " << chamberCorr << ", cfebCableDelay= " << cfebCableDelay << ": skewClearDelay= " << skewClearDelay << std::endl;
               rhtime_corr -= (chamberCorr - cfebCableDelay - skewClearDelay);
+              //rhtime_corr -= (chamberCorr + chipCorr);
             }
             else if (applyNewHeuristicCorrectionByRing_) {
               rhtime_corr -= (chamberCorr - cfebCableDelay - skewClearDelay); // first remove old hueristic correction
@@ -266,6 +267,7 @@ void CSCTimingAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
             }
             else if (applyNewHeuristicCorrectionByChamber_) {
               rhtime_corr -= (chamberCorr - cfebCableDelay - skewClearDelay); // first remove old hueristic correction
+              //rhtime_corr -= (chamberCorr + chipCorr);
               CSCDetId tmp_id(endcap,station,ring,chamber);
               if (m_new_heuristicCorr.find(tmp_id) != m_new_heuristicCorr.end())
                 rhtime_corr += m_new_heuristicCorr[tmp_id]; // now apply new hueristic correction
@@ -275,6 +277,7 @@ void CSCTimingAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
           }
           else if (removeHeuristicCorrection_) {
             rhtime_corr -= (chamberCorr - cfebCableDelay - skewClearDelay);
+            //rhtime_corr -= (chamberCorr + chipCorr);
           }
           else if (applyNewHeuristicCorrectionByRing_) {
             rhtime_corr -= (chamberCorr - cfebCableDelay - skewClearDelay); // first remove old hueristic correction
@@ -286,6 +289,7 @@ void CSCTimingAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
           }
           else if (applyNewHeuristicCorrectionByChamber_) {
             rhtime_corr -= (chamberCorr - cfebCableDelay - skewClearDelay); // first remove old hueristic correction
+            // rhtime_corr -= (chamberCorr + chipCorr);
             CSCDetId tmp_id(endcap,station,ring,chamber);
             if (m_new_heuristicCorr.find(tmp_id) != m_new_heuristicCorr.end())
               rhtime_corr += m_new_heuristicCorr[tmp_id]; // now apply new hueristic correction
@@ -293,9 +297,9 @@ void CSCTimingAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
               rhtime_corr += is_ME11 ? CSCTimingAnalyzer::ME11_AVG_HEURISTIC_CORR : CSCTimingAnalyzer::NON_ME11_AVG_HEURISTIC_CORR; // now apply new hueristic correction
           }
 
-          if (endcap == 2 && station == 1 && ring == 3 && chamber == 3 && chipCorr < -60) {
-            rhtime_corr -= (chipCorr + 52.41);
-          }
+          //if (endcap == 2 && station == 1 && ring == 3 && chamber == 3 && chipCorr < -60) {
+          //  rhtime_corr -= (chipCorr + 52.41);
+          //}
 
           rhTimes_.push_back(rhtime_corr);
           wireTimes_.push_back(twire_corr);
@@ -310,35 +314,35 @@ void CSCTimingAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
               histos_->fill1DHistByType(twire_corr, "hAnodeTiming", "anode Timing", tmp_id, 200, -25, 25, "recHits");
             } else {
               histos_->fill1DHistByType(rhtime_corr, "hRHTiming", "recHit Timing", id, 200, 2, 6, "recHits");
-              histos_->fill1DHistByType(nstrips, "hRHNumStrips", "Number of cathod strips", id, 10, -0.5, 9.5, "recHits");
+              histos_->fill1DHistByType(nstrips, "hRHNumStrips", "Number of cathode strips", id, 10, -0.5, 9.5, "recHits");
               histos_->fill1DHistByType(twire_corr, "hAnodeTiming", "anode Timing", id, 200, -25, 25, "recHits");
             }
             if (makePlotsPerChamber_) {
               if (combineME11ab_ && station == 1 && ring == 4) {
                 CSCDetId tmp_id(endcap, station, 1, chamber);
                 histos_->fill1DHistByChamber(rhtime_corr, "hRHTiming", "recHit Timing", tmp_id, 200, 2, 6, "recHitsByChamber");
-                histos_->fill1DHistByType(nstrips, "hRHNumStrips", "Number of cathod strips", tmp_id, 10, -0.5, 9.5, "recHits");
+                histos_->fill1DHistByType(nstrips, "hRHNumStrips", "Number of cathode strips", tmp_id, 10, -0.5, 9.5, "recHits");
                 histos_->fill1DHistByChamber(twire_corr, "hAnodeTiming", "anode Timing", tmp_id, 200, -25, 25, "recHitsByChamber");
               } else {
                 histos_->fill1DHistByChamber(rhtime_corr, "hRHTiming", "recHit Timing", id, 200, 2, 6, "recHitsByChamber");
-                histos_->fill1DHistByType(nstrips, "hRHNumStrips", "Number of cathod strips", id, 10, -0.5, 9.5, "recHits");
+                histos_->fill1DHistByType(nstrips, "hRHNumStrips", "Number of cathode strips", id, 10, -0.5, 9.5, "recHits");
                 histos_->fill1DHistByChamber(twire_corr, "hAnodeTiming", "anode Timing", id, 200, -25, 25, "recHitsByChamber");
               }
             }
             if (makePlotsPerLayer_) {
               histos_->fill1DHistByLayer(rhtime_corr, "hRHTiming", "recHit Timing", id, 200, 2, 6, "recHitsByLayer");
-              histos_->fill1DHistByType(nstrips, "hRHNumStrips", "Number of cathod strips", id, 10, -0.5, 9.5, "recHits");
+              histos_->fill1DHistByType(nstrips, "hRHNumStrips", "Number of cathode strips", id, 10, -0.5, 9.5, "recHits");
             }
           } else {
             if (combineME11ab_ && station == 1 && ring == 4) {
               CSCDetId tmp_id(endcap, station, 1, chamber);
               histos_->fill1DHistByType(rhtime_corr, "hRHTiming", "recHit Timing", tmp_id, 200, -2, 2, "recHits");
-              histos_->fill1DHistByType(nstrips, "hRHNumStrips", "Number of cathod strips", tmp_id, 10, -0.5, 9.5, "recHits");
+              histos_->fill1DHistByType(nstrips, "hRHNumStrips", "Number of cathode strips", tmp_id, 10, -0.5, 9.5, "recHits");
               histos_->fill1DHistByType(twire_corr, "hAnodeTiming", "anode Timing", tmp_id, 200, -25, 25, "recHits");
               histos_->fill1DHistByType(anode_bx_offset, "hAndoeBXOffset", "anode_bx_offset", tmp_id, 100, 800, 900, "recHits");
             } else {
               histos_->fill1DHistByType(rhtime_corr, "hRHTiming", "recHit Timing", id, 200, -2, 2, "recHits");
-              histos_->fill1DHistByType(nstrips, "hRHNumStrips", "Number of cathod strips", id, 10, -0.5, 9.5, "recHits");
+              histos_->fill1DHistByType(nstrips, "hRHNumStrips", "Number of cathode strips", id, 10, -0.5, 9.5, "recHits");
               histos_->fill1DHistByType(twire_corr, "hAnodeTiming", "anode Timing", id, 200, -25, 25, "recHits");
               histos_->fill1DHistByType(anode_bx_offset, "hAndoeBXOffset", "anode_bx_offset", id, 100, 800, 900, "recHits");
             }
@@ -346,17 +350,17 @@ void CSCTimingAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
               if (combineME11ab_ && station == 1 && ring == 4) {
                 CSCDetId tmp_id(endcap, station, 1, chamber);
                 histos_->fill1DHistByChamber(rhtime_corr, "hRHTiming", "recHit Timing", tmp_id, 200, -2, 2, "recHitsByChamber");
-                histos_->fill1DHistByType(nstrips, "hRHNumStrips", "Number of cathod strips", tmp_id, 10, -0.5, 9.5, "recHits");
+                histos_->fill1DHistByType(nstrips, "hRHNumStrips", "Number of cathode strips", tmp_id, 10, -0.5, 9.5, "recHits");
                 histos_->fill1DHistByChamber(twire_corr, "hAnodeTiming", "anode Timing", tmp_id, 200, -25, 25, "recHitsByChamber");
               } else {
                 histos_->fill1DHistByChamber(rhtime_corr, "hRHTiming", "recHit Timing", id, 200, -2, 2, "recHitsByChamber");
-                histos_->fill1DHistByType(nstrips, "hRHNumStrips", "Number of cathod strips", id, 10, -0.5, 9.5, "recHits");
+                histos_->fill1DHistByType(nstrips, "hRHNumStrips", "Number of cathode strips", id, 10, -0.5, 9.5, "recHits");
                 histos_->fill1DHistByChamber(twire_corr, "hAnodeTiming", "anode Timing", id, 200, -25, 25, "recHitsByChamber");
               }
             }
             if (makePlotsPerLayer_) {
               histos_->fill1DHistByLayer(rhtime_corr, "hRHTiming", "recHit Timing", id, 200, -2, 2, "recHitsByLayer");
-              histos_->fill1DHistByType(nstrips, "hRHNumStrips", "Number of cathod strips", id, 10, -0.5, 9.5, "recHits");
+              histos_->fill1DHistByType(nstrips, "hRHNumStrips", "Number of cathode strips", id, 10, -0.5, 9.5, "recHits");
             }
           }
 
@@ -869,9 +873,9 @@ void CSCTimingAnalyzer::getVars (size_t muon_index, size_t chamber_index, size_t
   //
   // muon level variables
   //
-  if (debug_)
-    printf("requesting muon %zd of event %llu which has %zd muons\n", muon_index, evt, is_global_h->size());
   if (muon_index < is_global_h->size()) {
+    if (debug_)
+      printf("requesting muon %zd of event %llu which has %zd muons\n", muon_index, evt, is_global_h->size());
     is_global                   = is_global_h->at(muon_index)  ;
     is_tracker                  = is_tracker_h->at(muon_index) ;
     is_sa                       = is_sa_h->at(muon_index)      ;
@@ -900,24 +904,27 @@ void CSCTimingAnalyzer::getVars (size_t muon_index, size_t chamber_index, size_t
     timeErr                     = timeErr_h->at(muon_index);
     direction                   = direction_h->at(muon_index);
 
-    if (debug_)
-      printf("requesting chamber %zd of muon %zd which has %zd chambers\n", chamber_index, muon_index, numCSCsegmentsInChamber_h->at(muon_index).size());
+    //if (debug_)
+    //  printf("requesting chamber %zd of muon %zd which has %zd chambers\n", chamber_index, muon_index, numCSCsegmentsInChamber_h->at(muon_index).size());
     if (chamber_index < numCSCsegmentsInChamber_h->at(muon_index).size()) {
+      if (debug_)
+	printf("requesting chamber %zd of muon %zd which has %zd chambers\n", chamber_index, muon_index, numCSCsegmentsInChamber_h->at(muon_index).size());
       distToChamberEdge           = distToChamberEdge_h->at(muon_index).at(chamber_index) ;
       distToChamberEdgeErr        = distToChamberEdgeErr_h->at(muon_index).at(chamber_index) ;
       numCSCsegmentsInChamber     = numCSCsegmentsInChamber_h->at(muon_index).at(chamber_index) ;
 
-      if (debug_)
-        printf("requesting segment %zd of muon %zd, chamber %zd which has %zd segments\n", segment_index, muon_index, chamber_index, numRecHitsInSegment_h->at(muon_index).at(chamber_index).size());
+      //if (debug_)
+      //  printf("requesting segment %zd of muon %zd, chamber %zd which has %zd segments\n", segment_index, muon_index, chamber_index, numRecHitsInSegment_h->at(muon_index).at(chamber_index).size());
       if (segment_index < numRecHitsInSegment_h->at(muon_index).at(chamber_index).size()) {
+	if (debug_)
+        printf("requesting segment %zd of muon %zd, chamber %zd which has %zd segments\n", segment_index, muon_index, chamber_index, numRecHitsInSegment_h->at(muon_index).at(chamber_index).size());
         arbitration_mask            = arbitration_mask_h->at(muon_index).at(chamber_index).at(segment_index) ;
         isSegmentAndTrackArbitrated = isSegmentAndTrackArbitrated_h->at(muon_index).at(chamber_index).at(segment_index) ;
         numRecHitsInSegment         = numRecHitsInSegment_h->at(muon_index).at(chamber_index).at(segment_index) ;
         segmentTime                 = segmentTime_h->at(muon_index).at(chamber_index).at(segment_index);
 
-        if (debug_)
-          printf("requesting rechit %zd of muon %zd, chamber %zd, segment %zd which has %zd rechits\n", rechit_index, muon_index, chamber_index, segment_index, endcap_h->at(muon_index).at(chamber_index).at(segment_index).size());
         if (rechit_index < endcap_h->at(muon_index).at(chamber_index).at(segment_index).size()) {
+
           endcap                      = endcap_h->at(muon_index).at(chamber_index).at(segment_index).at(rechit_index)                ;
           station                     = station_h->at(muon_index).at(chamber_index).at(segment_index).at(rechit_index)               ;
           ring                        = ring_h->at(muon_index).at(chamber_index).at(segment_index).at(rechit_index)                  ;

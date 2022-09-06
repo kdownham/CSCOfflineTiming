@@ -216,9 +216,9 @@ void makeMeanTimingPlot (std::string fname, bool byStation, float kLumi = 10.3, 
         title->SetTextSize(0.046);    
         title->SetTextAlign(11);
         
-        c1.Print("plots/mean_cathodetime.pdf");
-        c1.Print("plots/mean_cathodetime.png");
-        c1.Print("plots/mean_cathodetime.root");
+        c1.Print("plots/mean_cathodetime_newCorrByRing.pdf");
+        c1.Print("plots/mean_cathodetime_newCorrByRing.png");
+        c1.Print("plots/mean_cathodetime_newCorrByRing.root");
 
         for (int i : {1,2,3,4}) {
           for (int j : {1,2})
@@ -251,8 +251,8 @@ void makeMeanTimingPlot (std::string fname, bool byStation, float kLumi = 10.3, 
             title->SetTextSize(0.052);    
             title->SetTextAlign(11);
             
-            c1.Print(Form("plots/mean_cathodetime_%s.pdf", item.first.c_str()));
-            c1.Print(Form("plots/mean_cathodetime_%s.png", item.first.c_str()));
+            c1.Print(Form("plots/mean_cathodetime_newCorrByRing_%s.pdf", item.first.c_str()));
+            c1.Print(Form("plots/mean_cathodetime_newCorrByRing_%s.png", item.first.c_str()));
         }
     }
 }

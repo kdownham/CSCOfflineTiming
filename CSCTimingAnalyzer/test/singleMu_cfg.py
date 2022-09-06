@@ -6,35 +6,14 @@ process = cms.Process("CSCTIMINGANALYSIS")
 applyGoodRunList = cms.bool(False)
 
 process.load("FWCore.MessageService.MessageLogger_cfi")
-process.MessageLogger.cerr.FwkReport.reportEvery = 100000
+process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 
 process.source = cms.Source("PoolSource",
                             # replace 'myfile.root' with the source file you want to use
                             fileNames = cms.untracked.vstring(
-                                # '/store/user/fgolf/csc/timing/offline/SingleMu/v3/150630_025216/0000/csc_singleMu_zeroT_1.root',
-                                # '/store/user/sicheng/csctiming/2017/SingleMuon/v4/170626_204407/0000/test_11.root',
-                                # '/store/user/sicheng/csctiming/2017/SingleMuon/v4/170626_204407/0000/test_2.root',
-                                # '/store/user/sicheng/csctiming/2017/SingleMuon/v4/170626_204407/0000/test_10.root',
-                                # '/store/user/sicheng/csctiming/2017/SingleMuon/v4/170626_204407/0000/test_9.root',
-                                # '/store/user/sicheng/csctiming/2017/SingleMuon/v4/170626_204407/0000/test_3.root',
-                                # '/store/user/sicheng/csctiming/2017/SingleMuon/v4/170626_204407/0000/test_8.root',
-                                # '/store/user/sicheng/csctiming/2017/SingleMuon/v4/170626_204407/0000/test_12.root',
-                                # '/store/user/sicheng/csctiming/2017/SingleMuon/v4/170626_204407/0000/test_7.root',
-                                # '/store/user/sicheng/csctiming/2017/SingleMuon/v4/170626_204407/0000/test_6.root',
-                                # '/store/user/sicheng/csctiming/2017/SingleMuon/v4/170626_204407/0000/test_1.root',
-                                # '/store/user/sicheng/csctiming/2017/SingleMuon/v4/170626_204407/0000/test_5.root',
-                                # '/store/user/sicheng/csctiming/2017/SingleMuon/v4/170626_204407/0000/test_4.root',
-                                # '/store/user/sicheng/csctiming/2017/SingleMuon/v4/170626_204538/0000/test_21.root',
-                                # '/store/user/sicheng/csctiming/2017/SingleMuon/v4/170626_204538/0000/test_60.root',
-                                # '/store/user/sicheng/csctiming/2017/SingleMuon/v4/170626_204538/0000/test_65.root',
-                                # '/store/user/sicheng/csctiming/2017/SingleMuon/v4/170626_204538/0000/test_66.root',
-                                'file:/afs/cern.ch/user/k/kdownham/CSC_Validation/CMSSW_10_6_4_patch1/src/CSCOfflineTiming/CSCTimingBabyMaker/test/csc_singleMu_test_useMuonSegmentMatcher.root',
-                                # '/store/user/sicheng/csctiming/2017/SingleMuon/2017D_v1/170924_061250/0000/test_143.root',
-                                # '/hadoop/cms/store/user/fgolf/csc/timing/offline/2016/SingleMuon/v4/170117_224759/0000/test_256.root',
-                                # '/store/user/fgolf/csc/timing/offline/2016/SingleMuon/v4/170514_042023/0000/test_28.root',
-                                # '/store/user/fgolf/csc/timing/offline/2016/SingleMuon/v4/170514_042023/0000/test_40.root',
+                                'file:/afs/cern.ch/user/k/kdownham/CSC_Validation/CMSSW_12_4_6/src/CSCOfflineTiming/CSCTimingBabyMaker/test/csc_test_validation_useMuonSegmentMatcher.root',
                                 )
 )
 
@@ -52,18 +31,24 @@ if applyGoodRunList:
 process.load("CSCOfflineTiming.CSCTimingAnalyzer.cscTimingAnalyzer_cfi")
 process.cscTimingAnalyzer.makeChamberTimingCorrectionValueHists = cms.untracked.bool(False)
 process.cscTimingAnalyzer.makePlotsPerChamber = cms.untracked.bool(True)
+#process.cscTimingAnalyzer.verbose = cms.untracked.bool(False)
+#process.cscTimingAnalyzer.debug = cms.untracked.bool(False)
 process.cscTimingAnalyzer.verbose = cms.untracked.bool(False)
 process.cscTimingAnalyzer.debug = cms.untracked.bool(False)
 process.cscTimingAnalyzer.applyUpdatedME11corrections = cms.untracked.bool(False)
 process.cscTimingAnalyzer.min_pt = cms.untracked.double(5)
 process.cscTimingAnalyzer.max_dz = cms.untracked.double(999)
-process.cscTimingAnalyzer.printTimeCorrectionParametersToFile = cms.untracked.bool(False)
+#process.cscTimingAnalyzer.printTimeCorrectionParametersToFile = cms.untracked.bool(False)
+process.cscTimingAnalyzer.printTimeCorrectionParametersToFile = cms.untracked.bool(True)
 process.cscTimingAnalyzer.writeTimeCorrectionParametersToTree = cms.untracked.bool(False)
 process.cscTimingAnalyzer.checkCSCstatus = cms.untracked.bool(False)
 process.cscTimingAnalyzer.checkDCSstatus = cms.untracked.bool(False)
-process.cscTimingAnalyzer.removeHeuristicCorrection = cms.untracked.bool(True)
+#process.cscTimingAnalyzer.removeHeuristicCorrection = cms.untracked.bool(True)
+process.cscTimingAnalyzer.removeHeuristicCorrection = cms.untracked.bool(False)  #keep true
 process.cscTimingAnalyzer.applyNewHeuristicCorrectionByRing = cms.untracked.bool(False)
-process.cscTimingAnalyzer.applyNewHeuristicCorrectionByChamber = cms.untracked.bool(False)
+#process.cscTimingAnalyzer.applyNewHeuristicCorrectionByChamber = cms.untracked.bool(False)
+process.cscTimingAnalyzer.applyNewHeuristicCorrectionByChamber = cms.untracked.bool(True)
+process.cscTimingAnalyzer.fpForHeuristicCorrByChamber = cms.FileInPath('CSCOfflineTiming/CSCTimingAnalyzer/data/heuristicCorrections_byChamber.txt')
 process.cscTimingAnalyzer.makeNminus1hists = cms.untracked.bool(True)
 process.cscTimingAnalyzer.writeTimingStudyBabyTree = cms.untracked.bool(True)
 process.cscTimingAnalyzer.removeMatchedStationsRequirement = cms.untracked.bool(False);
@@ -74,7 +59,7 @@ removeHeuristicCorrectionName = '_removeHeuristicCorr'
 # min_pt_name = '_minPt' + str(process.cscTimingAnalyzer.min_pt)
 # max_dz_name = '_maxDz' + str(process.cscTimingAnalyzer.max_dz)
 
-baseFileName = 'histos'
+baseFileName = 'output/histos'
 fileExtension = '.root'
 outfileName = baseFileName
 
@@ -89,7 +74,7 @@ if process.cscTimingAnalyzer.removeHeuristicCorrection:
 if process.cscTimingAnalyzer.applyNewHeuristicCorrectionByRing:
     outfileName = outfileName + '_newHeuristicCorrByRing'
 if process.cscTimingAnalyzer.applyNewHeuristicCorrectionByChamber:
-    outfileName = outfileName + '_newHeuristicCorrByChamber'
+    outfileName = outfileName + '_newHeuristicCorrByChamber_edited'
 if process.cscTimingAnalyzer.removeMatchedStationsRequirement:
     outfileName = outfileName + '_removeMatchedStationsRequirement'
 # if process.cscTimingAnalyzer.min_pt > 1:
@@ -98,7 +83,7 @@ if process.cscTimingAnalyzer.removeMatchedStationsRequirement:
 #     otufileName = outfileName + max_dz_name
 
 outfileName = outfileName + fileExtension
-print outfileName
+print (outfileName)
 
 process.cscTimingAnalyzer.outfileName = cms.untracked.string(outfileName)
 
