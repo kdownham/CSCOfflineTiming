@@ -3,6 +3,7 @@
 #include "CalibMuon/CSCCalibration/interface/CSCChannelMapperRecord.h"
 #include "CalibMuon/CSCCalibration/interface/CSCChannelMapperBase.h"
 //#include "RecoLocalMuon/CSCRecHitD/src/CSCRecoConditions.h"
+//#include "FWCore/Framework/interface/ESProducer.h"
 #include "CSCRecoConditions.h"
 #include "CondFormats/DataRecord/interface/CSCChamberTimeCorrectionsRcd.h"
 #include "CalibMuon/CSCCalibration/interface/CSCIndexerRecord.h"
@@ -26,6 +27,10 @@ CSCMakeTimingCorrectionsForDB::CSCMakeTimingCorrectionsForDB(const edm::Paramete
     //recoConditions = new CSCRecoConditions(iConfig,iC);
     recoConditions = new CSCRecoConditions(iConfig,consumesCollector());
     updateOnlyNewChambers_ = iConfig.getUntrackedParameter<bool>("updateOnlyNewChambers", false);
+    indexerToken_ = esConsumes<CSCIndexerBase,CSCIndexerRecord>();
+    mapperToken_ = esConsumes<CSCChannelMapperBase,CSCChannelMapperRecord>();
+    chipCorrectionsToken_ = esConsumes<CSCDBChipSpeedCorrection,CSCDBChipSpeedCorrectionRcd>();
+    chamberTimingCorrectionsToken_ = esConsumes<CSCChamberTimeCorrections,CSCChamberTimeCorrectionsRcd>();
 }
 
 
@@ -42,14 +47,18 @@ CSCMakeTimingCorrectionsForDB::~CSCMakeTimingCorrectionsForDB()
 // ------------ method called for each event  ------------
 void
 CSCMakeTimingCorrectionsForDB::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
-{
+{   
     if (!isLoaded_)
     {
         recoConditions->initializeEvent(iSetup);
-        iSetup.get<CSCChamberTimeCorrectionsRcd>().get(theChamberTimingCorrections);
-        iSetup.get<CSCIndexerRecord>().get(indexer);
-        iSetup.get<CSCChannelMapperRecord>().get(mapper);
-        iSetup.get<CSCDBChipSpeedCorrectionRcd>().get(theChipCorrections);
+        indexer = iSetup.getHandle(indexerToken_);
+        mapper = iSetup.getHandle(mapperToken_);
+        theChipCorrections = iSetup.getHandle(chipCorrectionsToken_);
+        theChamberTimingCorrections = iSetup.getHandle(chamberTimingCorrectionsToken_);
+        //iSetup.get<CSCChamberTimeCorrectionsRcd>().get(theChamberTimingCorrections);
+        //iSetup.get<CSCIndexerRecord>().get(indexer);
+        //iSetup.get<CSCChannelMapperRecord>().get(mapper);
+        //iSetup.get<CSCDBChipSpeedCorrectionRcd>().get(theChipCorrections);
         isLoaded_ = true;
     }
 
@@ -112,6 +121,7 @@ CSCMakeTimingCorrectionsForDB::analyze(const edm::Event& iEvent, const edm::Even
         }
     }
 
+    //std::cout << "mid array size = " << mid.size() << std::endl;
     fclose(chipfile);
 
     //
@@ -170,14 +180,16 @@ CSCMakeTimingCorrectionsForDB::analyze(const edm::Event& iEvent, const edm::Even
     }
 
     FILE *outfile = 0;
+    //std::cout << "Is the outfilename empty? " << outFileName.empty() << std::endl;
     if (!outFileName.empty()) outfile = fopen(outFileName.c_str(), "w+");
+    //std::cout << "Outfile = " << outfile << std::endl;
     if (!outfile)
     {
         std::cerr << "Failed to open file " << outFileName << " for writing." << std::endl;
     }
 
     FILE *oldfile = fopen("timecorr_old_unsorted.dat", "w+");
-    if (oldfile)
+    if (!oldfile)
     {
         std::cerr << "Failed to open file old.txt for writing." << std::endl;
     }
@@ -185,6 +197,7 @@ CSCMakeTimingCorrectionsForDB::analyze(const edm::Event& iEvent, const edm::Even
     for (auto item : mid)
     {
         if (item.first.ring() == 4) continue;
+	//std::cout << "Printing contents of oldfile" << std::endl;
         if (oldfile)
         {
             fprintf(oldfile, "%d %hd %c %hd %c %hd %hd %d %hd\n",
@@ -252,6 +265,7 @@ CSCMakeTimingCorrectionsForDB::analyze(const edm::Event& iEvent, const edm::Even
             }
         }
 
+	//std::cout << "Printing contents of outfile" << std::endl;
         if (outfile)
         {
             fprintf(outfile, "%d %hd %c %hd %c %hd %hd %d %hd\n",
@@ -263,15 +277,15 @@ CSCMakeTimingCorrectionsForDB::analyze(const edm::Event& iEvent, const edm::Even
                     corr,
                     mvals[item.second].cfeb_cable_delay);
         }
-        printf("%u %d %d %d %d %hd %c %hd %c %hd %hd %d %hd\n",
-               item.second+1,
-               item.first.endcap(), item.first.station(), item.first.ring(), item.first.chamber(),
-               clength, crev,
-               mvals[item.second].alct_length, mvals[item.second].alct_rev,
-               cdelay,
-               getUpdatedAnodeBXOffset(item.first),
-               corr,
-               mvals[item.second].cfeb_cable_delay);
+        //printf("%u %d %d %d %d %hd %c %hd %c %hd %hd %d %hd\n",
+        //       item.second+1,
+        //       item.first.endcap(), item.first.station(), item.first.ring(), item.first.chamber(),
+        //       clength, crev,
+        //       mvals[item.second].alct_length, mvals[item.second].alct_rev,
+        //       cdelay,
+        //       getUpdatedAnodeBXOffset(item.first),
+        //       corr,
+        //       mvals[item.second].cfeb_cable_delay);
     }
     fclose(outfile);
     fclose(oldfile);

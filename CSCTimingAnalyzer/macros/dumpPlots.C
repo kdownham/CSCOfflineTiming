@@ -26,15 +26,15 @@ void dumpPlots (std::string fname) {
       TList *dlist = dir->GetListOfKeys();
       bool is_first = true;
 
-      cout << Form("plots/all_plots/%s/%s", fname_short.c_str(), dir->GetName()) << endl;
-      gSystem->Exec(Form("mkdir -p plots/all_plots/%s/%s", fname_short.c_str(), dir->GetName()));
+      cout << Form("plots/all_plots/Run357900/%s/%s", fname_short.c_str(), dir->GetName()) << endl;
+      gSystem->Exec(Form("mkdir -p plots/all_plots/Run357900/%s/%s", fname_short.c_str(), dir->GetName()));
 
       for (auto ditem : *dlist) {
         TObject *dobj = dir->Get(ditem->GetName());
         if (dobj->InheritsFrom(TH1::Class())) {
           dobj->Draw();
           // c1.Print(Form("plots/%s/%s/%s.pdf", fname_short.c_str(), dir->GetName(), dobj->GetName()));
-          c1.Print(Form("plots/all_plots/%s/%s/%s.png", fname_short.c_str(), dir->GetName(), dobj->GetName()));
+          c1.Print(Form("plots/all_plots/Run357900/%s/%s/%s.png", fname_short.c_str(), dir->GetName(), dobj->GetName()));
         }
       }
     }

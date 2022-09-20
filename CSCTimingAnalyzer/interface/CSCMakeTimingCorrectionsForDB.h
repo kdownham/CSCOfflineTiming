@@ -29,6 +29,9 @@
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
 #include "FWCore/Framework/interface/ESHandle.h"
+#include "FWCore/Utilities/interface/ESGetToken.h"
+#include "CondFormats/CSCObjects/interface/CSCDBChipSpeedCorrection.h"
+#include "CondFormats/DataRecord/interface/CSCDBChipSpeedCorrectionRcd.h"
 
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 
@@ -38,6 +41,9 @@
 #include "DataFormats/Math/interface/LorentzVector.h"
 
 #include "CondFormats/CSCObjects/interface/CSCChamberTimeCorrections.h"
+#include "CondFormats/DataRecord/interface/CSCChamberTimeCorrectionsRcd.h"
+#include "CalibMuon/CSCCalibration/interface/CSCIndexerRecord.h"
+#include "CalibMuon/CSCCalibration/interface/CSCChannelMapperRecord.h"
 
 #include "TFile.h"
 #include "TTree.h"
@@ -69,6 +75,11 @@ private:
     edm::ESHandle<CSCIndexerBase> indexer;
     edm::ESHandle<CSCChannelMapperBase> mapper;
     edm::ESHandle<CSCDBChipSpeedCorrection> theChipCorrections;
+
+    edm::ESGetToken<CSCDBChipSpeedCorrection,CSCDBChipSpeedCorrectionRcd> chipCorrectionsToken_;
+    edm::ESGetToken<CSCChamberTimeCorrections,CSCChamberTimeCorrectionsRcd> chamberTimingCorrectionsToken_;
+    edm::ESGetToken<CSCIndexerBase,CSCIndexerRecord> indexerToken_;
+    edm::ESGetToken<CSCChannelMapperBase,CSCChannelMapperRecord> mapperToken_;
 
     std::string heuristicCorrFileName;
     std::string cableLengthFileName;
