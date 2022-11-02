@@ -75,13 +75,14 @@ void combineRechitTimingDistributions(std::string fname,float kLumi = 10.3, bool
     prelim.SetTextFont(52);
     prelim.SetTextSize(0.0456);
 
-    TLatex data(0.17, 0.76, "Data 2018");
+    TLatex data(0.17, 0.76, "Data 2022");
     data.SetNDC();
     data.SetTextAlign(13);
     data.SetTextFont(52);
     data.SetTextSize(0.0456);
 
-    TLatex lumi(0.9, 0.93, Form("%.1f fb^{-1} (13 TeV)", kLumi));
+    //TLatex lumi(0.9, 0.93, Form("%.1f fb^{-1} (13 TeV)", kLumi));
+    TLatex lumi(0.9, 0.93, Form("%.1i (13TeV)", 2022));
     lumi.SetNDC();
     lumi.SetTextAlign(31);
     lumi.SetTextFont(42);
@@ -128,7 +129,7 @@ void combineRechitTimingDistributions(std::string fname,float kLumi = 10.3, bool
     title->SetTextSize(0.052);    
     title->SetTextAlign(11);
     
-    c1.Print("plots/cathode_time_all_newCorrByRing.pdf");
-    c1.Print("plots/cathode_time_all_newCorrByRing.png");
-    c1.Print("plots/cathode_time_all_newCorrByRing.root");
+    c1.Print("plots/all_plots/Run357900/histos_updated_newHeuristicCorrByChamber/cathode_time_all_357900_newCorrByRing.pdf");
+    c1.Print("plots/all_plots/Run357900/histos_updated_newHeuristicCorrByChamber/cathode_time_all_357900_newCorrByRing.png");
+    c1.Print("plots/all_plots/Run357900/histos_updated_newHeuristicCorrByChamber/cathode_time_all_357900_newCorrByRing.root");
 }

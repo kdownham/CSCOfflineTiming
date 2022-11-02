@@ -41,7 +41,8 @@ void makeMuonTimingPlot(std::string fname, float kLumi = 0.0, bool no_legend = f
     h2->GetXaxis()->SetTitle("muon time (ns)");
     h2->GetYaxis()->SetTitle("Fraction of Muons/ns");
     h2->GetYaxis()->SetTitleOffset(1.1);
-    h2->GetXaxis()->SetTitleOffset(0.8);        
+    h2->GetXaxis()->SetTitleOffset(0.8);
+    //h2->GetXaxis()->SetRange(-13.,13.);        
     h2->SetTitle("CSC Muon Time");
     h2->SetTitleFont(42);
     h2->SetTitleSize(0.052);    
@@ -75,13 +76,14 @@ void makeMuonTimingPlot(std::string fname, float kLumi = 0.0, bool no_legend = f
     prelim.SetTextFont(52);
     prelim.SetTextSize(0.0456);
 
-    TLatex data(0.17, 0.76, "Data 2018");
+    TLatex data(0.17, 0.76, "Data 2022");
     data.SetNDC();
     data.SetTextAlign(13);
     data.SetTextFont(52);
     data.SetTextSize(0.0456);
 
-    TLatex lumi(0.9, 0.93, Form("%.1f fb^{-1} (13 TeV)", kLumi));
+    //TLatex lumi(0.9, 0.93, Form("%.1f fb^{-1} (13 TeV)", kLumi));
+    TLatex lumi(0.9, 0.93, Form("%.1i (13 TeV)", 2022));
     lumi.SetNDC();
     lumi.SetTextAlign(31);
     lumi.SetTextFont(42);
@@ -104,7 +106,8 @@ void makeMuonTimingPlot(std::string fname, float kLumi = 0.0, bool no_legend = f
     cout << "Mean: " << avg << " +- " << avgerr << endl;
     cout << "RMS: " << rms << " +- " << rmserr << endl;
 
-    h2->GetXaxis()->SetRangeUser(-6*rms,6*rms);   
+    //h2->GetXaxis()->SetRangeUser(-6*rms,6*rms);   
+    h2->GetXaxis()->SetRangeUser(-13.,13.);
     TH1F* h2norm = (TH1F*)h2->DrawNormalized("hist");
     gPad->Update();
     if (!no_legend) {
@@ -128,7 +131,7 @@ void makeMuonTimingPlot(std::string fname, float kLumi = 0.0, bool no_legend = f
     title->SetTextSize(0.052);    
     title->SetTextAlign(11);
     
-    c1.Print("plots/muon_time_all.pdf");
-    c1.Print("plots/muon_time_all.png");
-    c1.Print("plots/muon_time_all.root");
+    c1.Print("plots/all_plots/Run357900/histos_updated_newHeuristicCorrByChamber/muon_time_all_Run357900.pdf");
+    c1.Print("plots/all_plots/Run357900/histos_updated_newHeuristicCorrByChamber/muon_time_all_Run357900.png");
+    c1.Print("plots/all_plots/Run357900/histos_updated_newHeuristicCorrByChamber/muon_time_all_Run357900.root");
 }

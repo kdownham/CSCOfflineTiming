@@ -202,13 +202,14 @@ void makeAnodeTimingPlot (std::string fname, bool byStation, float kLumi = 10.3,
     prelim.SetTextFont(52);
     prelim.SetTextSize(0.0456);
 
-    TLatex data(0.17, 0.76, "Data 2018");
+    TLatex data(0.17, 0.76, "Data 2022");
     data.SetNDC();
     data.SetTextAlign(13);
     data.SetTextFont(52);
     data.SetTextSize(0.0456);
 
-    TLatex lumi(0.85, 0.82, Form("%.1f fb^{-1} (13 TeV)", kLumi));
+    //TLatex lumi(0.85, 0.82, Form("%.1f fb^{-1} (13 TeV)", kLumi));
+    TLatex lumi(0.9, 0.93, Form("%.1i (13TeV)", 2022));
     lumi.SetNDC();
     lumi.SetTextAlign(31);
     lumi.SetTextFont(42);
@@ -264,9 +265,9 @@ void makeAnodeTimingPlot (std::string fname, bool byStation, float kLumi = 10.3,
         title->SetTextSize(0.046);    
         title->SetTextAlign(11);
         
-        c1.Print("plots/mean_anodetime.pdf");
-        c1.Print("plots/mean_anodetime.png");
-        c1.Print("plots/mean_anodetime.root");
+        c1.Print("plots/all_plots/Run357900/histos_updated_newHeuristicCorrByChamber/mean_anodetime_Run357900.pdf");
+        c1.Print("plots/all_plots/Run357900/histos_updated_newHeuristicCorrByChamber/mean_anodetime_Run357900.png");
+        c1.Print("plots/all_plots/Run357900/histos_updated_newHeuristicCorrByChamber/mean_anodetime_Run357900.root");
 
         cout << "mean_ME1X = " << mean_ME1X << endl;
         cout << "mean_MEX1 = " << mean_MEX1 << endl;
@@ -303,8 +304,8 @@ void makeAnodeTimingPlot (std::string fname, bool byStation, float kLumi = 10.3,
             title->SetTextSize(0.052);    
             title->SetTextAlign(11);
             
-            c1.Print(Form("plots/mean_anodetime_%s.pdf", item.first.c_str()));
-            c1.Print(Form("plots/mean_anodetime_%s.png", item.first.c_str()));
+            c1.Print(Form("plots/mean_anodetime_Run357900_%s.pdf", item.first.c_str()));
+            c1.Print(Form("plots/mean_anodetime_Run357900_%s.png", item.first.c_str()));
         }
     }
 }

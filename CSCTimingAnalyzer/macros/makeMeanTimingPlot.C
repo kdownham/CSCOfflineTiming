@@ -172,13 +172,14 @@ void makeMeanTimingPlot (std::string fname, bool byStation, float kLumi = 10.3, 
     prelim.SetTextFont(52);
     prelim.SetTextSize(0.0456);
 
-    TLatex data(0.17, 0.76, "Data 2018");
+    TLatex data(0.17, 0.76, "Data 2022");
     data.SetNDC();
     data.SetTextAlign(13);
     data.SetTextFont(52);
     data.SetTextSize(0.0456);
 
-    TLatex lumi(0.85, 0.82, Form("%.1f fb^{-1} (13 TeV)", kLumi));
+    //TLatex lumi(0.85, 0.82, Form("%.1f fb^{-1} (13 TeV)", kLumi));
+    TLatex lumi(0.85, 0.82, Form("%.1i (13 TeV)", 2022));
     lumi.SetNDC();
     lumi.SetTextAlign(31);
     lumi.SetTextFont(42);
@@ -216,9 +217,9 @@ void makeMeanTimingPlot (std::string fname, bool byStation, float kLumi = 10.3, 
         title->SetTextSize(0.046);    
         title->SetTextAlign(11);
         
-        c1.Print("plots/mean_cathodetime_newCorrByRing.pdf");
-        c1.Print("plots/mean_cathodetime_newCorrByRing.png");
-        c1.Print("plots/mean_cathodetime_newCorrByRing.root");
+        c1.Print("plots/all_plots/Run357900/histos_updated_newHeuristicCorrByChamber/mean_cathodetime_newCorrByRing_Run357900.pdf");
+        c1.Print("plots/all_plots/Run357900/histos_updated_newHeuristicCorrByChamber/mean_cathodetime_newCorrByRing_Run357900.png");
+        c1.Print("plots/all_plots/Run357900/histos_updated_newHeuristicCorrByChamber/mean_cathodetime_newCorrByRing_Run357900.root");
 
         for (int i : {1,2,3,4}) {
           for (int j : {1,2})
@@ -251,8 +252,8 @@ void makeMeanTimingPlot (std::string fname, bool byStation, float kLumi = 10.3, 
             title->SetTextSize(0.052);    
             title->SetTextAlign(11);
             
-            c1.Print(Form("plots/mean_cathodetime_newCorrByRing_%s.pdf", item.first.c_str()));
-            c1.Print(Form("plots/mean_cathodetime_newCorrByRing_%s.png", item.first.c_str()));
+            c1.Print(Form("plots/all_plots/Run357900/histos_updated_newHeuristicCorrByChamber/mean_cathodetime_newCorrByRing_%s.pdf", item.first.c_str()));
+            c1.Print(Form("plots/all_plots/Run357900/histos_updated_newHeuristicCorrByChamber/mean_cathodetime_newCorrByRing_%s.png", item.first.c_str()));
         }
     }
 }

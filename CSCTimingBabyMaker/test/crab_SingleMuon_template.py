@@ -1,4 +1,4 @@
-import CRABClient
+#import CRABClient
 from WMCore.Configuration import Configuration
 
 config = Configuration()
