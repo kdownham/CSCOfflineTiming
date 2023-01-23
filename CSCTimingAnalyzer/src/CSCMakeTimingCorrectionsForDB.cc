@@ -303,10 +303,30 @@ unsigned int CSCMakeTimingCorrectionsForDB::getUpdatedAnodeBXOffset (CSCDetId id
     // else if (id.ring() == 2 || id.ring() == 1) return 822;
     // return 820;
 
-    if (id.station() == 1 && id.ring() == 1) return 822;
-    else if (id.station() > 1 && id.ring() == 1) return 815;
-    else if (id.ring() == 2 || id.ring() == 3) return 820;
-    return 820;
+    // if (id.station() == 1 && id.ring() == 1) return 822;
+    // else if (id.station() > 1 && id.ring() == 1) return 815;
+    // else if (id.ring() == 2 || id.ring() == 3) return 820;
+    // return 820;
+    
+    if (id.endcap() == 1 && id.station() == 1 && id.ring() == 1) return 824.848; 
+    else if (id.endcap() == 1 && id.station() == 1 && id.ring() == 2) return 832.292;
+    else if (id.endcap() == 1 && id.station() == 1 && id.ring() == 3) return 830.648;
+    else if (id.endcap() == 1 && id.station() == 2 && id.ring() == 1) return 819.911;
+    else if (id.endcap() == 1 && id.station() == 2 && id.ring() == 2) return 828.885;
+    else if (id.endcap() == 1 && id.station() == 3 && id.ring() == 1) return 820.320;
+    else if (id.endcap() == 1 && id.station() == 3 && id.ring() == 2) return 832.575;
+    else if (id.endcap() == 1 && id.station() == 4 && id.ring() == 1) return 826.626;
+    else if (id.endcap() == 1 && id.station() == 4 && id.ring() == 2) return 807.405;
+    else if (id.endcap() == 2 && id.station() == 1 && id.ring() == 1) return 820.230;
+    else if (id.endcap() == 2 && id.station() == 1 && id.ring() == 2) return 830.005;
+    else if (id.endcap() == 2 && id.station() == 1 && id.ring() == 3) return 831.121;
+    else if (id.endcap() == 2 && id.station() == 2 && id.ring() == 1) return 820.597;
+    else if (id.endcap() == 2 && id.station() == 2 && id.ring() == 2) return 828.235;
+    else if (id.endcap() == 2 && id.station() == 3 && id.ring() == 1) return 824.389;
+    else if (id.endcap() == 2 && id.station() == 3 && id.ring() == 2) return 831.217;
+    else if (id.endcap() == 2 && id.station() == 4 && id.ring() == 1) return 825.259;
+    else if (id.endcap() == 2 && id.station() == 4 && id.ring() == 2) return 811.333;
+    return 0.000;
 }
 
 void

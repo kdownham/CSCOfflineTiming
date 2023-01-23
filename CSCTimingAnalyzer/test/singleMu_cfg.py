@@ -6,7 +6,7 @@ process = cms.Process("CSCTIMINGANALYSIS")
 applyGoodRunList = cms.bool(False)
 
 process.load("FWCore.MessageService.MessageLogger_cfi")
-process.MessageLogger.cerr.FwkReport.reportEvery = 1000
+process.MessageLogger.cerr.FwkReport.reportEvery = 100
 
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 
@@ -14,7 +14,7 @@ process.source = cms.Source("PoolSource",
                             # replace 'myfile.root' with the source file you want to use
                             fileNames = cms.untracked.vstring(
                                 #'file:/afs/cern.ch/user/k/kdownham/CSC_Validation/CMSSW_12_4_6/src/CSCOfflineTiming/CSCTimingBabyMaker/test/output/merged/csc_Run357900_premerged_useMuonSegmentMatcher.root',
-				'file:/afs/cern.ch/user/k/kdownham/CSC_Validation/CMSSW_12_4_6/src/CSCOfflineTiming/CSCTimingBabyMaker/test/output/merged/csc_Run357900_premerged_useMuonSegmentMatcher.root',
+				'file:/afs/cern.ch/user/k/kdownham/CSC_Validation/CMSSW_12_4_6/src/CSCOfflineTiming/CSCTimingBabyMaker/test/output/validation/csc_testAnodeConstants_Run357700_useMuonSegmentMatcher.root',
                                 )
 )
 
@@ -50,7 +50,7 @@ process.cscTimingAnalyzer.applyNewHeuristicCorrectionByRing = cms.untracked.bool
 #process.cscTimingAnalyzer.applyNewHeuristicCorrectionByChamber = cms.untracked.bool(False)
 process.cscTimingAnalyzer.applyNewHeuristicCorrectionByChamber = cms.untracked.bool(True)
 #process.cscTimingAnalyzer.fpForHeuristicCorrByChamber = cms.FileInPath('CSCOfflineTiming/CSCTimingAnalyzer/data/heuristic_corrections/heuristicCorrections_byChamber_357900.txt') #correct file for hcs
-process.cscTimingAnalyzer.fpForHeuristicCorrByChamber = cms.FileInPath('CSCOfflineTiming/CSCTimingAnalyzer/data/cscHeurCorr_by_chamber_Oct3.txt')
+process.cscTimingAnalyzer.fpForHeuristicCorrByChamber = cms.FileInPath('CSCOfflineTiming/CSCTimingAnalyzer/data/heuristic_corrections/heuristicCorrections_byChamber_357900.txt')
 process.cscTimingAnalyzer.makeNminus1hists = cms.untracked.bool(True)
 process.cscTimingAnalyzer.writeTimingStudyBabyTree = cms.untracked.bool(False)
 process.cscTimingAnalyzer.removeMatchedStationsRequirement = cms.untracked.bool(False);
@@ -61,7 +61,7 @@ removeHeuristicCorrectionName = '_removeHeuristicCorr'
 # min_pt_name = '_minPt' + str(process.cscTimingAnalyzer.min_pt)
 # max_dz_name = '_maxDz' + str(process.cscTimingAnalyzer.max_dz)
 
-baseFileName = 'output/Run357900_oldCorrections/histos_oldCorrections'
+baseFileName = 'output/Validation/validation_anodes_Run357700_2022D'
 fileExtension = '.root'
 outfileName = baseFileName
 

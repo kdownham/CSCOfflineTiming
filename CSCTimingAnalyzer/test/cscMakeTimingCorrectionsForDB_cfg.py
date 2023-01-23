@@ -48,7 +48,7 @@ process.cscMakeTimingCorrectionsForDB = cms.EDAnalyzer(
     # Use output from determineHeuristicCorrections.C
     heuristicCorrFileName = cms.untracked.string('/afs/cern.ch/user/k/kdownham/CSC_Validation/CMSSW_12_4_6/src/CSCOfflineTiming/CSCTimingAnalyzer/data/heuristic_corrections/heuristicCorrections_byChamber_357900.txt'),
     cableLengthFileName = cms.untracked.string('/afs/cern.ch/user/k/kdownham/CSC_Validation/CMSSW_12_4_6/src/CSCOfflineTiming/CSCTimingAnalyzer/data/cable_lengths_by_chamber_v2.txt'),
-    outFileName = cms.untracked.string('../data/timing_corrections/timing_corrections_by_chamber_unsorted_2022.dat'),
+    outFileName = cms.untracked.string('../data/timing_corrections/anode_and_cathode_corrections_2022.dat'),
     outChipFileName = cms.untracked.string('../data/timing_corrections/chipSpeed_corrections_for_db_2022.txt'),
     readBadChannels = cms.bool(True),
     readBadChambers = cms.bool(True),

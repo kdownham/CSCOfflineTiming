@@ -64,7 +64,7 @@ CSCTimingBabyMaker::CSCTimingBabyMaker(const edm::ParameterSet& iConfig) :
   dcs_token = consumes<DcsStatusCollection>(edm::InputTag("scalersRawToDigi"));
   useMuonSegmentMatcher_ = iConfig.getUntrackedParameter<bool>("useMuonSegmentMatcher", false);
   fillTriggerObjects_ = iConfig.getUntrackedParameter<bool>("fillTriggerObjects", false);
-  debug_ = iConfig.getUntrackedParameter<bool>("debug", false);
+  debug_ = iConfig.getUntrackedParameter<bool>("debug", true); // nominal value is false
 
   chamberTimingCorrections_token = iC.esConsumes<CSCChamberTimeCorrections, CSCChamberTimeCorrectionsRcd>();
   indexer_token = iC.esConsumes<CSCIndexerBase, CSCIndexerRecord>();
@@ -599,7 +599,7 @@ CSCTimingBabyMaker::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
           v_cfeb_skew_delay  .push_back(theChamberTimingCorrections->item(index).cfeb_tmb_skew_delay );
           v_cfeb_timing_corr .push_back(theChamberTimingCorrections->item(index).cfeb_timing_corr    );
           v_cfeb_cable_delay .push_back(theChamberTimingCorrections->item(index).cfeb_cable_delay    );
-          v_anode_bx_offset  .push_back(theChamberTimingCorrections->item(index).anode_bx_offset     );
+          //v_anode_bx_offset_old  .push_back(theChamberTimingCorrections->item(index).anode_bx_offset     );
 
           int precision_ = theChamberTimingCorrections->precision();
           v_precision.push_back(precision_);
@@ -608,6 +608,8 @@ CSCTimingBabyMaker::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
           v_skewClearDelay.push_back(v_cfeb_skew_delay.back() * 1./precision_     );
           v_cfebCableDelay.push_back(v_cfeb_cable_delay.back() * 25.              );
           v_chamberCorr   .push_back(recoConditions->chamberTimingCorrection(id) );
+	  // Try to access the anode_bx_offsets in the same way as the chamber Corrections
+	  v_anode_bx_offset .push_back(recoConditions->anodeBXoffset(id));
 
           unsigned int idCenterStrip = rhIter->nStrips() / 2;
           if (rhIter->nStrips() > 0)
@@ -630,7 +632,9 @@ CSCTimingBabyMaker::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
 		      << " cfeb_cable_delay = " << v_cfebCableDelay.back()
 		      << " cfeb_timing_corr = " << v_cfebCorr.back()
 		      << " chamberCorr = " << v_skewClearDelay.back()+v_cfebCableDelay.back()+v_cfebCorr.back()
-		      << " chip_correction = " << v_chipCorr.back() << std::endl;
+		      << " chip_correction = " << v_chipCorr.back() 
+		      << " anode_bx_offset (old) = " << theChamberTimingCorrections->item(index).anode_bx_offset
+		      << " anode_bx_offset (new) = " << v_anode_bx_offset.back() << std::endl;
 	  }
 
           if (id.station() == 1 && (id.ring() == 1 || id.ring() == 4))
@@ -1161,7 +1165,7 @@ CSCTimingBabyMaker::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
             v_cfeb_skew_delay  .push_back(theChamberTimingCorrections->item(index).cfeb_tmb_skew_delay );
             v_cfeb_timing_corr .push_back(theChamberTimingCorrections->item(index).cfeb_timing_corr    );
             v_cfeb_cable_delay .push_back(theChamberTimingCorrections->item(index).cfeb_cable_delay    );
-            v_anode_bx_offset  .push_back(theChamberTimingCorrections->item(index).anode_bx_offset     );
+            //v_anode_bx_offset  .push_back(theChamberTimingCorrections->item(index).anode_bx_offset     );
 
             int precision_ = theChamberTimingCorrections->precision();
             v_precision.push_back(precision_);
@@ -1170,6 +1174,7 @@ CSCTimingBabyMaker::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
             v_skewClearDelay.push_back(v_cfeb_skew_delay.back() * 1./precision_     );
             v_cfebCableDelay.push_back(v_cfeb_cable_delay.back() * 25.              );
             v_chamberCorr   .push_back(recoConditions->chamberTimingCorrection(id) );
+	    v_anode_bx_offset .push_back(recoConditions->anodeBXoffset(id));
 
             unsigned int idCenterStrip = rhIter->nStrips() / 2;
             if (rhIter->nStrips() > 0)

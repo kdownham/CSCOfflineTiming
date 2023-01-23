@@ -265,9 +265,9 @@ void makeAnodeTimingPlot (std::string fname, bool byStation, float kLumi = 10.3,
         title->SetTextSize(0.046);    
         title->SetTextAlign(11);
         
-        c1.Print("plots/all_plots/Run357900/histos_updated_newHeuristicCorrByChamber/mean_anodetime_Run357900.pdf");
-        c1.Print("plots/all_plots/Run357900/histos_updated_newHeuristicCorrByChamber/mean_anodetime_Run357900.png");
-        c1.Print("plots/all_plots/Run357900/histos_updated_newHeuristicCorrByChamber/mean_anodetime_Run357900.root");
+        c1.Print("plots/all_plots/testAnodeConstants_Run357700/mean_anodetime_Run357700_byStation_v2.pdf");
+        c1.Print("plots/all_plots/testAnodeConstants_Run357700/mean_anodetime_Run357700_byStation_v2.png");
+        c1.Print("plots/all_plots/testAnodeConstants_Run357700/mean_anodetime_Run357700_byStation_v2.root");
 
         cout << "mean_ME1X = " << mean_ME1X << endl;
         cout << "mean_MEX1 = " << mean_MEX1 << endl;
@@ -304,8 +304,8 @@ void makeAnodeTimingPlot (std::string fname, bool byStation, float kLumi = 10.3,
             title->SetTextSize(0.052);    
             title->SetTextAlign(11);
             
-            c1.Print(Form("plots/mean_anodetime_Run357900_%s.pdf", item.first.c_str()));
-            c1.Print(Form("plots/mean_anodetime_Run357900_%s.png", item.first.c_str()));
+            c1.Print(Form("plots/all_plots/testAnodeConstants_Run357700/mean_anodetime_Run357700_v2_%s.pdf", item.first.c_str()));
+            c1.Print(Form("plots/all_plots/testAnodeConstants_Run357700/mean_anodetime_Run357700_v2_%s.png", item.first.c_str()));
         }
     }
 }

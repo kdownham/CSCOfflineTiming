@@ -339,12 +339,12 @@ void CSCTimingAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
               histos_->fill1DHistByType(rhtime_corr, "hRHTiming", "recHit Timing", tmp_id, 200, -2, 2, "recHits");
               histos_->fill1DHistByType(nstrips, "hRHNumStrips", "Number of cathode strips", tmp_id, 10, -0.5, 9.5, "recHits");
               histos_->fill1DHistByType(twire_corr, "hAnodeTiming", "anode Timing", tmp_id, 200, -25, 25, "recHits");
-              histos_->fill1DHistByType(anode_bx_offset, "hAndoeBXOffset", "anode_bx_offset", tmp_id, 100, 800, 900, "recHits");
+              histos_->fill1DHistByType(anode_bx_offset, "hAnodeBXOffset", "anode_bx_offset", tmp_id, 100, 800, 900, "recHits");
             } else {
               histos_->fill1DHistByType(rhtime_corr, "hRHTiming", "recHit Timing", id, 200, -2, 2, "recHits");
               histos_->fill1DHistByType(nstrips, "hRHNumStrips", "Number of cathode strips", id, 10, -0.5, 9.5, "recHits");
               histos_->fill1DHistByType(twire_corr, "hAnodeTiming", "anode Timing", id, 200, -25, 25, "recHits");
-              histos_->fill1DHistByType(anode_bx_offset, "hAndoeBXOffset", "anode_bx_offset", id, 100, 800, 900, "recHits");
+              histos_->fill1DHistByType(anode_bx_offset, "hAnodeBXOffset", "anode_bx_offset", id, 100, 800, 900, "recHits");
             }
             if (makePlotsPerChamber_) {
               if (combineME11ab_ && station == 1 && ring == 4) {

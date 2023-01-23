@@ -16,8 +16,9 @@ void dumpPlots (std::string fname) {
   TCanvas c1("c1","c1",600,400);
   gStyle->SetOptStat("emrou");
 
-  std::string recHits = "recHitsByChamber";
-  std::string Segments = "SegmentsByChamber";
+  std::string recHits = "recHits";
+  //std::string Segments = "SegmentsByChamber";
+  std::string no_hist = "hRHNumStrips";
 
   TFile file(fname.c_str());
   file.cd();
@@ -33,19 +34,22 @@ void dumpPlots (std::string fname) {
       //cout << "fname_short = " << fname_short.c_str() << endl;
       
 
-      if ( item->GetName() == recHits || item->GetName() == Segments ){
-	   continue;
-      }
+      //if ( item->GetName() == recHits || item->GetName() == Segments ){
+	//   continue;
+      //}
+      if ( item->GetName() != recHits ) continue;
 
-      cout << Form("plots/all_plots/Run357900_oldCorrections/%s/%s", fname_short.c_str(), dir->GetName()) << endl;
-      gSystem->Exec(Form("mkdir -p plots/all_plots/Run357900_oldCorrections/%s/%s", fname_short.c_str(), dir->GetName()));
+      cout << Form("plots/all_plots/Run357700_newAnodeCorrections/%s/%s", fname_short.c_str(), dir->GetName()) << endl;
+      gSystem->Exec(Form("mkdir -p plots/all_plots/Run357700_newAnodeCorrections/%s/%s", fname_short.c_str(), dir->GetName()));
 
       for (auto ditem : *dlist) {
         TObject *dobj = dir->Get(ditem->GetName());
         if (dobj->InheritsFrom(TH1::Class())) {
+	  std::string name = dobj->GetName();
+	  if (name.find(no_hist) != string::npos) continue; 
           dobj->Draw();
           // c1.Print(Form("plots/%s/%s/%s.pdf", fname_short.c_str(), dir->GetName(), dobj->GetName()));
-          c1.Print(Form("plots/all_plots/Run357900_oldCorrections/%s/%s/%s.png", fname_short.c_str(), dir->GetName(), dobj->GetName()));
+          c1.Print(Form("plots/all_plots/Run357700_newAnodeCorrections/%s/%s/%s.png", fname_short.c_str(), dir->GetName(), dobj->GetName()));
         }
       }
     }

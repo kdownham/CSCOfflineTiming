@@ -1,4 +1,4 @@
-from cmseostools import cmsFileManip
+from CSCOfflineTiming.CSCTimingBabyMaker.cmseostools import cmsFileManip
 import pandas as pd 
 
 def get_files(dataset='', command='', runs=[]):
