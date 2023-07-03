@@ -206,7 +206,9 @@ void CSCTimingAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
 
           CSCDetId id(endcap, station, ring, chamber, layer);
           double rhtime_corr = rhtime;
-          double twire_corr = twire;
+          //double twire_corr = twire;  // Comment out for new wire corrections
+	  // Need to write a function that applies the new anode_bx_offsets
+	  double twire_corr = updateAnodeOffset(twire,endcap,station,ring,chamber);   // uncomment for new wire corrections
 
           bool is_ME11 = (station == 1 && (ring == 1 || ring == 4));
           if (is_ME11) {
@@ -619,6 +621,37 @@ void CSCTimingAnalyzer::printMapToFile (const std::map<CSCDetId, std::set<double
   }
   outfile.close();
   return;
+}
+
+double CSCTimingAnalyzer::updateAnodeOffset(double twire, int endcap, int station, int ring, int chamber)
+{
+  std::string fname="../data/new_anode_bx_offsets_Run357900_3_9_22.txt";
+  std::ifstream f(fname);
+  std::string line;
+
+  while(std::getline(f, line)){
+    int col_ecap;
+    int col_station;
+    int col_ring;
+    int col_chamber;
+    double col_anode;
+    std::istringstream ss(line);
+    ss >> col_ecap >> col_station >> col_ring >> col_chamber >> col_anode;
+    if ( col_ecap == endcap && col_station == station && col_ring == ring && col_chamber == chamber){
+         double anode_corr = (col_anode / 100.0) * 25.0;
+         twire += anode_corr;
+    }
+  }
+
+  if ( station == 1 && ring == 1 ) twire -= (822.0 * 0.25);
+  else if ( station > 1 && ring == 1 ) twire -= (815.0 * 0.25);
+  else if ( ring == 2 || ring == 3 ) twire -= (820.0 * 0.25);
+  else{
+      twire -= (820.0 * 0.25);
+  }
+   
+  return twire;
+ 
 }
 
 void CSCTimingAnalyzer::setTimingParamBabyBranches (TTree* tree)

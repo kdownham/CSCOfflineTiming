@@ -153,7 +153,7 @@ void combineAnodeTimingDistributions (std::string fname, float kLumi = 10.3, boo
     title->SetTextSize(0.052);    
     title->SetTextAlign(11);
     
-    c1.Print("plots/all_plots/Run357900/histos_updated_newHeuristicCorrByChamber/anode_time_all_Run357900.pdf");
-    c1.Print("plots/all_plots/Run357900/histos_updated_newHeuristicCorrByChamber/anode_time_all_Run357900.png");
-    c1.Print("plots/all_plots/Run357900/histos_updated_newHeuristicCorrByChamber/anode_time_all_Run357900.root");
+    c1.Print("anode_time_all_Run357900_noCorrection.pdf");
+    c1.Print("anode_time_all_Run357900_noCorrection.png");
+    c1.Print("anode_time_all_Run357900_noCorrection.root");
 }

@@ -599,7 +599,7 @@ CSCTimingBabyMaker::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
           v_cfeb_skew_delay  .push_back(theChamberTimingCorrections->item(index).cfeb_tmb_skew_delay );
           v_cfeb_timing_corr .push_back(theChamberTimingCorrections->item(index).cfeb_timing_corr    );
           v_cfeb_cable_delay .push_back(theChamberTimingCorrections->item(index).cfeb_cable_delay    );
-          //v_anode_bx_offset_old  .push_back(theChamberTimingCorrections->item(index).anode_bx_offset     );
+          v_anode_bx_offset  .push_back(theChamberTimingCorrections->item(index).anode_bx_offset     );
 
           int precision_ = theChamberTimingCorrections->precision();
           v_precision.push_back(precision_);
@@ -608,8 +608,8 @@ CSCTimingBabyMaker::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
           v_skewClearDelay.push_back(v_cfeb_skew_delay.back() * 1./precision_     );
           v_cfebCableDelay.push_back(v_cfeb_cable_delay.back() * 25.              );
           v_chamberCorr   .push_back(recoConditions->chamberTimingCorrection(id) );
-	  // Try to access the anode_bx_offsets in the same way as the chamber Corrections
-	  v_anode_bx_offset .push_back(recoConditions->anodeBXoffset(id));
+	  // Try to access the anode_bx_offsets in the same way as the chamber Corrections -> doesn't work
+	  //v_anode_bx_offset .push_back(recoConditions->anodeBXoffset(id));
 
           unsigned int idCenterStrip = rhIter->nStrips() / 2;
           if (rhIter->nStrips() > 0)

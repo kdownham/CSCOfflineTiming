@@ -39,7 +39,7 @@ struct CSCAnodeCorrDetId
 
 std::tuple<int,int,int,std::vector<int>,std::vector<double>> get_current_bx_offset(int endcap, int station, int ring, std::string fname="../test/anode_bx_offset.txt");
 
-void determineAnodeOffsets (std::string fname, std::string ofname = "../data/new_anode_bx_offsets_Run357900.txt"){
+void determineAnodeOffsets (std::string fname, std::string ofname = ""){
 
 	TFile file(fname.c_str());
 	TDirectoryFile *dir;
@@ -96,11 +96,24 @@ void determineAnodeOffsets (std::string fname, std::string ofname = "../data/new
 	     TString r = station_ring[1];
 	     if (r.IsDigit()) ring = r.Atoi();    
 	     double anode_corr = ((TH1*)obj)->GetMean() / -25. * 100.;  // Convert from ns to number of bunch crossings (x100)
+	     unsigned long nrhs = ((TH1*)obj)->GetEntries();
 
 	     // Need to include a function here that gets the list of anode_bx_offsets for all chambers
 	    
-	     std::tuple<int,int,int,std::vector<int>,std::vector<double>> old_bx_offsets = get_current_bx_offset(endcap,station,ring); 
-	     
+	     std::tuple<int,int,int,std::vector<int>,std::vector<double>> old_bx_offsets = get_current_bx_offset(endcap,station,ring);
+
+	     // Need to combine ME11 A and B
+	     if (ring == 4) ring = 1;
+	     CSCAnodeCorrDetId id(endcap, station, ring, chamber);
+	     if (m.find(id) != m.end()){
+		 m[id].first += nrhs;
+		 m[id].second += (double)nrhs*anode_corr;
+	     }
+	     else{
+		 m[id] = std::make_pair(nrhs, (double)nrhs*anode_corr);
+	     }
+	 
+             objarray->Delete();    
 	     // Then for each ring, loop over the chambers and print the per-chamber (which are really just per-ring) corrections
 
 	     if (print_to_file){
@@ -120,7 +133,7 @@ void determineAnodeOffsets (std::string fname, std::string ofname = "../data/new
 		   printf("%d\t%d\t%d\t%d\t%4.2f\n", endcap, station, ring, ch, new_offset);
                 }
 	     }
-	     objarray->Delete(); 
+	     //objarray->Delete(); 
 	}
 
 	if (print_to_file) outfile.close();

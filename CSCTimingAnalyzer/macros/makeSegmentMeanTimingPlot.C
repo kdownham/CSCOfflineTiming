@@ -212,9 +212,9 @@ void makeSegmentMeanTimingPlot (std::string fname, bool byStation, float kLumi =
         title->SetTextSize(0.046);    
         title->SetTextAlign(11);
         
-        c1.Print("plots/all_plots/Run357900/histos_updated_newHeuristicCorrByChamber/mean_segtime_Run357900.pdf");
-        c1.Print("plots/all_plots/Run357900/histos_updated_newHeuristicCorrByChamber/mean_segtime_Run357900.png");
-        c1.Print("plots/all_plots/Run357900/histos_updated_newHeuristicCorrByChamber/mean_segtime_Run357900.root");
+        c1.Print("plots/all_plots/Run357900_testAnodes/mean_segtime_Run357900_newCorr.pdf");
+        c1.Print("plots/all_plots/Run357900_testAnodes/mean_segtime_Run357900_newCorr.png");
+        c1.Print("plots/all_plots/Run357900_testAnodes/mean_segtime_Run357900_newCorr.root");
     }
     else
     {

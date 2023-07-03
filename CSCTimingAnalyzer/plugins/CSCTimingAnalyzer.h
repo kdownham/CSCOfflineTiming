@@ -100,6 +100,8 @@ private:
   bool readHeuristicCorrectionsFromFile ();
   void setTimingStudyBabyBranches (TTree* tree);
   double calculateSegmentTime (std::vector<double>& rhts, std::vector<double>& wts);
+
+  double updateAnodeOffset(double twire, int endcap, int station, int ring, int chamber);
     
   // outfile where histograms are written
   TFile *outfile_;

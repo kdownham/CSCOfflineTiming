@@ -36,7 +36,7 @@ int GetNumChambers (int s, int r)
     return 36;
 }
 
-void makeMeanTimingPlot (std::string fname, bool byStation, float kLumi = 10.3, bool no_legend = false)
+void makeMeanTimingPlot (std::string fname, bool byStation, std::string outputdir, float kLumi = 10.3, bool no_legend = false)
 {    
     TFile file(fname.c_str());
     TDirectoryFile *dir;
@@ -217,9 +217,9 @@ void makeMeanTimingPlot (std::string fname, bool byStation, float kLumi = 10.3, 
         title->SetTextSize(0.046);    
         title->SetTextAlign(11);
         
-        c1.Print("plots/all_plots/Run357900/histos_updated_newHeuristicCorrByChamber/mean_cathodetime_newCorrByRing_Run357900.pdf");
-        c1.Print("plots/all_plots/Run357900/histos_updated_newHeuristicCorrByChamber/mean_cathodetime_newCorrByRing_Run357900.png");
-        c1.Print("plots/all_plots/Run357900/histos_updated_newHeuristicCorrByChamber/mean_cathodetime_newCorrByRing_Run357900.root");
+        c1.Print(Form("plots/all_plots/Run357900/%s/mean_cathodetime_Run357900_byStation.pdf",outputdir.c_str()));
+        c1.Print(Form("plots/all_plots/Run357900/%s/mean_cathodetime_Run357900_byStation.png",outputdir.c_str()));
+        c1.Print(Form("plots/all_plots/Run357900/%s/mean_cathodetime_Run357900_byStation.root",outputdir.c_str()));
 
         for (int i : {1,2,3,4}) {
           for (int j : {1,2})

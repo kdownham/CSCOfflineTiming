@@ -1,0 +1,57 @@
+############################################################################
+# Condor Job Submission script for CSCTimingBabyMaker
+#
+# Any instance of 'REPLACETAG' needs to be replaced using python
+#
+# Authors
+#   Keegan Downham, UC Santa Barbara
+############################################################################
+
+## Set up job
+
+# job runs here
+# universe              = vanilla
+# universe                = standard
+Requirements            = (HAS_SINGULARITY=?=True)
++SingularityImage       = "/cvmfs/singularity.opensciencegrid.org/cmssw/cms:rhel7"
+
+# job executes with these parameters
+executable              = job_duties.sh
+arguments               = "CMSSWVERSION_REPLACETAG SCRAMARCH_REPLACETAG JOBTAG_REPLACETAG USER_REPLACETAG RUN_REPLACETAG"
+
+# job runs here and produces these files
+Initialdir              = CONDOROUTDIR_REPLACETAG
+output                  = logs/job.$(ClusterId).$(ProcId).out
+error                   = logs/job.$(ClusterId).$(ProcId).err
+log                     = logs/job.$(ClusterId).$(ProcId).log
+
+# job needs a voms proxy for file access
+x509userproxy           = /tmp/x509up_uUID_REPLACETAG
+
+# job needs to be cleaned up when it fails
+periodic_remove         = JobStatus == 5
+
+# number of cpus we want to request
+request_cpus = 1
+
+# make sure we are requesting a reasonable amount of disk space for the jobs (maximum ~ 720000)
+request_disk = 20MB
+
+# amound of memory we want to use
+request_memory = 20MB
+
+# make sure that everything is where it needs to be
+# transfer_output_files intentionally left blank
+transfer_executable     = True
+should_transfer_files   = Yes
+transfer_input_files    = condor_template_cfg.py,BabyMaker.tar
+transfer_output_files   = 
+when_to_transfer_output = ON_EXIT_OR_EVICT
+
+# configure label parameters for the job
++JobFlavour             = "microcentury"
++project_Name           = "csctimingbabymaker"
+notification            = Never
+
+# add the job to the queue
+queue 

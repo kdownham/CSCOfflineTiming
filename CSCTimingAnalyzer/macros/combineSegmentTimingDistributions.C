@@ -126,7 +126,7 @@ void combineSegmentTimingDistributions(std::string fname, float kLumi = 0.0, boo
     title->SetTextSize(0.052);    
     title->SetTextAlign(11);
 
-    c1.Print("plots/all_plots/Run357900/histos_updated_newHeuristicCorrByChamber/segment_time_all_newCorrByChamber.pdf");
-    c1.Print("plots/all_plots/Run357900/histos_updated_newHeuristicCorrByChamber/segment_time_all_newCorrByChamber.png");
-    c1.Print("plots/all_plots/Run357900/histos_updated_newHeuristicCorrByChamber/segment_time_all_newCorrByChamber.root");    
+    c1.Print("plots/all_plots/Run357900_testAnodes/segment_time_all_Run357900_noCorr.pdf");
+    c1.Print("plots/all_plots/Run357900_testAnodes/segment_time_all_Run357900_noCorr.png");
+    c1.Print("plots/all_plots/Run357900_testAnodes/segment_time_all_Run357900_noCorr.root");    
 }

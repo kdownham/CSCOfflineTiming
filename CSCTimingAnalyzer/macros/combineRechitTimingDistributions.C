@@ -129,7 +129,7 @@ void combineRechitTimingDistributions(std::string fname,float kLumi = 10.3, bool
     title->SetTextSize(0.052);    
     title->SetTextAlign(11);
     
-    c1.Print("plots/all_plots/Run357900/histos_updated_newHeuristicCorrByChamber/cathode_time_all_357900_newCorrByRing.pdf");
-    c1.Print("plots/all_plots/Run357900/histos_updated_newHeuristicCorrByChamber/cathode_time_all_357900_newCorrByRing.png");
-    c1.Print("plots/all_plots/Run357900/histos_updated_newHeuristicCorrByChamber/cathode_time_all_357900_newCorrByRing.root");
+    c1.Print("cathode_time_all_359812_noCorr.pdf");
+    c1.Print("cathode_time_all_359812_noCorr.png");
+    c1.Print("cathode_time_all_359812_noCorr.root");
 }

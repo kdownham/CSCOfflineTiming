@@ -36,7 +36,7 @@ int GetNumChambers (int s, int r)
     return 36;
 }
 
-void makeAnodeTimingPlot (std::string fname, bool byStation, float kLumi = 10.3, bool no_legend = false)
+void makeAnodeTimingPlot (std::string fname, bool byStation, std::string outputdir, float kLumi = 10.3, bool no_legend = false)
 {    
     TFile file(fname.c_str());
     TDirectoryFile *dir;
@@ -264,20 +264,53 @@ void makeAnodeTimingPlot (std::string fname, bool byStation, float kLumi = 10.3,
         title->SetTextFont(42);
         title->SetTextSize(0.046);    
         title->SetTextAlign(11);
-        
-        c1.Print("plots/all_plots/testAnodeConstants_Run357700/mean_anodetime_Run357700_byStation_v2.pdf");
-        c1.Print("plots/all_plots/testAnodeConstants_Run357700/mean_anodetime_Run357700_byStation_v2.png");
-        c1.Print("plots/all_plots/testAnodeConstants_Run357700/mean_anodetime_Run357700_byStation_v2.root");
+
+        //gSystem->Exec(Form("mkdir -p plots/all_plots/Run357900/%s",outputdir.c_str()));
+        //
+        //c1.Print(Form("plots/all_plots/Run357900/%s/mean_anodetime_Run357900_byStation.pdf",outputdir.c_str()));
+        //c1.Print(Form("plots/all_plots/Run357900/%s/mean_anodetime_Run357900_byStation.png",outputdir.c_str()));
+        //c1.Print(Form("plots/all_plots/Run357900/%s/mean_anodetime_Run357900_byStation.root",outputdir.c_str()));
+
+	TCanvas c2("c2", "c2", 600, 400);
+	TH1F *h2 = new TH1F("h2","h2",40,-10.,10.);
+	h2->GetXaxis()->SetTitle("Mean anode hit time per ring [ns]");
+        h2->GetYaxis()->SetTitle("Number of rings");
+	h2->SetTitle("Mean anode time per ring");
+	
+	int bins = (h1->GetNbinsX()+1);
+
+        for (int k = 1; k < bins; k++){
+	     float value = h1->GetBinContent(k);
+	     cout << "value for bin " << k << " = " << value << endl;
+	     h2->Fill(value);
+	}
 
         cout << "mean_ME1X = " << mean_ME1X << endl;
         cout << "mean_MEX1 = " << mean_MEX1 << endl;
         cout << "mean_MEX2 = " << mean_MEX2 << endl;
 
         for (int i : {1,2,3,4}) {
-          for (int j : {1,2})
+          for (int j : {1,2}){
             cout << "Avg mean for ME " << i << "/" << j << " is: " << means[i][j] / 2 << ", const to be shifted by: " << means[i][j] * 2 << endl;
+	    //h2->Fill(means[i][j]);
+	  }
           if (i == 1) cout << "Avg mean for ME " << 1 << "/" << 3 << " is: " << means[1][3] / 2 << ", const to be shifted by: " << means[1][3] * 2 << endl;
         }
+
+	double mean_h2 = h2->GetMean();
+	double rms_h2 = h2->GetRMS();
+
+        auto legend = new TLegend(0.60,0.60,0.90,0.90);
+	legend->AddEntry((TObject*)0, TString::Format("Mean = %g", mean_h2), "");
+	legend->AddEntry((TObject*)0, TString::Format("RMS = %g", rms_h2), "");
+
+	c2.cd();
+	h2->Draw("hist same");
+	legend->Draw();
+
+	c2.Print(Form("plots/all_plots/Run359812/%s/mean_anodetimes_allstations_Run359812.pdf",outputdir.c_str()));
+	c2.Print(Form("plots/all_plots/Run359812/%s/mean_anodetimes_allstations_Run359812.png",outputdir.c_str()));
+	c2.Print(Form("plots/all_plots/Run359812/%s/mean_anodetimes_allstations_Run359812.root",outputdir.c_str()));
 
     }
     else
@@ -304,8 +337,8 @@ void makeAnodeTimingPlot (std::string fname, bool byStation, float kLumi = 10.3,
             title->SetTextSize(0.052);    
             title->SetTextAlign(11);
             
-            c1.Print(Form("plots/all_plots/testAnodeConstants_Run357700/mean_anodetime_Run357700_v2_%s.pdf", item.first.c_str()));
-            c1.Print(Form("plots/all_plots/testAnodeConstants_Run357700/mean_anodetime_Run357700_v2_%s.png", item.first.c_str()));
+            c1.Print(Form("plots/all_plots/Run357900_testAnodes/mean_anodetime_Run357900_%s.pdf", item.first.c_str()));
+            c1.Print(Form("plots/all_plots/Run357900_testAnodes/mean_anodetime_Run357900_%s.png", item.first.c_str()));
         }
     }
 }
