@@ -23,7 +23,7 @@ process.CSCIndexerESProducer.AlgoName=cms.string("CSCIndexerPostls1")
 process.CSCChannelMapperESProducer.AlgoName=cms.string("CSCChannelMapperPostls1")
 
 # automatically name the output file correctly and uniquely
-baseFileName = 'output/validation/csc_3_22_23_Run357900'
+baseFileName = '/eos/user/k/kdownham/CSCOfflineTiming/test_condor/csc_test_Run357900'
 fileExtension = '.root'
 outfileName = baseFileName
 
@@ -42,13 +42,13 @@ process.source = cms.Source("PoolSource",
 				#'file:/eos/cms/store/user/valuev/CSCOfflineTiming/Run2022D/Muon/AOD/PromptReco-v2/000/357/900/00000/086420ee-e52f-454c-89cb-f8e7d343dccb.root',
 				#'file:/eos/cms/store/user/valuev/CSCOfflineTiming/Run2022D/Muon/AOD/PromptReco-v2/000/357/900/00000/666a56c6-005d-4ab7-b6e6-aa168ea0c855.root',
 				'file:/eos/user/k/kdownham/CSCOfflineTiming/Run2022D/Muon/AOD/PromptReco-v2/000/357/900/00000/019f963f-7fa4-4019-b41c-b1382f4f948a.root',
-				'file:/eos/user/k/kdownham/CSCOfflineTiming/Run2022D/Muon/AOD/PromptReco-v2/000/357/900/00000/03c69590-7ab5-4311-b7f5-714fee4d2c02.root',
-				'file:/eos/user/k/kdownham/CSCOfflineTiming/Run2022D/Muon/AOD/PromptReco-v2/000/357/900/00000/0498c301-c267-45f6-ba01-a1977498bc3e.root',
-				'file:/eos/user/k/kdownham/CSCOfflineTiming/Run2022D/Muon/AOD/PromptReco-v2/000/357/900/00000/05fe1620-c20d-4df3-af0a-806ef1bcaff9.root',
-				'file:/eos/user/k/kdownham/CSCOfflineTiming/Run2022D/Muon/AOD/PromptReco-v2/000/357/900/00000/06d050bb-1663-47c9-822f-54bb128074af.root',
-				'file:/eos/user/k/kdownham/CSCOfflineTiming/Run2022D/Muon/AOD/PromptReco-v2/000/357/900/00000/07dcd66f-2f11-4518-86e0-519cf3555276.root',
-				'file:/eos/user/k/kdownham/CSCOfflineTiming/Run2022D/Muon/AOD/PromptReco-v2/000/357/900/00000/086420ee-e52f-454c-89cb-f8e7d343dccb.root',
-				'file:/eos/user/k/kdownham/CSCOfflineTiming/Run2022D/Muon/AOD/PromptReco-v2/000/357/900/00000/666a56c6-005d-4ab7-b6e6-aa168ea0c855.root',
+				#'file:/eos/user/k/kdownham/CSCOfflineTiming/Run2022D/Muon/AOD/PromptReco-v2/000/357/900/00000/03c69590-7ab5-4311-b7f5-714fee4d2c02.root',
+				#'file:/eos/user/k/kdownham/CSCOfflineTiming/Run2022D/Muon/AOD/PromptReco-v2/000/357/900/00000/0498c301-c267-45f6-ba01-a1977498bc3e.root',
+				#'file:/eos/user/k/kdownham/CSCOfflineTiming/Run2022D/Muon/AOD/PromptReco-v2/000/357/900/00000/05fe1620-c20d-4df3-af0a-806ef1bcaff9.root',
+				#'file:/eos/user/k/kdownham/CSCOfflineTiming/Run2022D/Muon/AOD/PromptReco-v2/000/357/900/00000/06d050bb-1663-47c9-822f-54bb128074af.root',
+				#'file:/eos/user/k/kdownham/CSCOfflineTiming/Run2022D/Muon/AOD/PromptReco-v2/000/357/900/00000/07dcd66f-2f11-4518-86e0-519cf3555276.root',
+				#'file:/eos/user/k/kdownham/CSCOfflineTiming/Run2022D/Muon/AOD/PromptReco-v2/000/357/900/00000/086420ee-e52f-454c-89cb-f8e7d343dccb.root',
+				#'file:/eos/user/k/kdownham/CSCOfflineTiming/Run2022D/Muon/AOD/PromptReco-v2/000/357/900/00000/666a56c6-005d-4ab7-b6e6-aa168ea0c855.root',
 				#'file:/eos/user/k/kdownham/CSCOfflineTiming/Run2022G/Muon/AOD/PromptReco-v1/000/362/437/00000/e220fa12-beb1-4cde-94f1-ec05d537a186.root',
 				#'file:/eos/user/k/kdownham/CSCOfflineTiming/Validation/RAW2DIGI_RECO/test_anode_and_cathode_RAW2DIGI_RECO_Run357700.root',
 				#'file:/eos/user/k/kdownham/CSCOfflineTiming/Run2022E/Muon/AOD/PromptReco-v1/000/359/812/00000/05d8df7a-21cf-4091-90c3-9a27dd81794c.root',
