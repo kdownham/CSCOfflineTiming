@@ -44,7 +44,7 @@ request_memory = 20MB
 # transfer_output_files intentionally left blank
 transfer_executable     = True
 should_transfer_files   = Yes
-transfer_input_files    = condor_template_cfg.py,BabyMaker.tar
+transfer_input_files    = condor_template_cfg.py,CSCTiming.tar
 transfer_output_files   = 
 when_to_transfer_output = ON_EXIT_OR_EVICT
 

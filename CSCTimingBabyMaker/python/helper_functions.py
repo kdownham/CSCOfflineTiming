@@ -42,39 +42,44 @@ def run_ntuple_jobs(config):
         jobtag      str    ''        unique tagname for jobs 
     '''
 
-    dataset = config['dataset']
-    globaltag = config['globaltag']
-    #outputdir = config['outdir']
+    dataset = config['inputDataset']
+    globaltag = config['globalTag']
+    outputdir = config['outputDir']
     input_files = config['input_files']
     run = config['runNumber']
-    maxJobNum = config['maxJobNum']
-    force = config['force']
-    dryRun = config['dryRun']
-    triggers = config['triggers']
+    #maxJobNum = config['maxJobNum']
+    #force = config['force']
+    #dryRun = config['dryRun']
+    #triggers = config['triggers']
     n_events = config['n_events']
-    jobtag = config['jobtag']
+    jobtag = config['jobTag']
 
     time0 = time.time()
 
     [stream, eventContent] = get_from_dataset(dataset)
 
     CMSSW_BASE = os.getenv('CMSSW_BASE')
-    basedir = CMSSW_BASE + '/src/CSCOfflineTiming/CSCTimingBabyMaker'
-    rundir = basedir+'/outputs/tasks/{}/run_{}'.format(stream, run)
+    basedir = CMSSW_BASE + '/src/CSCOfflineTiming'
+    rundir = basedir+'/CSCTimingBabyMaker/outputs/tasks/{}/run_{}'.format(stream, run)
     os.system('mkdir -p '+rundir + "/logs")
     os.chdir(rundir)
 
-    os.system('ln -sf '+basedir+'/BabyMaker.tar {}/'.format(rundir))
-    os.system('cp -f '+basedir+'/scripts/job_duties.sh {}/'.format(rundir))
+    os.system('ln -sf '+basedir+'/CSCTiming.tar {}/'.format(rundir))
+    os.system('cp -f '+basedir+'/CSCTimingBabyMaker/scripts/job_duties.sh {}/'.format(rundir))
 
     replace_template_parameters(basedir, input_files, dataset, globaltag, rundir, CMSSW_BASE, run, stream, jobtag, n_events=str(min(int(n_events),10**2)))
 
     os.system('condor_submit '+rundir+'/job.sub')
+    #TODO: replace this with a new job submission script (based on the working condor submission script)
     os.chdir(basedir)
+
+    print("Current working directory:")
+    os.system('pwd')
+    os.system('ls')
 
 def replace_template_parameters(basedir, input_files, dataset, globaltag, rundir, CMSSW_BASE, run, stream, jobtag, n_events=100):
     # replace template parameters in ../test/condor_template_cfg.py
-    with open(basedir+'/test/condor_template_cfg.py','r') as f:
+    with open(basedir+'/CSCTimingBabyMaker/test/condor_template_cfg.py','r') as f:
         condor_template_cfg = f.read()
 
     # format the input files for the ESSource in the config template
@@ -83,28 +88,30 @@ def replace_template_parameters(basedir, input_files, dataset, globaltag, rundir
     # May need to play around with this to create different directories for the output jobs
     #outputdir = os.getenv("OUTDIR")
     # For now I am going to do the lazy option and hardcode in the output directory
-    outputdir = '/eos/user/k/kdownham/CSCOfflineTiming/condor_output/'+jobtag
+    #outputdir = '/eos/cms/store/group/dpg_csc/comm_csc/csctiming/Run3/2022'+dataset+'/'+jobtag
 
     condor_template_cfg = condor_template_cfg.replace('GLOBALTAG_REPLACETAG', globaltag)
     condor_template_cfg = condor_template_cfg.replace('FILENAME_REPLACETAG', input_files_str)
     condor_template_cfg = condor_template_cfg.replace('MAXEVENTS_REPLACETAG', n_events)
-    condor_template_cfg = condor_template_cfg.replace('OUTPUTNAME_REPLACETAG', outputdir+'/output.root')
+    condor_template_cfg = condor_template_cfg.replace('OUTPUTNAME_REPLACETAG', 'output_'+run)  # This is where the completed files will be sent within the condor environment
 
     with open(rundir+'/condor_template_cfg.py','w') as f:
         f.write(condor_template_cfg)
 
-    # Replace template parameters in job_duties.sh
-    with open(basedir+'/scripts/job_duties.sh','r') as f:
-        job_duties = f.read()
+    #job_duties.sh no longer contains these REPLACETAGs
 
-    job_duties = job_duties.replace('RUN_REPLACETAG', run)
-    job_duties = job_duties.replace('STREAM_REPLACETAG', stream)
+    ## Replace template parameters in job_duties.sh
+    #with open(basedir+'/CSCTimingBabyMaker/scripts/job_duties.sh','r') as f:
+    #    job_duties = f.read()
 
-    with open(basedir+'/scripts/job_duties.sh','w') as f:
-        f.write(job_duties)
+    #job_duties = job_duties.replace('RUN_REPLACETAG', run)
+    #job_duties = job_duties.replace('STREAM_REPLACETAG', stream)
+
+    #with open(basedir+'/CSCTimingBabyMaker/scripts/job_duties.sh','w') as f:
+    #    f.write(job_duties)
 
     # Replace template parameters in job.sub
-    with open(basedir+'/scripts/job.sub','r') as f:
+    with open(basedir+'/CSCTimingBabyMaker/scripts/job.sub','r') as f:
         job_sub = f.read()
 
     job_sub = job_sub.replace('CONDOROUTDIR_REPLACETAG', rundir)  # may want to change this to the outputdir.....

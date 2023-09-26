@@ -21,7 +21,7 @@ process.load("Configuration.StandardSequences.Reconstruction_cff")
 process.load('Configuration.StandardSequences.EndOfProcess_cff')
 
 from Configuration.AlCa.GlobalTag import GlobalTag
-process.GlobalTag.globaltag = cms.untracked.vstring('GLOBALTAG_REPLACETAG')
+process.GlobalTag.globaltag = cms.string('GLOBALTAG_REPLACETAG')
 
 # Config CSC for postls1
 process.CSCGeometryESModule.useGangedStripsInME1a = cms.bool(False)
@@ -29,8 +29,8 @@ process.CSCIndexerESProducer.AlgoName=cms.string("CSCIndexerPostls1")
 process.CSCChannelMapperESProducer.AlgoName=cms.string("CSCChannelMapperPostls1")
 
 # automatically name the output file correctly and uniquely
-baseFileName = cms.untracked.vstring('OUTPUTNAME_REPLACETAG')
-fileExtension = ''
+baseFileName = 'OUTPUTNAME_REPLACETAG'
+#fileExtension = ''
 outfileName = baseFileName
 
 #process.MessageLogger.cerr.threshold = 'ERROR'
@@ -56,8 +56,10 @@ process.cscTimingBabyMaker.debug = cms.untracked.bool(False)  # nominally set to
 process.cscTimingBabyMaker.useMuonSegmentMatcher = cms.untracked.bool(True)
 
 if process.cscTimingBabyMaker.useMuonSegmentMatcher:
-    #outfileName = outfileName + '_useMuonSegmentMatcher'
-outfileName = outfileName+fileExtension
+    outfileName = outfileName + '_useMuonSegmentMatcher'
+    #outfileName = outfileName+fileExtension
+
+outfileName = outfileName + '.root'
 
 process.p = cms.Path(process.cscTimingBabyMaker)
 

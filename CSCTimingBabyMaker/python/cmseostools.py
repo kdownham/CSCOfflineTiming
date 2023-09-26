@@ -185,6 +185,7 @@ def listFiles(sample, path, rec = False, full_info = False, other_options=None):
         elif os.path.isfile(sample):
            result = [ sample ]
         result = [ "file://"+ff for ff in result if ff.endswith('.root') ]
+        #result = [ "root://xrootd-cms.infn.it//"+ff for ff in result if ff.endswith('.root') ]
 
     # -- listing from EOS (path = eos path prefix, normally "/eos/cms/")
     else:

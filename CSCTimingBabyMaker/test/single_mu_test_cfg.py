@@ -23,7 +23,7 @@ process.CSCIndexerESProducer.AlgoName=cms.string("CSCIndexerPostls1")
 process.CSCChannelMapperESProducer.AlgoName=cms.string("CSCChannelMapperPostls1")
 
 # automatically name the output file correctly and uniquely
-baseFileName = '/eos/user/k/kdownham/CSCOfflineTiming/test_condor/csc_test_Run357900'
+baseFileName = '/afs/cern.ch/user/k/kdownham/CSC_Validation/CMSSW_12_4_6/src/CSCOfflineTiming/CSCTimingBabyMaker/test_Sep20'
 fileExtension = '.root'
 outfileName = baseFileName
 
@@ -41,7 +41,7 @@ process.source = cms.Source("PoolSource",
                             fileNames = cms.untracked.vstring(
 				#'file:/eos/cms/store/user/valuev/CSCOfflineTiming/Run2022D/Muon/AOD/PromptReco-v2/000/357/900/00000/086420ee-e52f-454c-89cb-f8e7d343dccb.root',
 				#'file:/eos/cms/store/user/valuev/CSCOfflineTiming/Run2022D/Muon/AOD/PromptReco-v2/000/357/900/00000/666a56c6-005d-4ab7-b6e6-aa168ea0c855.root',
-				'file:/eos/user/k/kdownham/CSCOfflineTiming/Run2022D/Muon/AOD/PromptReco-v2/000/357/900/00000/019f963f-7fa4-4019-b41c-b1382f4f948a.root',
+				#'file:/eos/user/k/kdownham/CSCOfflineTiming/Run2022D/Muon/AOD/PromptReco-v2/000/357/900/00000/019f963f-7fa4-4019-b41c-b1382f4f948a.root',
 				#'file:/eos/user/k/kdownham/CSCOfflineTiming/Run2022D/Muon/AOD/PromptReco-v2/000/357/900/00000/03c69590-7ab5-4311-b7f5-714fee4d2c02.root',
 				#'file:/eos/user/k/kdownham/CSCOfflineTiming/Run2022D/Muon/AOD/PromptReco-v2/000/357/900/00000/0498c301-c267-45f6-ba01-a1977498bc3e.root',
 				#'file:/eos/user/k/kdownham/CSCOfflineTiming/Run2022D/Muon/AOD/PromptReco-v2/000/357/900/00000/05fe1620-c20d-4df3-af0a-806ef1bcaff9.root',
@@ -56,6 +56,7 @@ process.source = cms.Source("PoolSource",
 				#'file:/eos/user/k/kdownham/CSCOfflineTiming/Run2022E/Muon/AOD/PromptReco-v1/000/359/812/00000/429e1184-a419-4a8d-9381-35d248c054c2.root',
 				#'file:/eos/user/k/kdownham/CSCOfflineTiming/Run2022E/Muon/AOD/PromptReco-v1/000/359/812/00000/4723a1d9-1d13-4e06-b227-6cc44dd3ed25.root',
 				#'file:/eos/user/k/kdownham/CSCOfflineTiming/Run2022E/Muon/AOD/PromptReco-v1/000/359/812/00000/53d1aff3-b649-4d47-a1fb-c14cb96015a2.root',
+				'root://xrootd-cms.infn.it//store/data/Run2022F/Muon/AOD/PromptReco-v1/000/362/009/00000/b6bb094b-f72b-4c3f-b3ad-6058e50e00fc.root',
 			)
 )
 
