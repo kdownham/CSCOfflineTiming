@@ -5,7 +5,7 @@ import argparse
 def parse_arguments(argv):
 	parser=argparse.ArgumentParser()
 	parser.add_argument("-i","--inputDataset",help="Dataset to run over",type=str,required=True)
-	parser.add_argument("-s","--singleRun",help="Run Number"            ,type=str,required=False)
+	parser.add_argument("-s","--singleRun",help="Run Number"            ,type=int, default=0,required=False)
 	parser.add_argument("-j","--jobTag"   ,help="Tag associated with the job", type=str,required=True)
 	parser.add_argument("-v","--cmsswVer" ,help="CMSSW version"         ,type=str,required=True)
 	parser.add_argument("-a","--scramVer",help="scram_arch release"    ,type=str,required=True)	

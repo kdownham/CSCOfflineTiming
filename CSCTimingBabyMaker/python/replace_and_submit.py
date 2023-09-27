@@ -19,7 +19,7 @@ def replace_and_submit(config):
 
        CMSSW_BASE = os.getenv('CMSSW_BASE')
        basedir = CMSSW_BASE + '/src/CSCOfflineTiming'
-       rundir = basedir+'/CSCTimingBabyMaker/outputs/tasks/{}/run_{}'.format(stream, runNum)
+       rundir = basedir+'/CSCTimingBabyMaker/outputs/tasks/{}/{}/run_{}'.format(stream, jobTag, runNum)
 
        os.system('mkdir -p '+rundir)
        #os.system('cp -r '+basedir+'/CSCTiming.tar '+rundir+'/.')
@@ -39,13 +39,14 @@ def replace_and_submit(config):
 
        condor_template_cfg = condor_template_cfg.replace('GLOBALTAG_REPLACETAG', globalTag)
        condor_template_cfg = condor_template_cfg.replace('FILENAME_REPLACETAG', input_files_str)
-       condor_template_cfg = condor_template_cfg.replace('MAXEVENTS_REPLACETAG', str(1000))
+       condor_template_cfg = condor_template_cfg.replace('MAXEVENTS_REPLACETAG', str(-1))  # Number of events per file that you want to run over
        #condor_template_cfg = condor_template_cfg.replace('OUTPUTNAME_REPLACETAG', outputdir+'/'+runNum+'/output')
        condor_template_cfg = condor_template_cfg.replace('OUTPUTNAME_REPLACETAG', 'output_'+runNum) # This is the name/location where the finished ntuples are sent
 
        with open(rundir+'/condor_template_cfg.py','w') as f:
            f.write(condor_template_cfg)
 
+       os.system('mkdir -p '+output)
 
        with open(basedir+'/CSCTimingBabyMaker/scripts/job_baby.sub','r') as f:
            job_sub = f.read()
@@ -53,7 +54,7 @@ def replace_and_submit(config):
        job_sub = job_sub.replace('SCRAMARCH_REPLACETAG', scram)
        job_sub = job_sub.replace('CMSSWVERSION_REPLACETAG', cmssw)
        job_sub = job_sub.replace('RUNDIR_REPLACETAG', rundir)
-       job_sub = job_sub.replace('CONDOROUTDIR_REPLACETAG', rundir)
+       job_sub = job_sub.replace('CONDOROUTDIR_REPLACETAG', 'root://eosuser.cern.ch/'+output)
        job_sub = job_sub.replace('RUNNUM_REPLACETAG', runNum)
 
        with open(rundir+'/job_baby.sub','w') as f:

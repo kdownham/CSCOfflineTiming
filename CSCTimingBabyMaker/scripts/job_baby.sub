@@ -1,6 +1,6 @@
 use_x509userproxy = true
 
-Initialdir        = CONDOROUTDIR_REPLACETAG
+Initialdir        = RUNDIR_REPLACETAG
 log               = logs/job.$(ClusterId).$(ProcId).log
 output            = logs/job.$(ClusterId).$(ProcId).out
 error             = logs/job.$(ClusterId).$(ProcId).err
@@ -17,6 +17,6 @@ request_memory    = 512M
 request_disk      = 1G
 
 executable        = RUNDIR_REPLACETAG/job_baby.sh
-arguments         = SCRAMARCH_REPLACETAG CMSSWVERSION_REPLACETAG RUNDIR_REPLACETAG RUNNUM_REPLACETAG
+arguments         = SCRAMARCH_REPLACETAG CMSSWVERSION_REPLACETAG RUNDIR_REPLACETAG 
 
 queue
