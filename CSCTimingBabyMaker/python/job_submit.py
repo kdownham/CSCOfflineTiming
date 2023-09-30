@@ -22,16 +22,16 @@ from replace_and_submit import replace_and_submit
 
 def job_submit(config):
 
-    print("Debug 1")
-
     dataset = config['inputDataset']
-    print("Debug 2")
     runNum = config['singleRun']
     jobTag = config['jobTag']
     cmssw = config['cmsswVer']
     scram = config['scramVer']
     output = config['outputDir']
     globalTag = config['globalTag']
+    newHeuristic = config['newHeuristic']
+    heuristicFile = config['heuristicFile']
+    ana_output = config['outputAna']
 
     print("Dataset = {}".format(dataset))
     print("Run number = {}".format(runNum))
@@ -40,6 +40,9 @@ def job_submit(config):
     print("Scram arch = {}".format(scram))
     print("Output directory = {}".format(output))
     print("Global tag = {}".format(globalTag))
+    print("New Heuristic Corrections = {}".format(newHeuristic))
+    print("Heuristic Corrections file = {}".format(heuristicFile))
+    print("Output of the CSC Timing Anlyzer = {}".format(ana_output))
     
     [stream, eventContent] = get_from_dataset(dataset)
 

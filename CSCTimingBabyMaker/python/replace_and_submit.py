@@ -13,6 +13,9 @@ def replace_and_submit(config):
        scram = config['scramVer']
        output = config['outputDir']
        globalTag = config['globalTag']
+       newHeuristic = config['newHeuristic']
+       heuristicFile = config['heuristicFile']
+       ana_output = config['outputAna']
        n_events = config['n_events']
        input_files = config['input_files']
        stream = config['stream']
@@ -39,12 +42,39 @@ def replace_and_submit(config):
 
        condor_template_cfg = condor_template_cfg.replace('GLOBALTAG_REPLACETAG', globalTag)
        condor_template_cfg = condor_template_cfg.replace('FILENAME_REPLACETAG', input_files_str)
-       condor_template_cfg = condor_template_cfg.replace('MAXEVENTS_REPLACETAG', str(-1))  # Number of events per file that you want to run over
+       condor_template_cfg = condor_template_cfg.replace('MAXEVENTS_REPLACETAG', str(1000))  # Number of events per run number that you want to run over
        #condor_template_cfg = condor_template_cfg.replace('OUTPUTNAME_REPLACETAG', outputdir+'/'+runNum+'/output')
        condor_template_cfg = condor_template_cfg.replace('OUTPUTNAME_REPLACETAG', 'output_'+runNum) # This is the name/location where the finished ntuples are sent
 
        with open(rundir+'/condor_template_cfg.py','w') as f:
            f.write(condor_template_cfg)
+
+       anadir = basedir+'/CSCTimingAnalyzer'
+       anatestdir = anadir+'/test'
+       
+       with open(anadir+'/test/condor_template_analyzer_cfg.py','r') as f:
+        condor_template_analyzer_cfg = f.read()
+
+       # output file should be in the CSCTimingBabyMaker/test directory
+       # so path should point from CSCTimingAnalyzer/test directory to CSCTimingBabyMaker/test directory
+       baby_output = 'output_'+runNum+'_useMuonSegmentMatcher.root'
+       
+       timing_analyzer_output = 'output_'+runNum+'_timing'
+
+       condor_template_analyzer_cfg = condor_template_analyzer_cfg.replace('BABYOUTPUT_REPLACETAG', baby_output)
+       condor_template_analyzer_cfg = condor_template_analyzer_cfg.replace('REMOVEHEURISTIC_REPLACETAG', str(newHeuristic))
+       condor_template_analyzer_cfg = condor_template_analyzer_cfg.replace('HEURISTICCORR_REPLACETAG', heuristicFile)
+       condor_template_analyzer_cfg = condor_template_analyzer_cfg.replace('MAXEVENTS_REPLACETAG', str(1000))
+       condor_template_analyzer_cfg = condor_template_analyzer_cfg.replace('ANALYZEROUTPUT_REPLACETAG', timing_analyzer_output)
+
+       with open(rundir+'/condor_template_analyzer_cfg.py','w') as f:
+           f.write(condor_template_analyzer_cfg)
+
+       with open(anadir+'/data/heuristic_corrections/'+heuristicFile,'r') as f:
+           heuristicCorrections = f.read()
+
+       with open(rundir+'/'+heuristicFile,'w') as f:
+           f.write(heuristicCorrections)
 
        os.system('mkdir -p '+output)
 
@@ -56,6 +86,10 @@ def replace_and_submit(config):
        job_sub = job_sub.replace('RUNDIR_REPLACETAG', rundir)
        job_sub = job_sub.replace('CONDOROUTDIR_REPLACETAG', 'root://eosuser.cern.ch/'+output)
        job_sub = job_sub.replace('RUNNUM_REPLACETAG', runNum)
+       job_sub = job_sub.replace('ANADIR_REPLACETAG', anatestdir)
+       job_sub = job_sub.replace('ANALYZEROUTPUT_REPLACETAG', ana_output)
+       job_sub = job_sub.replace('REMOVEHEURISTIC_REPLACETAG', str(newHeuristic))
+       job_sub = job_sub.replace('HEURISTICCORR_REPLACETAG', heuristicFile)
 
        with open(rundir+'/job_baby.sub','w') as f:
            f.write(job_sub) 

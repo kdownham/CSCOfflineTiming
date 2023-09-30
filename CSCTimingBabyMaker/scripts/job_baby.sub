@@ -5,11 +5,11 @@ log               = logs/job.$(ClusterId).$(ProcId).log
 output            = logs/job.$(ClusterId).$(ProcId).out
 error             = logs/job.$(ClusterId).$(ProcId).err
 
-+JobFlavour = "longlunch"
++JobFlavour = "tomorrow"
 
-should_transfer_files = Yes
+should_transfer_files = YES
 when_to_transfer_output = ON_EXIT
-transfer_output_files = CMSSWVERSION_REPLACETAG/src/CSCOfflineTiming/CSCTimingBabyMaker/test/output_RUNNUM_REPLACETAG_useMuonSegmentMatcher.root
+transfer_output_remaps = ""
 transfer_input_files = ""
 
 request_cpus      = 1
@@ -17,6 +17,6 @@ request_memory    = 512M
 request_disk      = 1G
 
 executable        = RUNDIR_REPLACETAG/job_baby.sh
-arguments         = SCRAMARCH_REPLACETAG CMSSWVERSION_REPLACETAG RUNDIR_REPLACETAG 
+arguments         = SCRAMARCH_REPLACETAG CMSSWVERSION_REPLACETAG RUNDIR_REPLACETAG ANADIR_REPLACETAG ANALYZEROUTPUT_REPLACETAG REMOVEHEURISTIC_REPLACETAG RUNNUM_REPLACETAG HEURISTICCORR_REPLACETAG
 
 queue

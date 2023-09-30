@@ -35,7 +35,7 @@ struct CSCHeurCorrDetId
     }
 };
 
-void determineHeuristicCorrections (std::string fname, bool byStation = false, bool byChamber = true, bool combineME11ab = true, std::string ofname = "../data/heuristic_corrections/heuristicCorrections_byChamber_362437_2022G.txt")
+void determineHeuristicCorrections (std::string fname, bool byStation = false, bool byChamber = true, bool combineME11ab = true, std::string ofname)
 {
     TFile file(fname.c_str());
     TDirectoryFile *dir;
