@@ -9,7 +9,7 @@ error             = logs/job.$(ClusterId).$(ProcId).err
 
 should_transfer_files = YES
 when_to_transfer_output = ON_EXIT
-transfer_output_remaps = ""
+transfer_output_files = CMSSWVERSION_REPLACETAG/src/CSCOfflineTiming/CSCTimingAnalyzer/macros/heuristicCorrections_RUNNUM_REPLACETAG.txt
 transfer_input_files = ""
 
 request_cpus      = 1

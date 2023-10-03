@@ -29,7 +29,7 @@ SINGLERUN=360390
 JOBTAG="Full_2022F"
 OUTPUTDIR="/eos/cms/store/group/dpg_csc/comm_csc/csctiming/Run3/2022$DATASET/$JOBTAG"
 GLOBALTAG="124X_dataRun3_Prompt_v4"
-NEWHEURISTIC=true
+NEWHEURISTIC="True"
 HEURISTICFILE="heuristicCorrections_byChamber_357900.txt"
 ANALYZEROUTPUT="/afs/cern.ch/user/k/kdownham/CSC_Validation/$CMSSWVERSION/src/CSCOfflineTiming/CSCTimingAnalyzer/data/heuristic_corrections/"
 

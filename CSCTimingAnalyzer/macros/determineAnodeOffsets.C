@@ -39,7 +39,7 @@ struct CSCAnodeCorrDetId
 
 std::tuple<int,int,int,std::vector<int>,std::vector<double>> get_current_bx_offset(int endcap, int station, int ring, std::string fname="../test/anode_bx_offset.txt");
 
-void determineAnodeOffsets (std::string fname, std::string ofname = ""){
+void determineAnodeOffsets (std::string fname, std::string ofname){
 
 	TFile file(fname.c_str());
 	TDirectoryFile *dir;

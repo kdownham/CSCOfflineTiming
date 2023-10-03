@@ -11,7 +11,7 @@ def parse_arguments(argv):
 	parser.add_argument("-a","--scramVer",help="scram_arch release"    ,type=str,required=True)	
 	parser.add_argument("-o","--outputDir",help="Output dir for ntuples",type=str,required=True)
 	parser.add_argument("-t","--globalTag",help="Global tag for dataset",type=str,required=True)
-	parser.add_argument("-n","--newHeuristic",help="Derive new heuristic corrections?",type=bool,required=True)
+	parser.add_argument("-n","--newHeuristic",help="Derive new heuristic corrections?",type=str,required=True)
 	parser.add_argument("-f","--heuristicFile",help="File containing heuristic corrections that you want to apply",type=str,required=True)
 	parser.add_argument("-c","--outputAna",help="Output directory for new heuristic corrections",type=str,required=True)	
 	args = parser.parse_args()

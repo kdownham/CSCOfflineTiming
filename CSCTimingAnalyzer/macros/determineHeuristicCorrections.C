@@ -35,7 +35,7 @@ struct CSCHeurCorrDetId
     }
 };
 
-void determineHeuristicCorrections (std::string fname, bool byStation = false, bool byChamber = true, bool combineME11ab = true, std::string ofname)
+void determineHeuristicCorrections (std::string fname, std::string ofname, bool byStation = false, bool byChamber = true, bool combineME11ab = true)
 {
     TFile file(fname.c_str());
     TDirectoryFile *dir;
@@ -45,7 +45,8 @@ void determineHeuristicCorrections (std::string fname, bool byStation = false, b
         dir = (TDirectoryFile*)file.Get("recHitsByChamber");
 
     ofstream outfile;
-    bool print_to_file = !ofname.empty();
+    //bool print_to_file = !ofname.empty();
+    bool print_to_file = true;
 
     TCanvas c1("c1","c1",600,400);
     TH1F hnrhs("hnrhs","Number of rechits per chamber", 100, 0, 2500);

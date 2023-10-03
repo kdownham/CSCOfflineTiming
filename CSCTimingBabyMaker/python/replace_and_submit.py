@@ -62,7 +62,7 @@ def replace_and_submit(config):
        timing_analyzer_output = 'output_'+runNum+'_timing'
 
        condor_template_analyzer_cfg = condor_template_analyzer_cfg.replace('BABYOUTPUT_REPLACETAG', baby_output)
-       condor_template_analyzer_cfg = condor_template_analyzer_cfg.replace('REMOVEHEURISTIC_REPLACETAG', str(newHeuristic))
+       condor_template_analyzer_cfg = condor_template_analyzer_cfg.replace('REMOVEHEURISTIC_REPLACETAG', newHeuristic)
        condor_template_analyzer_cfg = condor_template_analyzer_cfg.replace('HEURISTICCORR_REPLACETAG', heuristicFile)
        condor_template_analyzer_cfg = condor_template_analyzer_cfg.replace('MAXEVENTS_REPLACETAG', str(1000))
        condor_template_analyzer_cfg = condor_template_analyzer_cfg.replace('ANALYZEROUTPUT_REPLACETAG', timing_analyzer_output)
@@ -88,7 +88,7 @@ def replace_and_submit(config):
        job_sub = job_sub.replace('RUNNUM_REPLACETAG', runNum)
        job_sub = job_sub.replace('ANADIR_REPLACETAG', anatestdir)
        job_sub = job_sub.replace('ANALYZEROUTPUT_REPLACETAG', ana_output)
-       job_sub = job_sub.replace('REMOVEHEURISTIC_REPLACETAG', str(newHeuristic))
+       job_sub = job_sub.replace('REMOVEHEURISTIC_REPLACETAG', newHeuristic)
        job_sub = job_sub.replace('HEURISTICCORR_REPLACETAG', heuristicFile)
 
        with open(rundir+'/job_baby.sub','w') as f:
