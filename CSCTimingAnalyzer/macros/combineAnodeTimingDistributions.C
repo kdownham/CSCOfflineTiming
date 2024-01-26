@@ -11,7 +11,7 @@
 #include "TPaveStats.h"
 #include "TLatex.h"
 
-void combineAnodeTimingDistributions (std::string fname, float kLumi = 10.3, bool no_legend = false)
+void combineAnodeTimingDistributions (std::string fname, float kLumi = 0.0, bool no_legend = false)
 {
     TFile file(fname.c_str());
     TDirectoryFile *dir = (TDirectoryFile*)file.Get("recHits");
@@ -24,16 +24,19 @@ void combineAnodeTimingDistributions (std::string fname, float kLumi = 10.3, boo
         TString name = hist->GetName();
         if (!name.Contains("hAnodeTiming")) continue;
 
-        TH1F *h0 = (TH1F*)dir->Get(name.Data());        
+        TH1F *h0 = (TH1F*)dir->Get(name.Data());
+	std::cout << "histogram name: " << name.Data() << std::endl;        
         if (!foundHist)
         {
             h1 = (TH1F*)h0->Clone();
             h1->Sumw2();
             foundHist = true;
+	    std::cout << "Mean of histogram = " << h1->GetMean();
         }
         else
         {
             h1->Add(h0);
+	    std::cout << "Mean of histogram = " << h1->GetMean();
         }        
     }
 
@@ -51,11 +54,11 @@ void combineAnodeTimingDistributions (std::string fname, float kLumi = 10.3, boo
           maxBin = i;
         }
       }
-      cout << __LINE__ << ": maxDiff= " << maxDiff << ", maxBin= " << maxBin << endl;
-      if (maxDiff > 26) {
-        h1->SetBinContent(maxBin, 0);
-        modified = true;
-      }
+      //cout << __LINE__ << ": maxDiff= " << maxDiff << ", maxBin= " << maxBin << endl;
+      //if (maxDiff > 26) {
+      //  h1->SetBinContent(maxBin, 0);
+      //  modified = true;
+      //}
     } while (modified);
 
     TH1F *h2 = new TH1F("h2", "h2", 25, -31.25, 31.25);
@@ -104,7 +107,7 @@ void combineAnodeTimingDistributions (std::string fname, float kLumi = 10.3, boo
     data.SetTextSize(0.0456);
 
     //TLatex lumi(0.9, 0.93, Form("%.1f fb^{-1} (13 TeV)", kLumi));
-    TLatex lumi(0.9, 0.93, Form("%.1i (13TeV)", 2022));
+    TLatex lumi(0.9, 0.93, Form("%.1i (13.6TeV)", 2022));
     lumi.SetNDC();
     lumi.SetTextAlign(31);
     lumi.SetTextFont(42);
@@ -129,7 +132,7 @@ void combineAnodeTimingDistributions (std::string fname, float kLumi = 10.3, boo
 
     h2->GetYaxis()->SetRangeUser(0, 1.2*h2->GetMaximum());
     h2->GetXaxis()->SetRangeUser(-6*rms,6*rms);   
-    TH1F* h2norm = (TH1F*)h2->DrawNormalized("hist");
+    TH1F* h2norm = (TH1F*)h2->DrawNormalized("hist");   
     // h2->Draw("hist");
     gPad->Update();
     if (!no_legend) {
@@ -153,7 +156,7 @@ void combineAnodeTimingDistributions (std::string fname, float kLumi = 10.3, boo
     title->SetTextSize(0.052);    
     title->SetTextAlign(11);
     
-    c1.Print("anode_time_all_Run357900_noCorrection.pdf");
-    c1.Print("anode_time_all_Run357900_noCorrection.png");
-    c1.Print("anode_time_all_Run357900_noCorrection.root");
+    //c1.Print("anode_time_combined.pdf");
+    //c1.Print("anode_time_combined.png");
+    c1.Print("anode_time_combined.root");
 }

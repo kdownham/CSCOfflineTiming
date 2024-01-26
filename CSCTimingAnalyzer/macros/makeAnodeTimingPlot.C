@@ -36,7 +36,7 @@ int GetNumChambers (int s, int r)
     return 36;
 }
 
-void makeAnodeTimingPlot (std::string fname, bool byStation, std::string outputdir, float kLumi = 10.3, bool no_legend = false)
+void makeAnodeTimingPlot (std::string fname, bool byStation, std::string outputdir, float kLumi = 0.0, bool no_legend = false)
 {    
     TFile file(fname.c_str());
     TDirectoryFile *dir;
@@ -51,7 +51,8 @@ void makeAnodeTimingPlot (std::string fname, bool byStation, std::string outputd
     h1->SetTitle("Mean and RMS of anode hit time for each ring of CSC chambers");
     h1->SetTitleFont(42);
     h1->SetTitleSize(0.052);    
-    h1->GetYaxis()->SetRangeUser(-25,25);
+    //h1->GetYaxis()->SetRangeUser(-25,25);
+    h1->GetYaxis()->SetRangeUser(-300,300);
     h1->SetMarkerStyle(4);
     h1->GetXaxis()->SetTitleOffset(0.85);
     
@@ -209,7 +210,7 @@ void makeAnodeTimingPlot (std::string fname, bool byStation, std::string outputd
     data.SetTextSize(0.0456);
 
     //TLatex lumi(0.85, 0.82, Form("%.1f fb^{-1} (13 TeV)", kLumi));
-    TLatex lumi(0.9, 0.93, Form("%.1i (13TeV)", 2022));
+    TLatex lumi(0.9, 0.93, Form("%.1i (13.6TeV)", 2022));
     lumi.SetNDC();
     lumi.SetTextAlign(31);
     lumi.SetTextFont(42);
@@ -272,7 +273,8 @@ void makeAnodeTimingPlot (std::string fname, bool byStation, std::string outputd
         //c1.Print(Form("plots/all_plots/Run357900/%s/mean_anodetime_Run357900_byStation.root",outputdir.c_str()));
 
 	TCanvas c2("c2", "c2", 600, 400);
-	TH1F *h2 = new TH1F("h2","h2",40,-10.,10.);
+	//TH1F *h2 = new TH1F("h2","h2",40,-10.,10.);
+	TH1F *h2 = new TH1F("h2","h2",40,-300.,300.);
 	h2->GetXaxis()->SetTitle("Mean anode hit time per ring [ns]");
         h2->GetYaxis()->SetTitle("Number of rings");
 	h2->SetTitle("Mean anode time per ring");
@@ -308,9 +310,10 @@ void makeAnodeTimingPlot (std::string fname, bool byStation, std::string outputd
 	h2->Draw("hist same");
 	legend->Draw();
 
-	c2.Print(Form("plots/all_plots/Run359812/%s/mean_anodetimes_allstations_Run359812.pdf",outputdir.c_str()));
-	c2.Print(Form("plots/all_plots/Run359812/%s/mean_anodetimes_allstations_Run359812.png",outputdir.c_str()));
-	c2.Print(Form("plots/all_plots/Run359812/%s/mean_anodetimes_allstations_Run359812.root",outputdir.c_str()));
+        //c2.Print(Form("plots/all_plots/Run359812/%s/mean_anodetimes_allstations_Run359812.pdf",outputdir.c_str()));
+	//c2.Print(Form("plots/all_plots/Run359812/%s/mean_anodetimes_allstations_Run359812.png",outputdir.c_str()));
+	//c2.Print(Form("plots/all_plots/Run359812/%s/mean_anodetimes_allstations_Run359812.root",outputdir.c_str()));
+	c2.Print("mean_anodetimes_allstations.root");
 
     }
     else
@@ -337,8 +340,9 @@ void makeAnodeTimingPlot (std::string fname, bool byStation, std::string outputd
             title->SetTextSize(0.052);    
             title->SetTextAlign(11);
             
-            c1.Print(Form("plots/all_plots/Run357900_testAnodes/mean_anodetime_Run357900_%s.pdf", item.first.c_str()));
-            c1.Print(Form("plots/all_plots/Run357900_testAnodes/mean_anodetime_Run357900_%s.png", item.first.c_str()));
+            //c1.Print(Form("plots/all_plots/Run357900_testAnodes/mean_anodetime_Run357900_%s.pdf", item.first.c_str()));
+            //c1.Print(Form("plots/all_plots/Run357900_testAnodes/mean_anodetime_Run357900_%s.png", item.first.c_str()));
+            c1.Print(Form("mean_anodetime_%s.root", item.first.c_str()));
         }
     }
 }

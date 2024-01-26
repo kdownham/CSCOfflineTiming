@@ -208,7 +208,21 @@ void CSCTimingAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
           double rhtime_corr = rhtime;
           //double twire_corr = twire;  // Comment out for new wire corrections
 	  // Need to write a function that applies the new anode_bx_offsets
-	  double twire_corr = updateAnodeOffset(twire,endcap,station,ring,chamber);   // uncomment for new wire corrections
+	  int ring_mod;
+	  if ( station == 1 && ( ring == 1 || ring == 4 ) ){
+	       ring_mod = 1;
+	  } else {
+	       ring_mod = ring;
+	  }
+	  double twire_corr = updateAnodeOffset(twire,endcap,station,ring_mod,chamber);   // uncomment for new wire corrections
+
+          //if ( endcap == 1 && station == 1 && ring == 1 && chamber == 4 ){
+	  //     std::cout << "><><><><><><><><><><><><><><>" << std::endl;
+	  //     std::cout << "Chamber ME +1/1/4 anode times" << std::endl;
+	  //     std::cout << "wire time (default) = " << twire_corr << std::endl;
+	  //     std::cout << "wire time (corrected) = " << twire_corr_newCorr << std::endl;
+          //     std::cout << "><><><><><><><><><><><><><><>" << std::endl;
+          //} 
 
           bool is_ME11 = (station == 1 && (ring == 1 || ring == 4));
           if (is_ME11) {
@@ -625,9 +639,17 @@ void CSCTimingAnalyzer::printMapToFile (const std::map<CSCDetId, std::set<double
 
 double CSCTimingAnalyzer::updateAnodeOffset(double twire, int endcap, int station, int ring, int chamber)
 {
-  std::string fname="../data/new_anode_bx_offsets_Run357900_3_9_22.txt";
+  std::string fname="../data/anode_bx_offset_Run2.txt";
   std::ifstream f(fname);
   std::string line;
+
+  //std::cout << "====================================================" << std::endl;
+  //std::cout << "Address = " << endcap << "/" << station << "/" << ring << "/" << chamber << std::endl;
+  //std::cout << "Input twire (before corrections) = " << twire << std::endl;
+  
+  double shift = 0.0;
+  double old_corr = 0.0;
+  double new_corr = 0.0;
 
   while(std::getline(f, line)){
     int col_ecap;
@@ -638,17 +660,89 @@ double CSCTimingAnalyzer::updateAnodeOffset(double twire, int endcap, int statio
     std::istringstream ss(line);
     ss >> col_ecap >> col_station >> col_ring >> col_chamber >> col_anode;
     if ( col_ecap == endcap && col_station == station && col_ring == ring && col_chamber == chamber){
+	 //std::cout << "=========================================================" << std::endl;
+	 //std::cout << "Default wire time = " << twire << std::endl;
+	 //std::cout << "Current anode correction for this chamber = " << col_anode << std::endl;
          double anode_corr = (col_anode / 100.0) * 25.0;
-         twire += anode_corr;
+	 //std::cout << "Converted anode correction (ns) = " << anode_corr << std::endl;
+         //twire += anode_corr;
+	 shift += anode_corr;
+	 old_corr += anode_corr;
+	 //std::cout << "Bare Twire = " << twire << std::endl;
+	 
     }
   }
 
-  if ( station == 1 && ring == 1 ) twire -= (822.0 * 0.25);
-  else if ( station > 1 && ring == 1 ) twire -= (815.0 * 0.25);
-  else if ( ring == 2 || ring == 3 ) twire -= (820.0 * 0.25);
-  else{
-      twire -= (820.0 * 0.25);
+  ///////////////////////////////////////////////////////////////////////////////////////////////////
+  // This is where the new corrections get applied
+  ///////////////////////////////////////////////////////////////////////////////////////////////////
+  std::string newCorr = "../macros/test_anode_corrections.txt";
+  std::ifstream c(newCorr);
+  std::string line1;
+
+  while(std::getline(c, line1)){
+     int ec;
+     int st;
+     int rn;
+     int ch;
+     double new_anode;
+     std::istringstream sc(line1);
+     sc >> ec >> st >> rn >> ch >> new_anode;
+     if ( ec == endcap && st == station && rn == ring && ch == chamber ){
+          //twire -= ( new_anode * 0.25 );
+
+          //std::cout << "Endcap = " << ec << ", Station = " << st << ", Ring = " << rn << ", Chamber = " << ch << ", new anode_bx_offset = " << new_anode << std::endl;
+	  //std::cout << "Converted new anode time = " << new_anode*0.25 << std::endl;
+
+	  //std::cout << "New Twire (with new correction!) = " << twire << std::endl;
+	  double new_anode_corr = (new_anode / 100.0) * 25.0;
+	  shift -= new_anode_corr;
+	  new_corr += new_anode_corr;
+     }
+  
   }
+
+  twire -= shift;
+
+  //if ( endcap == 1 && station == 1 && ring == 1 && chamber == 20 && twire > 6.0 && twire < 10.0){
+  //     std::cout << "Old corr = " << old_corr << std::endl;
+  //     std::cout << "New corr = " << new_corr << std::endl;
+  //     std::cout << "Shift = " << shift << std::endl;
+  //     std::cout << "Wire time = " << twire << std::endl;
+  //
+  //}
+
+  //std::cout << "New Twire (after undoing default anode correction) = " << twire << std::endl; 
+
+  // These are the Run 2 anode bx offsets
+  //if ( station == 1 && ring == 1 ) twire -= (822.0 * 0.25);
+  //else if ( station > 1 && ring == 1 ) twire -= (815.0 * 0.25);
+  //else if ( ring == 2 || ring == 3 ) twire -= (820.0 * 0.25);
+  //else{
+  //    twire -= (820.0 * 0.25);
+  //}
+  
+  // These are the Run 3 anode bx offsets
+  //if ( endcap == 1 && station == 1 && (ring == 1 || ring==4) ) twire -= ( 207.1 );
+  //else if ( endcap == 1 && station == 1 && ring == 2 ) twire -= ( 205.8 );
+  //else if ( endcap == 1 && station == 1 && ring == 3 ) twire -= ( 207.3 );
+  //else if ( endcap == 1 && station == 2 && ring == 1 ) twire -= ( 205.4 );
+  //else if ( endcap == 1 && station == 2 && ring == 2 ) twire -= ( 206.2 );
+  //else if ( endcap == 1 && station == 3 && ring == 1 ) twire -= ( 205.7 );
+  //else if ( endcap == 1 && station == 3 && ring == 2 ) twire -= ( 205.9 );
+  //else if ( endcap == 1 && station == 4 && ring == 1 ) twire -= ( 205.5 );
+  //else if ( endcap == 1 && station == 4 && ring == 2 ) twire -= ( 208.2 );
+  //else if ( endcap == 2 && station == 1 && ring == 1 ) twire -= ( 202.6 );
+  //else if ( endcap == 2 && station == 1 && ring == 2 ) twire -= ( 209.6 );
+  //else if ( endcap == 2 && station == 1 && ring == 3 ) twire -= ( 208.4 );
+  //else if ( endcap == 2 && station == 2 && ring == 1 ) twire -= ( 205.7 );
+  //else if ( endcap == 2 && station == 2 && ring == 2 ) twire -= ( 208.7 );
+  //else if ( endcap == 2 && station == 3 && ring == 1 ) twire -= ( 205.2 );
+  //else if ( endcap == 2 && station == 3 && ring == 2 ) twire -= ( 209.3 );
+  //else if ( endcap == 2 && station == 4 && ring == 1 ) twire -= ( 205.9 );
+  //else if ( endcap == 2 && station == 4 && ring == 2 ) twire -= ( 209.5 );
+
+  //std::cout << "New Twire (after applying new anode correction) = " << twire << std::endl;
    
   return twire;
  

@@ -37,14 +37,14 @@ struct CSCAnodeCorrDetId
 
 };
 
-std::tuple<int,int,int,std::vector<int>,std::vector<double>> get_current_bx_offset(int endcap, int station, int ring, std::string fname="../test/anode_bx_offset.txt");
+std::tuple<int,int,int,int,double> get_current_bx_offset(int endcap, int station, int ring, int chamber, std::string fname="../test/anode_bx_offset.txt");
 
 void determineAnodeOffsets (std::string fname, std::string ofname){
 
 	TFile file(fname.c_str());
 	TDirectoryFile *dir;
 	//Get the corresponding TDirectory that houses the anode_bx_offsets
-	dir = (TDirectoryFile*)file.Get("recHits");
+	dir = (TDirectoryFile*)file.Get("recHitsByChamber");
 
 	ofstream outfile;
 	bool print_to_file = !ofname.empty();
@@ -87,20 +87,33 @@ void determineAnodeOffsets (std::string fname, std::string ofname){
 	     }
 	     else continue;
 
+
 	     TObjArray *objarray = name.Tokenize(delim);
 	     if (objarray->GetEntries() != 2) continue;
 	     TString station_ring = ((TObjString*)objarray->Last())->GetString();
-	     if (station_ring.Sizeof() != 3) continue;
+	     if (station_ring.Sizeof() != 7 && station_ring.Sizeof() != 6) continue;
 	     TString s = station_ring[0];
 	     if (s.IsDigit()) station = s.Atoi();
-	     TString r = station_ring[1];
-	     if (r.IsDigit()) ring = r.Atoi();    
+	     TString r = station_ring[2];
+	     if (r.IsDigit()) ring = r.Atoi();
+	     TString c; 
+	     if (station_ring.Sizeof() == 6){
+	     	 c = station_ring[4];
+	     }
+	     if (station_ring.Sizeof() == 7){
+	         c = station_ring[4];
+		 c += station_ring[5]; 
+	     }
+	     if (c.IsDigit()) chamber = c.Atoi();    
 	     double anode_corr = ((TH1*)obj)->GetMean() / -25. * 100.;  // Convert from ns to number of bunch crossings (x100)
 	     unsigned long nrhs = ((TH1*)obj)->GetEntries();
 
 	     // Need to include a function here that gets the list of anode_bx_offsets for all chambers
 	    
-	     std::tuple<int,int,int,std::vector<int>,std::vector<double>> old_bx_offsets = get_current_bx_offset(endcap,station,ring);
+	     std::tuple<int,int,int,int,double> old_bx_offsets = get_current_bx_offset(endcap,station,ring,chamber);
+
+             //std::cout << "Endcap = " << endcap << ", Station = " << station << ", Ring = " << ring << ", Chamber = " << chamber << std::endl;
+	     //std::cout << "Anode correction for this chamber = " << anode_corr << std::endl;
 
 	     // Need to combine ME11 A and B
 	     if (ring == 4) ring = 1;
@@ -114,26 +127,24 @@ void determineAnodeOffsets (std::string fname, std::string ofname){
 	     }
 	 
              objarray->Delete();    
-	     // Then for each ring, loop over the chambers and print the per-chamber (which are really just per-ring) corrections
 
 	     if (print_to_file){
-		// Loop over the chambers
-		for ( int i = 0; i < std::get<3>(old_bx_offsets).size(); i++){
-		   int ch = std::get<3>(old_bx_offsets)[i];
-		   double offset = std::get<4>(old_bx_offsets)[i];
-		   double new_offset = offset + anode_corr;
-		   outfile << endcap << "\t" << station << "\t" << ring << "\t" << ch << "\t" << new_offset << std::endl;
-		} 
+		double offset = std::get<4>(old_bx_offsets);
+	        double new_offset = offset + anode_corr;
+	        outfile << endcap << "\t" << station << "\t" << ring << "\t" << chamber << "\t" << new_offset << std::endl;	
 	     }
 	     else{
-	        for ( int i = 0; i < std::get<3>(old_bx_offsets).size(); i++){
-                   int ch = std::get<3>(old_bx_offsets)[i];
-                   double offset = std::get<4>(old_bx_offsets)[i];
-                   double new_offset = offset + anode_corr;
-		   printf("%d\t%d\t%d\t%d\t%4.2f\n", endcap, station, ring, ch, new_offset);
-                }
+		double offset = std::get<4>(old_bx_offsets);
+		double new_offset = offset + anode_corr;
+		//printf("%d\t%d\t%d\t%d\t%4.2f\n", endcap, station, ring, chamber, new_offset);
+	        std::cout << "--------------------------------------------------------------------" << std::endl;
+		printf("%d\t%d\t%d\t%d\t", endcap, station, ring, chamber);
+		std::cout << "Old anode correction = " << offset << std::endl;
+		std::cout << "Mean of anode timing distribution = " << ((TH1*)obj)->GetMean() << std::endl;
+		std::cout << "Mean (in bx units x100) = " << anode_corr << std::endl;
+		std::cout << "New offset = " << new_offset << std::endl;
+
 	     }
-	     //objarray->Delete(); 
 	}
 
 	if (print_to_file) outfile.close();
@@ -142,11 +153,11 @@ void determineAnodeOffsets (std::string fname, std::string ofname){
 } 
 
 
-std::tuple<int,int,int,std::vector<int>,std::vector<double>> get_current_bx_offset(int endcap, int station, int ring, std::string fname="../test/anode_bx_offset.txt"){
+std::tuple<int,int,int,int,double> get_current_bx_offset(int endcap, int station, int ring, int chamber, std::string fname="../test/anode_bx_offset.txt"){
 
-	std::vector<int> chambers;
-	std::vector<double> bx_offsets;
-	int ec, st, rg;
+	//std::vector<int> chambers;
+	double bx_offset;
+	int ec, st, rg, ch;
 
 	std::ifstream f(fname);
 	std::string line;
@@ -160,23 +171,25 @@ std::tuple<int,int,int,std::vector<int>,std::vector<double>> get_current_bx_offs
 	  ss >> col1 >> col2 >> col3 >> col4 >> col5;	  
 	  // If we match the endcap, station, ring, then loop over the chambers, store the chambers
 	  // and store the bx_offsets in double form
-	  if ( col1 == endcap && col2 == station && col3 == ring){
+	  if ( col1 == endcap && col2 == station && col3 == ring && col4 == chamber ){
 	       ec = col1;
 	       st = col2;
 	       rg = col3; 
-	       chambers.push_back(col4);
-	       bx_offsets.push_back(col5*1.0);
+	       //chambers.push_back(col4);
+	       ch = col4;
+	       bx_offset = col5*1.0;
 	  }
 	  else continue;
 	}
 
 	// Now we have a collection of the useful quantities, let us define the tuple and return it
-	std::tuple<int,int,int,std::vector<int>,std::vector<double>> offset_tuple;
+	std::tuple<int,int,int,int,double> offset_tuple;
 	std::get<0>(offset_tuple) = ec;
 	std::get<1>(offset_tuple) = st;
 	std::get<2>(offset_tuple) = rg;
-	std::get<3>(offset_tuple) = chambers;
-	std::get<4>(offset_tuple) = bx_offsets;
+	//std::get<3>(offset_tuple) = chambers;
+	std::get<3>(offset_tuple) = ch;
+	std::get<4>(offset_tuple) = bx_offset;
 
 	return offset_tuple;
 

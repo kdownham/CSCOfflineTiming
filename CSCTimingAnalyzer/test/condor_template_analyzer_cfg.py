@@ -2,8 +2,8 @@ import FWCore.ParameterSet.Config as cms
 
 process = cms.Process("CSCTIMINGANALYSIS")
 
-#applyGoodRunList = cms.bool(True)
-applyGoodRunList = cms.bool(False)
+applyGoodRunList = cms.bool(True)
+#applyGoodRunList = cms.bool(False)
 
 process.load("FWCore.MessageService.MessageLogger_cfi")
 process.MessageLogger.cerr.FwkReport.reportEvery = 1000
@@ -24,7 +24,7 @@ import FWCore.ParameterSet.Types as CfgTypes
 
 if applyGoodRunList:
     process.source.lumisToProcess = CfgTypes.untracked(CfgTypes.VLuminosityBlockRange())
-    JSONfile = '/home/users/sicheng/working/CSCTiming/CMSSW_9_3_1/src/CSCOfflineTiming/CSCTimingAnalyzer/test/Cert_294927-302654_13TeV_PromptReco_Collisions17_JSON.txt'
+    JSONfile = 'Cert_Collisions2022_355100_362760_Muon.json'
     myLumis = LumiList.LumiList(filename = JSONfile).getCMSSWString().split(',')
     process.source.lumisToProcess.extend(myLumis)
 
@@ -42,7 +42,7 @@ process.cscTimingAnalyzer.printTimeCorrectionParametersToFile = cms.untracked.bo
 process.cscTimingAnalyzer.writeTimeCorrectionParametersToTree = cms.untracked.bool(True)
 process.cscTimingAnalyzer.checkCSCstatus = cms.untracked.bool(False)
 process.cscTimingAnalyzer.checkDCSstatus = cms.untracked.bool(False)
-process.cscTimingAnalyzer.removeHeuristicCorrection = cms.untracked.bool(REMOVEHEURISTIC_REPLACETAG)
+process.cscTimingAnalyzer.removeHeuristicCorrection = cms.untracked.bool(REMOVEHEURISTIC_REPLACETAG) #True when deriving new corrections, false when making new plots
 process.cscTimingAnalyzer.applyNewHeuristicCorrectionByRing = cms.untracked.bool(False)
 process.cscTimingAnalyzer.applyNewHeuristicCorrectionByChamber = cms.untracked.bool(False)
 process.cscTimingAnalyzer.fpForHeuristicCorrByChamber = cms.FileInPath('HEURISTICCORR_REPLACETAG')

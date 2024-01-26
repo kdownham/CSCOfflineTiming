@@ -24,12 +24,12 @@
 
 CMSSWVERSION="CMSSW_12_4_6"
 SCRAMARCH="slc7_amd64_gcc10"
-DATASET="/Muon/Run2022F-PromptReco-v1/AOD"
-SINGLERUN=360390
-JOBTAG="Full_2022F"
+DATASET="/Muon/Run2022G-PromptReco-v1/AOD"
+SINGLERUN=362654
+JOBTAG="Full_2022G"
 OUTPUTDIR="/eos/cms/store/group/dpg_csc/comm_csc/csctiming/Run3/2022$DATASET/$JOBTAG"
 GLOBALTAG="124X_dataRun3_Prompt_v4"
-NEWHEURISTIC="True"
+NEWHEURISTIC="False"
 HEURISTICFILE="heuristicCorrections_byChamber_357900.txt"
 ANALYZEROUTPUT="/afs/cern.ch/user/k/kdownham/CSC_Validation/$CMSSWVERSION/src/CSCOfflineTiming/CSCTimingAnalyzer/data/heuristic_corrections/"
 

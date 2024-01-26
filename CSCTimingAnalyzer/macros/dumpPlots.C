@@ -17,16 +17,13 @@ void dumpPlots (std::string fname, std::string run, std::string outputdir) {
   gStyle->SetOptStat("emrou");
 
   std::string recHits = "recHitsByChamber";
-  std::string no_hist = "hRHTiming";
-  std::string no_hist_1 = "hAnodeTiming_+1_1";
+  std::string no_hist = "hRHTiming_";
+  std::string no_hist_1 = "hAnodeTiming_+1_2";
   std::string no_hist_2 = "hAnodeTiming_+1_3";
-  std::string no_hist_3 = "hAnodeTiming_+2_1";
-  std::string no_hist_4 = "hAnodeTiming_+2_2";
-  std::string no_hist_5 = "hAnodeTiming_+3_1";
-  std::string no_hist_6 = "hAnodeTiming_+3_2";
-  std::string no_hist_7 = "hAnodeTiming_+4_1";
-  std::string no_hist_8 = "hAnodeTiming_+4_2";
-  std::string no_hist_9 = "hAnodeTiming_-";
+  std::string no_hist_3 = "hAnodeTiming_+2";
+  std::string no_hist_4 = "hAnodeTiming_+3";
+  std::string no_hist_5 = "hAnodeTiming_+4";
+  std::string no_hist_6 = "hAnodeTiming_-";
 
   TFile file(fname.c_str());
   file.cd();
@@ -61,9 +58,6 @@ void dumpPlots (std::string fname, std::string run, std::string outputdir) {
 	  if (name.find(no_hist_4) != string::npos) continue;
 	  if (name.find(no_hist_5) != string::npos) continue;
 	  if (name.find(no_hist_6) != string::npos) continue;
-	  if (name.find(no_hist_7) != string::npos) continue;
-	  if (name.find(no_hist_8) != string::npos) continue;
-	  if (name.find(no_hist_9) != string::npos) continue;
           dobj->Draw();
           // c1.Print(Form("plots/%s/%s/%s.pdf", fname_short.c_str(), dir->GetName(), dobj->GetName()));
           c1.Print(Form("plots/all_plots/%s/%s/%s/%s/%s.png", run.c_str(), outputdir.c_str(), fname_short.c_str(), dir->GetName(), dobj->GetName()));

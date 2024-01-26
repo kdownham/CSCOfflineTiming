@@ -83,7 +83,7 @@ void makeMuonTimingPlot(std::string fname, float kLumi = 0.0, bool no_legend = f
     data.SetTextSize(0.0456);
 
     //TLatex lumi(0.9, 0.93, Form("%.1f fb^{-1} (13 TeV)", kLumi));
-    TLatex lumi(0.9, 0.93, Form("%.1i (13 TeV)", 2022));
+    TLatex lumi(0.9, 0.93, Form("%.1i (13.6 TeV)", 2022));
     lumi.SetNDC();
     lumi.SetTextAlign(31);
     lumi.SetTextFont(42);
@@ -131,7 +131,8 @@ void makeMuonTimingPlot(std::string fname, float kLumi = 0.0, bool no_legend = f
     title->SetTextSize(0.052);    
     title->SetTextAlign(11);
     
-    c1.Print("plots/all_plots/Run357900/histos_updated_newHeuristicCorrByChamber/muon_time_all_Run357900.pdf");
-    c1.Print("plots/all_plots/Run357900/histos_updated_newHeuristicCorrByChamber/muon_time_all_Run357900.png");
-    c1.Print("plots/all_plots/Run357900/histos_updated_newHeuristicCorrByChamber/muon_time_all_Run357900.root");
+    //c1.Print("plots/all_plots/Run357900/histos_updated_newHeuristicCorrByChamber/muon_time_all_Run357900.pdf");
+    //c1.Print("plots/all_plots/Run357900/histos_updated_newHeuristicCorrByChamber/muon_time_all_Run357900.png");
+    //c1.Print("plots/all_plots/Run357900/histos_updated_newHeuristicCorrByChamber/muon_time_all_Run357900.root");
+    c1.Print("muon_time.root");
 }

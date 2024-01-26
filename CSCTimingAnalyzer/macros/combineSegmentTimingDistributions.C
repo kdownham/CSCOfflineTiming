@@ -79,7 +79,7 @@ void combineSegmentTimingDistributions(std::string fname, float kLumi = 0.0, boo
     data.SetTextSize(0.0456);
 
     //TLatex lumi(0.9, 0.93, Form("%.1f fb^{-1} (13 TeV)", kLumi));
-    TLatex lumi(0.9, 0.93, Form("%.1i (13TeV)", 2022));
+    TLatex lumi(0.9, 0.93, Form("%.1i (13.6TeV)", 2022));
     lumi.SetNDC();
     lumi.SetTextAlign(31);
     lumi.SetTextFont(42);
@@ -126,7 +126,7 @@ void combineSegmentTimingDistributions(std::string fname, float kLumi = 0.0, boo
     title->SetTextSize(0.052);    
     title->SetTextAlign(11);
 
-    c1.Print("plots/all_plots/Run357900_testAnodes/segment_time_all_Run357900_noCorr.pdf");
-    c1.Print("plots/all_plots/Run357900_testAnodes/segment_time_all_Run357900_noCorr.png");
-    c1.Print("plots/all_plots/Run357900_testAnodes/segment_time_all_Run357900_noCorr.root");    
+    //c1.Print("segment_time_combined.pdf");
+    //c1.Print("segment_time_combined.png");
+    c1.Print("segment_time_combined.root");    
 }

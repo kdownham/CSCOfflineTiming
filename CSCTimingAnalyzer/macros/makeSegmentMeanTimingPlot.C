@@ -36,7 +36,7 @@ int GetNumChambers (int s, int r)
     return 36;
 }
 
-void makeSegmentMeanTimingPlot (std::string fname, bool byStation, float kLumi = 10.3, bool no_legend = false)
+void makeSegmentMeanTimingPlot (std::string fname, bool byStation, float kLumi = 0.0, bool no_legend = false)
 {    
     TFile file(fname.c_str());
     TDirectoryFile *dir;
@@ -174,7 +174,7 @@ void makeSegmentMeanTimingPlot (std::string fname, bool byStation, float kLumi =
     data.SetTextSize(0.0456);
 
     //TLatex lumi(0.85, 0.82, Form("%.1f fb^{-1} (13 TeV)", kLumi));
-    TLatex lumi(0.85, 0.82, Form("%.1i (13 TeV)", 2022));
+    TLatex lumi(0.85, 0.82, Form("%.1i (13.6 TeV)", 2022));
     lumi.SetNDC();
     lumi.SetTextAlign(31);
     lumi.SetTextFont(42);
@@ -212,9 +212,10 @@ void makeSegmentMeanTimingPlot (std::string fname, bool byStation, float kLumi =
         title->SetTextSize(0.046);    
         title->SetTextAlign(11);
         
-        c1.Print("plots/all_plots/Run357900_testAnodes/mean_segtime_Run357900_newCorr.pdf");
-        c1.Print("plots/all_plots/Run357900_testAnodes/mean_segtime_Run357900_newCorr.png");
-        c1.Print("plots/all_plots/Run357900_testAnodes/mean_segtime_Run357900_newCorr.root");
+        //c1.Print("plots/all_plots/Run357900_testAnodes/mean_segtime_Run357900_newCorr.pdf");
+        //c1.Print("plots/all_plots/Run357900_testAnodes/mean_segtime_Run357900_newCorr.png");
+        //c1.Print("plots/all_plots/Run357900_testAnodes/mean_segtime_Run357900_newCorr.root");
+        c1.Print("mean_segtime.root");
     }
     else
     {
@@ -242,7 +243,7 @@ void makeSegmentMeanTimingPlot (std::string fname, bool byStation, float kLumi =
             title->SetTextAlign(11);
 
             // c1.Print(Form("plots/mean_segtime_%s.pdf", item.first.c_str()));
-            c1.Print(Form("plots/mean_segtime_%s.png", item.first.c_str()));
+            c1.Print(Form("mean_segtime_%s.root", item.first.c_str()));
         }
     }
 }

@@ -11,7 +11,7 @@
 #include "TPaveStats.h"
 #include "TLatex.h"
 
-void combineRechitTimingDistributions(std::string fname,float kLumi = 10.3, bool no_legend = false)
+void combineRechitTimingDistributions(std::string fname,float kLumi = 0.0, bool no_legend = false)
 {
     TFile file(fname.c_str());
     TDirectoryFile *dir = (TDirectoryFile*)file.Get("recHits");
@@ -82,7 +82,7 @@ void combineRechitTimingDistributions(std::string fname,float kLumi = 10.3, bool
     data.SetTextSize(0.0456);
 
     //TLatex lumi(0.9, 0.93, Form("%.1f fb^{-1} (13 TeV)", kLumi));
-    TLatex lumi(0.9, 0.93, Form("%.1i (13TeV)", 2022));
+    TLatex lumi(0.9, 0.93, Form("%.1i (13.6TeV)", 2022));
     lumi.SetNDC();
     lumi.SetTextAlign(31);
     lumi.SetTextFont(42);
@@ -129,7 +129,7 @@ void combineRechitTimingDistributions(std::string fname,float kLumi = 10.3, bool
     title->SetTextSize(0.052);    
     title->SetTextAlign(11);
     
-    c1.Print("cathode_time_all_359812_noCorr.pdf");
-    c1.Print("cathode_time_all_359812_noCorr.png");
-    c1.Print("cathode_time_all_359812_noCorr.root");
+    //c1.Print("cathode_time_combined.pdf");
+    //c1.Print("cathode_time_combined.png");
+    c1.Print("cathode_time_combined.root");
 }

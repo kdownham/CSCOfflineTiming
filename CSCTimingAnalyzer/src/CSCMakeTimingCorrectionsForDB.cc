@@ -293,40 +293,32 @@ CSCMakeTimingCorrectionsForDB::analyze(const edm::Event& iEvent, const edm::Even
 
 unsigned int CSCMakeTimingCorrectionsForDB::getUpdatedAnodeBXOffset (CSCDetId id)
 {
-    // if (id.station() == 1 && (id.ring() == 1 || id.ring() == 4)) return 830;
-    // else if (id.station() > 1 && id.ring() == 1) return 820;
-    // else if (id.ring() == 2 || id.ring() == 3) return 828;
-    // return 820;
-
-    // if (id.station() == 1 && id.ring() == 3) return 820;
-    // else if (id.station() > 1 && id.ring() == 1) return 815;
-    // else if (id.ring() == 2 || id.ring() == 1) return 822;
-    // return 820;
-
-    // if (id.station() == 1 && id.ring() == 1) return 822;
-    // else if (id.station() > 1 && id.ring() == 1) return 815;
-    // else if (id.ring() == 2 || id.ring() == 3) return 820;
-    // return 820;
-    
-    if (id.endcap() == 1 && id.station() == 1 && id.ring() == 1) return 825.0; 
-    else if (id.endcap() == 1 && id.station() == 1 && id.ring() == 2) return 833.0;
-    else if (id.endcap() == 1 && id.station() == 1 && id.ring() == 3) return 829.0;
-    else if (id.endcap() == 1 && id.station() == 2 && id.ring() == 1) return 820.0;
-    else if (id.endcap() == 1 && id.station() == 2 && id.ring() == 2) return 829.0;
-    else if (id.endcap() == 1 && id.station() == 3 && id.ring() == 1) return 821.0;
-    else if (id.endcap() == 1 && id.station() == 3 && id.ring() == 2) return 833.0;
-    else if (id.endcap() == 1 && id.station() == 4 && id.ring() == 1) return 827.0;
-    else if (id.endcap() == 1 && id.station() == 4 && id.ring() == 2) return 809.0;
-    else if (id.endcap() == 2 && id.station() == 1 && id.ring() == 1) return 820.0;
-    else if (id.endcap() == 2 && id.station() == 1 && id.ring() == 2) return 830.0;
-    else if (id.endcap() == 2 && id.station() == 1 && id.ring() == 3) return 830.0;
-    else if (id.endcap() == 2 && id.station() == 2 && id.ring() == 1) return 821.0;
-    else if (id.endcap() == 2 && id.station() == 2 && id.ring() == 2) return 828.0;
-    else if (id.endcap() == 2 && id.station() == 3 && id.ring() == 1) return 824.0;
-    else if (id.endcap() == 2 && id.station() == 3 && id.ring() == 2) return 831.0;
-    else if (id.endcap() == 2 && id.station() == 4 && id.ring() == 1) return 826.0;
-    else if (id.endcap() == 2 && id.station() == 4 && id.ring() == 2) return 812.0;
-    return 0.000;
+    // These are the "nominal" values from Run 2
+    if (id.station() == 1 && id.ring() == 1) return 822;
+    else if (id.station() > 1 && id.ring() == 1) return 815;
+    else if (id.ring() == 2 || id.ring() == 3) return 820;
+    return 820;
+   
+    // These are the "updated" values derived in Run 3 
+    //if (id.endcap() == 1 && id.station() == 1 && id.ring() == 1) return 817.0; 
+    //else if (id.endcap() == 1 && id.station() == 1 && id.ring() == 2) return 819.0;
+    //else if (id.endcap() == 1 && id.station() == 1 && id.ring() == 3) return 814.0;
+    //else if (id.endcap() == 1 && id.station() == 2 && id.ring() == 1) return 809.0;
+    //else if (id.endcap() == 1 && id.station() == 2 && id.ring() == 2) return 817.0;
+    //else if (id.endcap() == 1 && id.station() == 3 && id.ring() == 1) return 809.0;
+    //else if (id.endcap() == 1 && id.station() == 3 && id.ring() == 2) return 818.0;
+    //else if (id.endcap() == 1 && id.station() == 4 && id.ring() == 1) return 809.0;
+    //else if (id.endcap() == 1 && id.station() == 4 && id.ring() == 2) return 809.0;
+    //else if (id.endcap() == 2 && id.station() == 1 && id.ring() == 1) return 811.0;
+    //else if (id.endcap() == 2 && id.station() == 1 && id.ring() == 2) return 806.0;
+    //else if (id.endcap() == 2 && id.station() == 1 && id.ring() == 3) return 809.0;
+    //else if (id.endcap() == 2 && id.station() == 2 && id.ring() == 1) return 809.0;
+    //else if (id.endcap() == 2 && id.station() == 2 && id.ring() == 2) return 810.0;
+    //else if (id.endcap() == 2 && id.station() == 3 && id.ring() == 1) return 810.0;
+    //else if (id.endcap() == 2 && id.station() == 3 && id.ring() == 2) return 807.0;
+    //else if (id.endcap() == 2 && id.station() == 4 && id.ring() == 1) return 809.0;
+    //else if (id.endcap() == 2 && id.station() == 4 && id.ring() == 2) return 805.0;
+    //return 0.000;
 }
 
 void

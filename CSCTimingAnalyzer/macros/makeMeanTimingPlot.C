@@ -36,7 +36,7 @@ int GetNumChambers (int s, int r)
     return 36;
 }
 
-void makeMeanTimingPlot (std::string fname, bool byStation, std::string outputdir, float kLumi = 10.3, bool no_legend = false)
+void makeMeanTimingPlot (std::string fname, bool byStation, std::string outputdir, float kLumi = 0.0, bool no_legend = false)
 {    
     TFile file(fname.c_str());
     TDirectoryFile *dir;
@@ -179,7 +179,7 @@ void makeMeanTimingPlot (std::string fname, bool byStation, std::string outputdi
     data.SetTextSize(0.0456);
 
     //TLatex lumi(0.85, 0.82, Form("%.1f fb^{-1} (13 TeV)", kLumi));
-    TLatex lumi(0.85, 0.82, Form("%.1i (13 TeV)", 2022));
+    TLatex lumi(0.85, 0.82, Form("%.1i (13.6 TeV)", 2022));
     lumi.SetNDC();
     lumi.SetTextAlign(31);
     lumi.SetTextFont(42);
@@ -217,9 +217,10 @@ void makeMeanTimingPlot (std::string fname, bool byStation, std::string outputdi
         title->SetTextSize(0.046);    
         title->SetTextAlign(11);
         
-        c1.Print(Form("plots/all_plots/Run357900/%s/mean_cathodetime_Run357900_byStation.pdf",outputdir.c_str()));
-        c1.Print(Form("plots/all_plots/Run357900/%s/mean_cathodetime_Run357900_byStation.png",outputdir.c_str()));
-        c1.Print(Form("plots/all_plots/Run357900/%s/mean_cathodetime_Run357900_byStation.root",outputdir.c_str()));
+        //c1.Print(Form("plots/all_plots/Run357900/%s/mean_cathodetime_Run357900_byStation.pdf",outputdir.c_str()));
+        //c1.Print(Form("plots/all_plots/Run357900/%s/mean_cathodetime_Run357900_byStation.png",outputdir.c_str()));
+        //c1.Print(Form("plots/all_plots/Run357900/%s/mean_cathodetime_Run357900_byStation.root",outputdir.c_str()));
+        c1.Print("mean_cathodetime_byStation.root");
 
         for (int i : {1,2,3,4}) {
           for (int j : {1,2})
@@ -252,8 +253,9 @@ void makeMeanTimingPlot (std::string fname, bool byStation, std::string outputdi
             title->SetTextSize(0.052);    
             title->SetTextAlign(11);
             
-            c1.Print(Form("plots/all_plots/Run357900/histos_updated_newHeuristicCorrByChamber/mean_cathodetime_newCorrByRing_%s.pdf", item.first.c_str()));
-            c1.Print(Form("plots/all_plots/Run357900/histos_updated_newHeuristicCorrByChamber/mean_cathodetime_newCorrByRing_%s.png", item.first.c_str()));
+            //c1.Print(Form("plots/all_plots/Run357900/histos_updated_newHeuristicCorrByChamber/mean_cathodetime_newCorrByRing_%s.pdf", item.first.c_str()));
+            //c1.Print(Form("plots/all_plots/Run357900/histos_updated_newHeuristicCorrByChamber/mean_cathodetime_newCorrByRing_%s.png", item.first.c_str()));
+            c1.Print("mean_cathodetime.root");
         }
     }
 }
