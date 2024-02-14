@@ -63,6 +63,14 @@ void determineAnodeOffsets (std::string fname, std::string ofname){
 	
 	}
 
+	//////////////////////////////////////////////////////////////////////////
+	//
+	// Let's add a histogram plotting the mean and RMS anode time per chamber
+	//
+	//////////////////////////////////////////////////////////////////////////
+	TH1F *h_anode_mean = new TH1F("h_anode_mean","h_anode_mean", 50, -10., 10.);
+	TH1F *h_anode_rms  = new TH1F("h_anode_rms" ,"h_anode_rms" , 50, 0., 20.);
+
 	std::map<CSCAnodeCorrDetId, std::pair<unsigned long, double> > m;
 	TList *hlist = dir->GetListOfKeys();
 
@@ -143,8 +151,27 @@ void determineAnodeOffsets (std::string fname, std::string ofname){
 		std::cout << "Mean of anode timing distribution = " << ((TH1*)obj)->GetMean() << std::endl;
 		std::cout << "Mean (in bx units x100) = " << anode_corr << std::endl;
 		std::cout << "New offset = " << new_offset << std::endl;
-
+		h_anode_mean->Fill(((TH1*)obj)->GetMean());
+		h_anode_rms->Fill(((TH1*)obj)->GetRMS());
+		h_anode_mean->GetXaxis()->SetTitle("Mean Anode Time per Chamber [ns]");
+		h_anode_mean->GetYaxis()->SetTitle("Chambers / 0.4 ns");
+		h_anode_rms->GetXaxis()->SetTitle("Anode Time RMS per Chamber [ns]");
+		h_anode_rms->GetYaxis()->SetTitle("Chambers / 0.4 ns");
 	     }
+	}
+
+	if (print_to_file){
+	    delete h_anode_mean;
+	    delete h_anode_rms;
+	} else {
+	    TCanvas *cs = new TCanvas("cs","cs",10,10,1400,900);
+	    cs->Divide(2,1);
+	    cs->cd(1);
+	    h_anode_mean->Draw("hist");
+	    cs->cd(2);
+	    h_anode_rms->Draw("hist");
+
+	    cs->Print("anode_means_and_rms.png");
 	}
 
 	if (print_to_file) outfile.close();

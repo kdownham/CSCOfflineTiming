@@ -215,7 +215,7 @@ void makeSegmentMeanTimingPlot (std::string fname, bool byStation, float kLumi =
         //c1.Print("plots/all_plots/Run357900_testAnodes/mean_segtime_Run357900_newCorr.pdf");
         //c1.Print("plots/all_plots/Run357900_testAnodes/mean_segtime_Run357900_newCorr.png");
         //c1.Print("plots/all_plots/Run357900_testAnodes/mean_segtime_Run357900_newCorr.root");
-        c1.Print("mean_segtime.root");
+        c1.Print("removeAnodeCorr/mean_segtime.png");
     }
     else
     {
@@ -243,7 +243,7 @@ void makeSegmentMeanTimingPlot (std::string fname, bool byStation, float kLumi =
             title->SetTextAlign(11);
 
             // c1.Print(Form("plots/mean_segtime_%s.pdf", item.first.c_str()));
-            c1.Print(Form("mean_segtime_%s.root", item.first.c_str()));
+            c1.Print(Form("removeAnodeCorr/mean_segtime_%s.root", item.first.c_str()));
         }
     }
 }

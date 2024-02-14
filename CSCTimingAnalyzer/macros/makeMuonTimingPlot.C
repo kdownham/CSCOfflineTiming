@@ -134,5 +134,5 @@ void makeMuonTimingPlot(std::string fname, float kLumi = 0.0, bool no_legend = f
     //c1.Print("plots/all_plots/Run357900/histos_updated_newHeuristicCorrByChamber/muon_time_all_Run357900.pdf");
     //c1.Print("plots/all_plots/Run357900/histos_updated_newHeuristicCorrByChamber/muon_time_all_Run357900.png");
     //c1.Print("plots/all_plots/Run357900/histos_updated_newHeuristicCorrByChamber/muon_time_all_Run357900.root");
-    c1.Print("muon_time.root");
+    c1.Print("removeAnodeCorr/muon_time.png");
 }

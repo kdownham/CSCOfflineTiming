@@ -269,7 +269,7 @@ void makeAnodeTimingPlot (std::string fname, bool byStation, std::string outputd
         //gSystem->Exec(Form("mkdir -p plots/all_plots/Run357900/%s",outputdir.c_str()));
         //
         //c1.Print(Form("plots/all_plots/Run357900/%s/mean_anodetime_Run357900_byStation.pdf",outputdir.c_str()));
-        //c1.Print(Form("plots/all_plots/Run357900/%s/mean_anodetime_Run357900_byStation.png",outputdir.c_str()));
+        c1.Print(Form("%s/mean_anodetime_Run357900_byStation.png",outputdir.c_str()));
         //c1.Print(Form("plots/all_plots/Run357900/%s/mean_anodetime_Run357900_byStation.root",outputdir.c_str()));
 
 	TCanvas c2("c2", "c2", 600, 400);
@@ -313,7 +313,7 @@ void makeAnodeTimingPlot (std::string fname, bool byStation, std::string outputd
         //c2.Print(Form("plots/all_plots/Run359812/%s/mean_anodetimes_allstations_Run359812.pdf",outputdir.c_str()));
 	//c2.Print(Form("plots/all_plots/Run359812/%s/mean_anodetimes_allstations_Run359812.png",outputdir.c_str()));
 	//c2.Print(Form("plots/all_plots/Run359812/%s/mean_anodetimes_allstations_Run359812.root",outputdir.c_str()));
-	c2.Print("mean_anodetimes_allstations.root");
+	c2.Print(Form("%s/mean_anodetimes_allstations.png",outputdir.c_str()));
 
     }
     else
@@ -342,7 +342,7 @@ void makeAnodeTimingPlot (std::string fname, bool byStation, std::string outputd
             
             //c1.Print(Form("plots/all_plots/Run357900_testAnodes/mean_anodetime_Run357900_%s.pdf", item.first.c_str()));
             //c1.Print(Form("plots/all_plots/Run357900_testAnodes/mean_anodetime_Run357900_%s.png", item.first.c_str()));
-            c1.Print(Form("mean_anodetime_%s.root", item.first.c_str()));
+            c1.Print(Form("%s/mean_anodetime_%s.root", outputdir.c_str(),item.first.c_str()));
         }
     }
 }

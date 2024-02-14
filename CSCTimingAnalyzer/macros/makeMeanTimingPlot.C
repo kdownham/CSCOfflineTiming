@@ -220,7 +220,7 @@ void makeMeanTimingPlot (std::string fname, bool byStation, std::string outputdi
         //c1.Print(Form("plots/all_plots/Run357900/%s/mean_cathodetime_Run357900_byStation.pdf",outputdir.c_str()));
         //c1.Print(Form("plots/all_plots/Run357900/%s/mean_cathodetime_Run357900_byStation.png",outputdir.c_str()));
         //c1.Print(Form("plots/all_plots/Run357900/%s/mean_cathodetime_Run357900_byStation.root",outputdir.c_str()));
-        c1.Print("mean_cathodetime_byStation.root");
+        c1.Print(Form("%s/mean_cathodetime_byStation.png",outputdir.c_str()));
 
         for (int i : {1,2,3,4}) {
           for (int j : {1,2})
@@ -255,7 +255,7 @@ void makeMeanTimingPlot (std::string fname, bool byStation, std::string outputdi
             
             //c1.Print(Form("plots/all_plots/Run357900/histos_updated_newHeuristicCorrByChamber/mean_cathodetime_newCorrByRing_%s.pdf", item.first.c_str()));
             //c1.Print(Form("plots/all_plots/Run357900/histos_updated_newHeuristicCorrByChamber/mean_cathodetime_newCorrByRing_%s.png", item.first.c_str()));
-            c1.Print("mean_cathodetime.root");
+            c1.Print(Form("%s/mean_cathodetime.png",outputdir.c_str()));
         }
     }
 }

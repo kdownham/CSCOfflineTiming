@@ -127,6 +127,6 @@ void combineSegmentTimingDistributions(std::string fname, float kLumi = 0.0, boo
     title->SetTextAlign(11);
 
     //c1.Print("segment_time_combined.pdf");
-    //c1.Print("segment_time_combined.png");
-    c1.Print("segment_time_combined.root");    
+    c1.Print("segment_time_combined.png");
+    //c1.Print("segment_time_combined.root");    
 }

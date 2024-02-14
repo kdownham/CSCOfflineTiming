@@ -24,7 +24,8 @@ import FWCore.ParameterSet.Types as CfgTypes
 
 if applyGoodRunList:
     process.source.lumisToProcess = CfgTypes.untracked(CfgTypes.VLuminosityBlockRange())
-    JSONfile = 'Cert_Collisions2022_355100_362760_Muon.json'
+    #JSONfile = 'Cert_Collisions2022_355100_362760_Muon.json'
+    JSONfile = 'Cert_Collisions2023_366442_370790_Golden.json'
     myLumis = LumiList.LumiList(filename = JSONfile).getCMSSWString().split(',')
     process.source.lumisToProcess.extend(myLumis)
 

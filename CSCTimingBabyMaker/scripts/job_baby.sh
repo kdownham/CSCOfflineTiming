@@ -76,10 +76,12 @@ then
         ##tail -f heuristicCorrections_"$RUNNUM".txt
 	#echo "What is the name of the output file?"
 	#ls -la
-	#echo "Now let's compute new anode times!"
-	#root -l 'determineAnodeOffsets.C("../test/output_'$RUNNUM'_timing_applyGoodRunList_removeHeuristicCorr.root","anode_bx_offsets_'$RUNNUM'.txt")'
-	#echo "Making sure that the file was actually made....."
-	#ls -la
+	echo "Now let's compute new anode times!"
+	root -l 'determineAnodeOffsets.C("../test/output_'$RUNNUM'_timing_applyGoodRunList_removeHeuristicCorr.root","anode_bx_offsets_'$RUNNUM'.txt")'
+	echo "And we can also make anode timing plots"
+	root -l 'determineAnodeOffsets.C("../test/output_'$RUNNUM'_timing_applyGoodRunList_removeHeuristicCorr.root","")'
+	echo "Making sure that the files were actually made....."
+	ls -la
         echo "Making plots for your viewing pleasure!"
 	root -l 'combineAnodeTimingDistributions.C("../test/output_'$RUNNUM'_timing_applyGoodRunList_removeHeuristicCorr.root")'
 	root -l 'combineRechitTimingDistributions.C("../test/output_'$RUNNUM'_timing_applyGoodRunList_removeHeuristicCorr.root")'
@@ -94,18 +96,20 @@ else
 	echo "You are making plots with heuristic corrections applied!"
 	echo "The cathode times should be centered at zero if you are using the proper corrections!"
 	echo "Electing instead to make plots! "
-        #root -l 'combineAnodeTimingDistributions.C("../test/output_'$RUNNUM'_timing_applyGoodRunList.root")'
-        #root -l 'combineRechitTimingDistributions.C("../test/output_'$RUNNUM'_timing_applyGoodRunList.root")'
-        #root -l 'combineSegmentTimingDistributions.C("../test/output_'$RUNNUM'_timing_applyGoodRunList.root")'
-        #root -l 'makeAnodeTimingPlot.C("../test/output_'$RUNNUM'_timing_applyGoodRunList.root",true,"")'
-        #root -l 'makeAnodeTimingPlot.C("../test/output_'$RUNNUM'_timing_applyGoodRunList.root",false,"")'
-        #root -l 'makeMeanTimingPlot.C("../test/output_'$RUNNUM'_timing_applyGoodRunList.root",true,"")'
-        #root -l 'makeMeanTimingPlot.C("../test/output_'$RUNNUM'_timing_applyGoodRunList.root",false,"")'
-        #root -l 'makeMuonTimingPlot.C("../test/output_'$RUNNUM'_timing_applyGoodRunList.root")'
-        #root -l 'makeSegmentMeanTimingPlot.C("../test/output_'$RUNNUM'_timing_applyGoodRunList.root",true)'
-        #echo "Let's derive some new anode times!"
-	#root -l 'determineAnodeOffsets.C("../test/output_'$RUNNUM'_timing_applyGoodRunList.root","anode_bx_offsets_'$RUNNUM'.txt")'
 	root -l 'dumpPlots.C("../test/output_'$RUNNUM'_timing_applyGoodRunList.root","'$RUNNUM'","removeAnodeCorr")'
+        root -l 'combineAnodeTimingDistributions.C("../test/output_'$RUNNUM'_timing_applyGoodRunList.root")'
+        root -l 'combineRechitTimingDistributions.C("../test/output_'$RUNNUM'_timing_applyGoodRunList.root")'
+        root -l 'combineSegmentTimingDistributions.C("../test/output_'$RUNNUM'_timing_applyGoodRunList.root")'
+        root -l 'makeAnodeTimingPlot.C("../test/output_'$RUNNUM'_timing_applyGoodRunList.root",true,"removeAnodeCorr")'
+        root -l 'makeAnodeTimingPlot.C("../test/output_'$RUNNUM'_timing_applyGoodRunList.root",false,"removeAnodeCorr")'
+        root -l 'makeMeanTimingPlot.C("../test/output_'$RUNNUM'_timing_applyGoodRunList.root",true,"removeAnodeCorr")'
+        root -l 'makeMeanTimingPlot.C("../test/output_'$RUNNUM'_timing_applyGoodRunList.root",false,"removeAnodeCorr")'
+        root -l 'makeMuonTimingPlot.C("../test/output_'$RUNNUM'_timing_applyGoodRunList.root")'
+        root -l 'makeSegmentMeanTimingPlot.C("../test/output_'$RUNNUM'_timing_applyGoodRunList.root",true)'
+	root -l 'makeSegmentMeanTimingPlot.C("../test/output_'$RUNNUM'_timing_applyGoodRunList.root",false)'
+        #echo "Let's derive some new anode times!"
+	root -l 'determineAnodeOffsets.C("../test/output_'$RUNNUM'_timing_applyGoodRunList.root","")'
+	#root -l 'dumpPlots.C("../test/output_'$RUNNUM'_timing_applyGoodRunList.root","'$RUNNUM'","removeAnodeCorr")'
 fi
 
 # At some point I need to copy over the necessary files from the run directory (config file and condor scripts (.sh and .sub))

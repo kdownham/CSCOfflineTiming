@@ -130,6 +130,6 @@ void combineRechitTimingDistributions(std::string fname,float kLumi = 0.0, bool 
     title->SetTextAlign(11);
     
     //c1.Print("cathode_time_combined.pdf");
-    //c1.Print("cathode_time_combined.png");
-    c1.Print("cathode_time_combined.root");
+    c1.Print("cathode_time_combined.png");
+    //c1.Print("cathode_time_combined.root");
 }

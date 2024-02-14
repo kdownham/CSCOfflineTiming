@@ -35,14 +35,14 @@ void dumpPlots (std::string fname, std::string run, std::string outputdir) {
       TList *dlist = dir->GetListOfKeys();
       bool is_first = true;
 
-      cout << "item = " << item->GetName() << endl;
+      //cout << "item = " << item->GetName() << endl;
       //cout << "fname_short = " << fname_short.c_str() << endl;
       
 
       //if ( item->GetName() == recHits || item->GetName() == Segments ){
 	//   continue;
       //}
-      if ( item->GetName() != recHits ) continue;
+      //if ( item->GetName() != recHits ) continue;
 
       cout << Form("plots/all_plots/%s/%s/%s/%s", run.c_str(), outputdir.c_str(), fname_short.c_str(), dir->GetName()) << endl;
       gSystem->Exec(Form("mkdir -p plots/all_plots/%s/%s/%s/%s", run.c_str(), outputdir.c_str(), fname_short.c_str(), dir->GetName()));
@@ -51,13 +51,13 @@ void dumpPlots (std::string fname, std::string run, std::string outputdir) {
         TObject *dobj = dir->Get(ditem->GetName());
         if (dobj->InheritsFrom(TH1::Class())) {
 	  std::string name = dobj->GetName();
-	  if (name.find(no_hist) != string::npos) continue; 
-	  if (name.find(no_hist_1) != string::npos) continue;
-	  if (name.find(no_hist_2) != string::npos) continue;
-	  if (name.find(no_hist_3) != string::npos) continue;
-	  if (name.find(no_hist_4) != string::npos) continue;
-	  if (name.find(no_hist_5) != string::npos) continue;
-	  if (name.find(no_hist_6) != string::npos) continue;
+	  //if (name.find(no_hist) != string::npos) continue; 
+	  //if (name.find(no_hist_1) != string::npos) continue;
+	  //if (name.find(no_hist_2) != string::npos) continue;
+	  //if (name.find(no_hist_3) != string::npos) continue;
+	  //if (name.find(no_hist_4) != string::npos) continue;
+	  //if (name.find(no_hist_5) != string::npos) continue;
+	  //if (name.find(no_hist_6) != string::npos) continue;
           dobj->Draw();
           // c1.Print(Form("plots/%s/%s/%s.pdf", fname_short.c_str(), dir->GetName(), dobj->GetName()));
           c1.Print(Form("plots/all_plots/%s/%s/%s/%s/%s.png", run.c_str(), outputdir.c_str(), fname_short.c_str(), dir->GetName(), dobj->GetName()));

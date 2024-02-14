@@ -23,12 +23,13 @@
 ##############################################################################################################
 
 CMSSWVERSION="CMSSW_12_4_6"
-SCRAMARCH="slc7_amd64_gcc10"
-DATASET="/Muon/Run2022G-PromptReco-v1/AOD"
-SINGLERUN=362654
-JOBTAG="Full_2022G"
-OUTPUTDIR="/eos/cms/store/group/dpg_csc/comm_csc/csctiming/Run3/2022$DATASET/$JOBTAG"
-GLOBALTAG="124X_dataRun3_Prompt_v4"
+#SCRAMARCH="slc7_amd64_gcc10"
+SCRAMARCH="el8_amd64_gcc10"
+DATASET="/Muon0/Run2023C-PromptReco-v1/AOD"
+SINGLERUN=367229
+JOBTAG="2023C_newAnodes_v1"
+OUTPUTDIR="/eos/cms/store/group/dpg_csc/comm_csc/csctiming/Run3/2023$DATASET/$JOBTAG"
+GLOBALTAG="130X_dataRun3_Prompt_v2"
 NEWHEURISTIC="False"
 HEURISTICFILE="heuristicCorrections_byChamber_357900.txt"
 ANALYZEROUTPUT="/afs/cern.ch/user/k/kdownham/CSC_Validation/$CMSSWVERSION/src/CSCOfflineTiming/CSCTimingAnalyzer/data/heuristic_corrections/"
@@ -37,6 +38,6 @@ ANALYZEROUTPUT="/afs/cern.ch/user/k/kdownham/CSC_Validation/$CMSSWVERSION/src/CS
 #cp -r /tmp/x509up_u115282 .
 
 export X509_USER_PROXY=/afs/cern.ch/user/k/kdownham/private/.x509up_u115282
-echo $PASSWORD | voms-proxy-init -voms cms -rfc -out /afs/cern.ch/user/k/kdownham/private/.x509up_u115282 -valid 192:00
+echo "$PASSWORD" | voms-proxy-init -voms cms -rfc -out /afs/cern.ch/user/k/kdownham/private/.x509up_u115282 -valid 192:00
 
 python3 python/job_submit.py -i $DATASET -j $JOBTAG -v $CMSSWVERSION -a $SCRAMARCH -o $OUTPUTDIR -t $GLOBALTAG -s $SINGLERUN -n $NEWHEURISTIC -f $HEURISTICFILE -c $ANALYZEROUTPUT
