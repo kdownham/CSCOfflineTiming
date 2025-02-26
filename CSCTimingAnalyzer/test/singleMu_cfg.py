@@ -14,7 +14,9 @@ process.source = cms.Source("PoolSource",
                             # replace 'myfile.root' with the source file you want to use
                             fileNames = cms.untracked.vstring(
                                 #'file:/afs/cern.ch/user/k/kdownham/CSC_Validation/CMSSW_12_4_6/src/CSCOfflineTiming/CSCTimingBabyMaker/test/output/merged/csc_Run357900_premerged_useMuonSegmentMatcher.root',
-				'file:/afs/cern.ch/user/k/kdownham/CSC_Validation/CMSSW_12_4_6/src/CSCOfflineTiming/CSCTimingBabyMaker/test/test_Anodes_Oct20_useMuonSegmentMatcher.root',
+				#'file:/afs/cern.ch/user/k/kdownham/CSC_Validation/CMSSW_13_0_9/src/CSCOfflineTiming/CSCTimingBabyMaker/test/test_cmssw_13_2023D_useMuonSegmentMatcher.root',
+                #'file:/afs/cern.ch/user/k/kdownham/CSC_Validation/CMSSW_13_0_9/src/CSCOfflineTiming/CSCTimingBabyMaker/test/validation_mem_1-1-12_fix_Run3Anodes_2022G_useMuonSegmentMatcher.root',
+                'file:/afs/cern.ch/user/k/kdownham/CSC_Validation/CMSSW_13_0_9/src/CSCOfflineTiming/CSCTimingBabyMaker/test/validate_Jason_2023D_Feb25_useMuonSegmentMatcher.root',
                                 )
 )
 
@@ -61,7 +63,7 @@ removeHeuristicCorrectionName = '_removeHeuristicCorr'
 # min_pt_name = '_minPt' + str(process.cscTimingAnalyzer.min_pt)
 # max_dz_name = '_maxDz' + str(process.cscTimingAnalyzer.max_dz)
 
-baseFileName = 'output_newAnodeTest_Oct20'
+baseFileName = 'validate_Jason_2023D_Feb25_newAnodes'
 fileExtension = '.root'
 outfileName = baseFileName
 

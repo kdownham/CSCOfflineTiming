@@ -37,6 +37,8 @@ def replace_and_submit(config):
        input_files_str = "', 'root://xrootd-cms.infn.it/".join(input_files)
 
        input_files_str = "root://xrootd-cms.infn.it/"+input_files_str
+       #input_files_str = "', 'root://cms-xrd-global.cern.ch/".join(input_files)
+       #input_files_str = "root://cms-xrd-global.cern.ch/"+input_files_str
 
        #outputdir = '/eos/user/k/kdownham/CSCOfflineTiming/condor_output/'+jobTag
 

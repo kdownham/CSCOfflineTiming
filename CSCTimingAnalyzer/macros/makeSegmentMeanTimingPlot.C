@@ -167,14 +167,14 @@ void makeSegmentMeanTimingPlot (std::string fname, bool byStation, float kLumi =
     prelim.SetTextFont(52);
     prelim.SetTextSize(0.0456);
 
-    TLatex data(0.17, 0.76, "Data 2022");
+    TLatex data(0.17, 0.76, "Data 2023");
     data.SetNDC();
     data.SetTextAlign(13);
     data.SetTextFont(52);
     data.SetTextSize(0.0456);
 
     //TLatex lumi(0.85, 0.82, Form("%.1f fb^{-1} (13 TeV)", kLumi));
-    TLatex lumi(0.85, 0.82, Form("%.1i (13.6 TeV)", 2022));
+    TLatex lumi(0.85, 0.82, Form("%.1i (13.6 TeV)", 2023));
     lumi.SetNDC();
     lumi.SetTextAlign(31);
     lumi.SetTextFont(42);

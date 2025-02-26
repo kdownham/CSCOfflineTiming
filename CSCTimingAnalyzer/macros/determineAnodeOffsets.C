@@ -155,8 +155,10 @@ void determineAnodeOffsets (std::string fname, std::string ofname){
 		h_anode_rms->Fill(((TH1*)obj)->GetRMS());
 		h_anode_mean->GetXaxis()->SetTitle("Mean Anode Time per Chamber [ns]");
 		h_anode_mean->GetYaxis()->SetTitle("Chambers / 0.4 ns");
+		h_anode_mean->GetYaxis()->SetRangeUser(0.,80.);
 		h_anode_rms->GetXaxis()->SetTitle("Anode Time RMS per Chamber [ns]");
 		h_anode_rms->GetYaxis()->SetTitle("Chambers / 0.4 ns");
+		h_anode_rms->GetYaxis()->SetRangeUser(0.,160.);
 	     }
 	}
 

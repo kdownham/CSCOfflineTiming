@@ -17,7 +17,7 @@ void dumpPlots (std::string fname, std::string run, std::string outputdir) {
   gStyle->SetOptStat("emrou");
 
   std::string recHits = "recHitsByChamber";
-  std::string no_hist = "hRHTiming_";
+  std::string no_hist = "hRHTiming_-1_1_12";
   std::string no_hist_1 = "hAnodeTiming_+1_2";
   std::string no_hist_2 = "hAnodeTiming_+1_3";
   std::string no_hist_3 = "hAnodeTiming_+2";
@@ -51,16 +51,12 @@ void dumpPlots (std::string fname, std::string run, std::string outputdir) {
         TObject *dobj = dir->Get(ditem->GetName());
         if (dobj->InheritsFrom(TH1::Class())) {
 	  std::string name = dobj->GetName();
-	  //if (name.find(no_hist) != string::npos) continue; 
-	  //if (name.find(no_hist_1) != string::npos) continue;
-	  //if (name.find(no_hist_2) != string::npos) continue;
-	  //if (name.find(no_hist_3) != string::npos) continue;
-	  //if (name.find(no_hist_4) != string::npos) continue;
-	  //if (name.find(no_hist_5) != string::npos) continue;
-	  //if (name.find(no_hist_6) != string::npos) continue;
+	  //if (name.find(no_hist) != string::npos) continue;
+	  //if (name.find(no_hist) != string::npos){
           dobj->Draw();
-          // c1.Print(Form("plots/%s/%s/%s.pdf", fname_short.c_str(), dir->GetName(), dobj->GetName()));
           c1.Print(Form("plots/all_plots/%s/%s/%s/%s/%s.png", run.c_str(), outputdir.c_str(), fname_short.c_str(), dir->GetName(), dobj->GetName()));
+	  //c1.Print(Form("%s.png", dobj->GetName()));
+	  //}
         }
       }
     }

@@ -685,6 +685,9 @@ double CSCTimingAnalyzer::updateAnodeOffset(double twire, int endcap, int statio
   ///////////////////////////////////////////////////////////////////////////////////////////////////
   //std::string newCorr = "../macros/test_anode_corrections.txt";
   std::string newCorr = "../data/anode_bx_offsets_362654.txt";
+  //std::string newCorr = "../data/anode_bx_offsets_362654_perType.txt";
+  //std::string newCorr = "../data/anode_bx_offsets_367229.txt";
+  //std::string newCorr = "../data/anode_bx_offsets_370717.txt";
   std::ifstream c(newCorr);
   std::string line1;
 
@@ -706,11 +709,15 @@ double CSCTimingAnalyzer::updateAnodeOffset(double twire, int endcap, int statio
 	  double new_anode_corr = (new_anode / 100.0) * 25.0;
 	  shift -= new_anode_corr;
 	  new_corr += new_anode_corr;
+	  
      }
   
   }
 
+  //std::cout << "Old twire = " << twire << std::endl;
+  //std::cout << "Shift = " << shift << std::endl;
   twire -= shift;
+  //std::cout << "New twire = " << twire << std::endl;
 
   //if ( endcap == 1 && station == 1 && ring == 1 && chamber == 20 && twire > 6.0 && twire < 10.0){
   //     std::cout << "Old corr = " << old_corr << std::endl;

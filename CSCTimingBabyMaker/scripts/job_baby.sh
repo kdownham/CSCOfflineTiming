@@ -21,7 +21,7 @@ NEWHEURISTIC=$6
 RUNNUM=$7
 HEURISTICFILE=$8
 
-TARDIR="/afs/cern.ch/user/k/kdownham/CSC_Validation/CMSSW_12_4_6/src/CSCOfflineTiming"
+TARDIR="/afs/cern.ch/user/k/kdownham/CSC_Validation/$CMSSWVERSION/src/CSCOfflineTiming"
 
 # set up the environment for running jobs
 export SCRAM_ARCH=$SCRAMARCH
@@ -37,7 +37,7 @@ scram b -j 12
 cp -r $RUNDIR/condor_template_cfg.py CSCTimingBabyMaker/test/condor_cfg.py
 cp -r $RUNDIR/condor_template_analyzer_cfg.py CSCTimingAnalyzer/test/.
 cp -r $RUNDIR/$HEURISTICFILE ../.
-cp -r $RUNDIR/Cert_Collisions2022_355100_362760_Muon.json CSCTimingAnalyzer/test/.
+cp -r $RUNDIR/Cert_Collisions2023_366442_370790_Golden.json CSCTimingAnalyzer/test/.
 
 echo "Printing working directory after copying config files"
 pwd
@@ -100,14 +100,16 @@ else
         root -l 'combineAnodeTimingDistributions.C("../test/output_'$RUNNUM'_timing_applyGoodRunList.root")'
         root -l 'combineRechitTimingDistributions.C("../test/output_'$RUNNUM'_timing_applyGoodRunList.root")'
         root -l 'combineSegmentTimingDistributions.C("../test/output_'$RUNNUM'_timing_applyGoodRunList.root")'
-        root -l 'makeAnodeTimingPlot.C("../test/output_'$RUNNUM'_timing_applyGoodRunList.root",true,"removeAnodeCorr")'
-        root -l 'makeAnodeTimingPlot.C("../test/output_'$RUNNUM'_timing_applyGoodRunList.root",false,"removeAnodeCorr")'
+        #root -l 'makeAnodeTimingPlot.C("../test/output_'$RUNNUM'_timing_applyGoodRunList.root",true,"removeAnodeCorr")'
+        root -l 'makeAnodeTimingPlot.C("../test/output_'$RUNNUM'_timing_applyGoodRunList.root",false,"")'
+	root -l 'chamberTimePlot.C("../test/output_'$RUNNUM'_timing_applyGoodRunList.root")'
         root -l 'makeMeanTimingPlot.C("../test/output_'$RUNNUM'_timing_applyGoodRunList.root",true,"removeAnodeCorr")'
         root -l 'makeMeanTimingPlot.C("../test/output_'$RUNNUM'_timing_applyGoodRunList.root",false,"removeAnodeCorr")'
         root -l 'makeMuonTimingPlot.C("../test/output_'$RUNNUM'_timing_applyGoodRunList.root")'
         root -l 'makeSegmentMeanTimingPlot.C("../test/output_'$RUNNUM'_timing_applyGoodRunList.root",true)'
 	root -l 'makeSegmentMeanTimingPlot.C("../test/output_'$RUNNUM'_timing_applyGoodRunList.root",false)'
         #echo "Let's derive some new anode times!"
+	root -l 'determineAnodeOffsets.C("../test/output_'$RUNNUM'_timing_applyGoodRunList.root","anode_bx_offsets_'$RUNNUM'.txt")'
 	root -l 'determineAnodeOffsets.C("../test/output_'$RUNNUM'_timing_applyGoodRunList.root","")'
 	#root -l 'dumpPlots.C("../test/output_'$RUNNUM'_timing_applyGoodRunList.root","'$RUNNUM'","removeAnodeCorr")'
 fi

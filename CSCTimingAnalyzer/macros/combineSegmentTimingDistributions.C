@@ -72,14 +72,14 @@ void combineSegmentTimingDistributions(std::string fname, float kLumi = 0.0, boo
     prelim.SetTextFont(52);
     prelim.SetTextSize(0.0456);
 
-    TLatex data(0.17, 0.76, "Data 2022");
+    TLatex data(0.17, 0.76, "Data 2023");
     data.SetNDC();
     data.SetTextAlign(13);
     data.SetTextFont(52);
     data.SetTextSize(0.0456);
 
     //TLatex lumi(0.9, 0.93, Form("%.1f fb^{-1} (13 TeV)", kLumi));
-    TLatex lumi(0.9, 0.93, Form("%.1i (13.6TeV)", 2022));
+    TLatex lumi(0.9, 0.93, Form("%.1i (13.6TeV)", 2023));
     lumi.SetNDC();
     lumi.SetTextAlign(31);
     lumi.SetTextFont(42);
