@@ -172,14 +172,14 @@ void makeMeanTimingPlot (std::string fname, bool byStation, std::string outputdi
     prelim.SetTextFont(52);
     prelim.SetTextSize(0.0456);
 
-    TLatex data(0.17, 0.76, "Data 2023");
+    TLatex data(0.17, 0.76, "Data 2024");
     data.SetNDC();
     data.SetTextAlign(13);
     data.SetTextFont(52);
     data.SetTextSize(0.0456);
 
     //TLatex lumi(0.85, 0.82, Form("%.1f fb^{-1} (13 TeV)", kLumi));
-    TLatex lumi(0.85, 0.82, Form("%.1i (13.6 TeV)", 2023));
+    TLatex lumi(0.85, 0.82, Form("%.1i (13.6 TeV)", 2024));
     lumi.SetNDC();
     lumi.SetTextAlign(31);
     lumi.SetTextFont(42);
@@ -220,7 +220,9 @@ void makeMeanTimingPlot (std::string fname, bool byStation, std::string outputdi
         //c1.Print(Form("plots/all_plots/Run357900/%s/mean_cathodetime_Run357900_byStation.pdf",outputdir.c_str()));
         //c1.Print(Form("plots/all_plots/Run357900/%s/mean_cathodetime_Run357900_byStation.png",outputdir.c_str()));
         //c1.Print(Form("plots/all_plots/Run357900/%s/mean_cathodetime_Run357900_byStation.root",outputdir.c_str()));
-        c1.Print(Form("%s/mean_cathodetime_byStation.png",outputdir.c_str()));
+        //c1.Print(Form("%s/mean_cathodetime_byStation.png",outputdir.c_str()));
+	c1.Print("mean_cathodetime_byStation.png");
+	
 
         for (int i : {1,2,3,4}) {
           for (int j : {1,2})
@@ -255,7 +257,8 @@ void makeMeanTimingPlot (std::string fname, bool byStation, std::string outputdi
             
             //c1.Print(Form("plots/all_plots/Run357900/histos_updated_newHeuristicCorrByChamber/mean_cathodetime_newCorrByRing_%s.pdf", item.first.c_str()));
             //c1.Print(Form("plots/all_plots/Run357900/histos_updated_newHeuristicCorrByChamber/mean_cathodetime_newCorrByRing_%s.png", item.first.c_str()));
-            c1.Print(Form("%s/mean_cathodetime.png",outputdir.c_str()));
+            //c1.Print(Form("%s/mean_cathodetime.png",outputdir.c_str()));
+	    c1.Print(Form("mean_cathodetime_%s.png", item.first.c_str()));
         }
     }
 }

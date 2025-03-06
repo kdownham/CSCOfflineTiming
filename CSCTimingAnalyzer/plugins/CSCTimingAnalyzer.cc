@@ -206,19 +206,19 @@ void CSCTimingAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
 
           CSCDetId id(endcap, station, ring, chamber, layer);
           double rhtime_corr = rhtime;
-          //double twire_corr = twire;  // Comment out for new wire corrections
+          double twire_corr = twire;  // Comment out for new wire corrections
 	  // Need to write a function that applies the new anode_bx_offsets
 	  //
 	  ///////////////////////////////////////////////////////////////////
 	  // Uncomment full block below for new anode corrections!
 	  ///////////////////////////////////////////////////////////////////
-	  int ring_mod;
-	  if ( station == 1 && ( ring == 1 || ring == 4 ) ){
-	       ring_mod = 1;
-	  } else {
-	       ring_mod = ring;
-	  }
-	  double twire_corr = updateAnodeOffset(twire,endcap,station,ring_mod,chamber);   // uncomment for new wire corrections
+	  //int ring_mod;
+	  //if ( station == 1 && ( ring == 1 || ring == 4 ) ){
+	  //     ring_mod = 1;
+	  //} else {
+	  //     ring_mod = ring;
+	  //}
+	  //double twire_corr = updateAnodeOffset(twire,endcap,station,ring_mod,chamber);   // uncomment for new wire corrections
           ////////////////////////////////////////////////////////////////////
 
 

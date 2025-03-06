@@ -96,21 +96,21 @@ else
 	echo "You are making plots with heuristic corrections applied!"
 	echo "The cathode times should be centered at zero if you are using the proper corrections!"
 	echo "Electing instead to make plots! "
-	root -l 'dumpPlots.C("../test/output_'$RUNNUM'_timing_applyGoodRunList.root","'$RUNNUM'","removeAnodeCorr")'
-        root -l 'combineAnodeTimingDistributions.C("../test/output_'$RUNNUM'_timing_applyGoodRunList.root")'
-        root -l 'combineRechitTimingDistributions.C("../test/output_'$RUNNUM'_timing_applyGoodRunList.root")'
-        root -l 'combineSegmentTimingDistributions.C("../test/output_'$RUNNUM'_timing_applyGoodRunList.root")'
-        #root -l 'makeAnodeTimingPlot.C("../test/output_'$RUNNUM'_timing_applyGoodRunList.root",true,"removeAnodeCorr")'
-        root -l 'makeAnodeTimingPlot.C("../test/output_'$RUNNUM'_timing_applyGoodRunList.root",false,"")'
-	root -l 'chamberTimePlot.C("../test/output_'$RUNNUM'_timing_applyGoodRunList.root")'
-        root -l 'makeMeanTimingPlot.C("../test/output_'$RUNNUM'_timing_applyGoodRunList.root",true,"removeAnodeCorr")'
-        root -l 'makeMeanTimingPlot.C("../test/output_'$RUNNUM'_timing_applyGoodRunList.root",false,"removeAnodeCorr")'
-        root -l 'makeMuonTimingPlot.C("../test/output_'$RUNNUM'_timing_applyGoodRunList.root")'
-        root -l 'makeSegmentMeanTimingPlot.C("../test/output_'$RUNNUM'_timing_applyGoodRunList.root",true)'
-	root -l 'makeSegmentMeanTimingPlot.C("../test/output_'$RUNNUM'_timing_applyGoodRunList.root",false)'
+	#root -l 'dumpPlots.C("../test/output_'$RUNNUM'_timing.root","'$RUNNUM'","removeAnodeCorr")'
+        root -l 'combineAnodeTimingDistributions.C("../test/output_'$RUNNUM'_timing.root")'
+        root -l 'combineRechitTimingDistributions.C("../test/output_'$RUNNUM'_timing.root")'
+        root -l 'combineSegmentTimingDistributions.C("../test/output_'$RUNNUM'_timing.root")'
+        root -l 'makeAnodeTimingPlot.C("../test/output_'$RUNNUM'_timing.root",true,"")'
+        root -l 'makeAnodeTimingPlot.C("../test/output_'$RUNNUM'_timing.root",false,"")'
+	root -l 'chamberTimePlot.C("../test/output_'$RUNNUM'_timing.root")'
+        root -l 'makeMeanTimingPlot.C("../test/output_'$RUNNUM'_timing.root",true,"removeAnodeCorr")'
+        root -l 'makeMeanTimingPlot.C("../test/output_'$RUNNUM'_timing.root",false,"removeAnodeCorr")'
+        root -l 'makeMuonTimingPlot.C("../test/output_'$RUNNUM'_timing.root")'
+        root -l 'makeSegmentMeanTimingPlot.C("../test/output_'$RUNNUM'_timing.root",true)'
+	root -l 'makeSegmentMeanTimingPlot.C("../test/output_'$RUNNUM'_timing.root",false)'
         #echo "Let's derive some new anode times!"
-	root -l 'determineAnodeOffsets.C("../test/output_'$RUNNUM'_timing_applyGoodRunList.root","anode_bx_offsets_'$RUNNUM'.txt")'
-	root -l 'determineAnodeOffsets.C("../test/output_'$RUNNUM'_timing_applyGoodRunList.root","")'
+	#root -l 'determineAnodeOffsets.C("../test/output_'$RUNNUM'_timing.root","anode_bx_offsets_'$RUNNUM'.txt")'
+	#root -l 'determineAnodeOffsets.C("../test/output_'$RUNNUM'_timing.root","")'
 	#root -l 'dumpPlots.C("../test/output_'$RUNNUM'_timing_applyGoodRunList.root","'$RUNNUM'","removeAnodeCorr")'
 fi
 

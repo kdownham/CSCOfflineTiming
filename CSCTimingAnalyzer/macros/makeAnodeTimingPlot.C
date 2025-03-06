@@ -203,14 +203,14 @@ void makeAnodeTimingPlot (std::string fname, bool byStation, std::string outputd
     prelim.SetTextFont(52);
     prelim.SetTextSize(0.0456);
 
-    TLatex data(0.17, 0.76, "Data 2023");
+    TLatex data(0.17, 0.76, "Data 2024");
     data.SetNDC();
     data.SetTextAlign(13);
     data.SetTextFont(52);
     data.SetTextSize(0.0456);
 
     //TLatex lumi(0.85, 0.82, Form("%.1f fb^{-1} (13 TeV)", kLumi));
-    TLatex lumi(0.9, 0.93, Form("%.1i (13.6TeV)", 2023));
+    TLatex lumi(0.9, 0.93, Form("%.1i (13.6TeV)", 2024));
     lumi.SetNDC();
     lumi.SetTextAlign(31);
     lumi.SetTextFont(42);
@@ -313,7 +313,8 @@ void makeAnodeTimingPlot (std::string fname, bool byStation, std::string outputd
         //c2.Print(Form("plots/all_plots/Run359812/%s/mean_anodetimes_allstations_Run359812.pdf",outputdir.c_str()));
 	//c2.Print(Form("plots/all_plots/Run359812/%s/mean_anodetimes_allstations_Run359812.png",outputdir.c_str()));
 	//c2.Print(Form("plots/all_plots/Run359812/%s/mean_anodetimes_allstations_Run359812.root",outputdir.c_str()));
-	c2.Print(Form("%s/mean_anodetimes_allstations.png",outputdir.c_str()));
+	//c2.Print(Form("%s/mean_anodetimes_allstations.png",outputdir.c_str()));
+	c2.Print("mean_anodetimes_allstations.png");
 
     }
     else

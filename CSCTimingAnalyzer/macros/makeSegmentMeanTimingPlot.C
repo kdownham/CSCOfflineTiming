@@ -167,14 +167,14 @@ void makeSegmentMeanTimingPlot (std::string fname, bool byStation, float kLumi =
     prelim.SetTextFont(52);
     prelim.SetTextSize(0.0456);
 
-    TLatex data(0.17, 0.76, "Data 2023");
+    TLatex data(0.17, 0.76, "Data 2024");
     data.SetNDC();
     data.SetTextAlign(13);
     data.SetTextFont(52);
     data.SetTextSize(0.0456);
 
     //TLatex lumi(0.85, 0.82, Form("%.1f fb^{-1} (13 TeV)", kLumi));
-    TLatex lumi(0.85, 0.82, Form("%.1i (13.6 TeV)", 2023));
+    TLatex lumi(0.85, 0.82, Form("%.1i (13.6 TeV)", 2024));
     lumi.SetNDC();
     lumi.SetTextAlign(31);
     lumi.SetTextFont(42);
@@ -215,7 +215,7 @@ void makeSegmentMeanTimingPlot (std::string fname, bool byStation, float kLumi =
         //c1.Print("plots/all_plots/Run357900_testAnodes/mean_segtime_Run357900_newCorr.pdf");
         //c1.Print("plots/all_plots/Run357900_testAnodes/mean_segtime_Run357900_newCorr.png");
         //c1.Print("plots/all_plots/Run357900_testAnodes/mean_segtime_Run357900_newCorr.root");
-        c1.Print("removeAnodeCorr/mean_segtime.png");
+        c1.Print("mean_segtime.png");
     }
     else
     {
@@ -243,7 +243,7 @@ void makeSegmentMeanTimingPlot (std::string fname, bool byStation, float kLumi =
             title->SetTextAlign(11);
 
             // c1.Print(Form("plots/mean_segtime_%s.pdf", item.first.c_str()));
-            c1.Print(Form("removeAnodeCorr/mean_segtime_%s.root", item.first.c_str()));
+            c1.Print(Form("mean_segtime_%s.root", item.first.c_str()));
         }
     }
 }

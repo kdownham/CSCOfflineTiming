@@ -16,7 +16,8 @@ process.source = cms.Source("PoolSource",
                                 #'file:/afs/cern.ch/user/k/kdownham/CSC_Validation/CMSSW_12_4_6/src/CSCOfflineTiming/CSCTimingBabyMaker/test/output/merged/csc_Run357900_premerged_useMuonSegmentMatcher.root',
 				#'file:/afs/cern.ch/user/k/kdownham/CSC_Validation/CMSSW_13_0_9/src/CSCOfflineTiming/CSCTimingBabyMaker/test/test_cmssw_13_2023D_useMuonSegmentMatcher.root',
                 #'file:/afs/cern.ch/user/k/kdownham/CSC_Validation/CMSSW_13_0_9/src/CSCOfflineTiming/CSCTimingBabyMaker/test/validation_mem_1-1-12_fix_Run3Anodes_2022G_useMuonSegmentMatcher.root',
-                'file:/afs/cern.ch/user/k/kdownham/CSC_Validation/CMSSW_13_0_9/src/CSCOfflineTiming/CSCTimingBabyMaker/test/validate_Jason_2023D_Feb25_useMuonSegmentMatcher.root',
+                #'file:/eos/user/k/kdownham/CSCOfflineTiming/Run2024G/Run383811/baby_output/validate_2024G_Run383811_full_useMuonSegmentMatcher.root',
+                'file:/eos/cms/store/group/dpg_csc/comm_csc/csctiming/Run3/2024/Muon1/Run2024G-PromptReco-v1/AOD/Run385801/BabyOutput/validate_2024G_Run385801_10k_useMuonSegmentMatcher.root',
                                 )
 )
 
@@ -63,9 +64,11 @@ removeHeuristicCorrectionName = '_removeHeuristicCorr'
 # min_pt_name = '_minPt' + str(process.cscTimingAnalyzer.min_pt)
 # max_dz_name = '_maxDz' + str(process.cscTimingAnalyzer.max_dz)
 
-baseFileName = 'validate_Jason_2023D_Feb25_newAnodes'
+#dirname = "/eos/user/k/kdownham/CSCOfflineTiming/Run2024G/Run383811/analyzer_output/"
+dirname = ""
+baseFileName = 'validate_2024G_Run383811_10k'
 fileExtension = '.root'
-outfileName = baseFileName
+outfileName = dirname+baseFileName
 
 if process.cscTimingAnalyzer.applyUpdatedME11corrections:
     outfileName = outfileName + applyUpdatedME11correctionsName

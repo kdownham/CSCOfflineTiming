@@ -22,15 +22,15 @@
 #
 ##############################################################################################################
 
-CMSSWVERSION="CMSSW_13_0_9"
+CMSSWVERSION="CMSSW_14_0_15"
 #SCRAMARCH="slc7_amd64_gcc10"
 #SCRAMARCH="el8_amd64_gcc10"
 SCRAMARCH="el9_amd64_gcc11"
-DATASET="/Muon0/Run2023C-PromptReco-v1/AOD"
-SINGLERUN=367103
-JOBTAG="2023C_Anodes2022"
-OUTPUTDIR="/eos/cms/store/group/dpg_csc/comm_csc/csctiming/Run3/2023$DATASET/$JOBTAG"
-GLOBALTAG="130X_dataRun3_Prompt_v2"
+DATASET="/Muon1/Run2024G-PromptReco-v1/AOD"
+SINGLERUN=385754
+JOBTAG="2024G_validation"
+OUTPUTDIR="/eos/cms/store/group/dpg_csc/comm_csc/csctiming/Run3/2024$DATASET/$JOBTAG"
+GLOBALTAG="140X_dataRun3_Prompt_v4"
 NEWHEURISTIC="False"
 HEURISTICFILE="heuristicCorrections_byChamber_357900.txt"
 ANALYZEROUTPUT="/afs/cern.ch/user/k/kdownham/CSC_Validation/$CMSSWVERSION/src/CSCOfflineTiming/CSCTimingAnalyzer/data/heuristic_corrections/"

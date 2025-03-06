@@ -2,8 +2,8 @@ import FWCore.ParameterSet.Config as cms
 
 process = cms.Process("CSCTIMINGANALYSIS")
 
-applyGoodRunList = cms.bool(True)
-#applyGoodRunList = cms.bool(False)
+#applyGoodRunList = cms.bool(True)
+applyGoodRunList = cms.bool(False)
 
 process.load("FWCore.MessageService.MessageLogger_cfi")
 process.MessageLogger.cerr.FwkReport.reportEvery = 1000
