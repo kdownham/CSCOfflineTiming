@@ -109,8 +109,8 @@ else
         root -l 'makeSegmentMeanTimingPlot.C("../test/output_'$RUNNUM'_timing.root",true)'
 	root -l 'makeSegmentMeanTimingPlot.C("../test/output_'$RUNNUM'_timing.root",false)'
         #echo "Let's derive some new anode times!"
-	#root -l 'determineAnodeOffsets.C("../test/output_'$RUNNUM'_timing.root","anode_bx_offsets_'$RUNNUM'.txt")'
-	#root -l 'determineAnodeOffsets.C("../test/output_'$RUNNUM'_timing.root","")'
+	root -l 'determineAnodeOffsets.C("../test/output_'$RUNNUM'_timing.root","anode_bx_offsets_'$RUNNUM'.txt")'
+	root -l 'determineAnodeOffsets.C("../test/output_'$RUNNUM'_timing.root","")'
 	#root -l 'dumpPlots.C("../test/output_'$RUNNUM'_timing_applyGoodRunList.root","'$RUNNUM'","removeAnodeCorr")'
 fi
 

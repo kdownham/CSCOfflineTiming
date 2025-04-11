@@ -66,7 +66,7 @@ removeHeuristicCorrectionName = '_removeHeuristicCorr'
 
 #dirname = "/eos/user/k/kdownham/CSCOfflineTiming/Run2024G/Run383811/analyzer_output/"
 dirname = ""
-baseFileName = 'validate_2024G_Run383811_10k'
+baseFileName = 'validate_2024G_Run385801_10k'
 fileExtension = '.root'
 outfileName = dirname+baseFileName
 

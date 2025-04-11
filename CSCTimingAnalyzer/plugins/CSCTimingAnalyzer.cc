@@ -206,19 +206,19 @@ void CSCTimingAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
 
           CSCDetId id(endcap, station, ring, chamber, layer);
           double rhtime_corr = rhtime;
-          double twire_corr = twire;  // Comment out for new wire corrections
+          //double twire_corr = twire;  // Comment out for new wire corrections
 	  // Need to write a function that applies the new anode_bx_offsets
 	  //
 	  ///////////////////////////////////////////////////////////////////
 	  // Uncomment full block below for new anode corrections!
 	  ///////////////////////////////////////////////////////////////////
-	  //int ring_mod;
-	  //if ( station == 1 && ( ring == 1 || ring == 4 ) ){
-	  //     ring_mod = 1;
-	  //} else {
-	  //     ring_mod = ring;
-	  //}
-	  //double twire_corr = updateAnodeOffset(twire,endcap,station,ring_mod,chamber);   // uncomment for new wire corrections
+	  int ring_mod;
+	  if ( station == 1 && ( ring == 1 || ring == 4 ) ){
+	       ring_mod = 1;
+	  } else {
+	       ring_mod = ring;
+	  }
+	  double twire_corr = updateAnodeOffset(twire,endcap,station,ring_mod,chamber);   // uncomment for new wire corrections
           ////////////////////////////////////////////////////////////////////
 
 
@@ -645,8 +645,8 @@ void CSCTimingAnalyzer::printMapToFile (const std::map<CSCDetId, std::set<double
 
 double CSCTimingAnalyzer::updateAnodeOffset(double twire, int endcap, int station, int ring, int chamber)
 {
-  std::string fname="../data/anode_bx_offset_Run2.txt";
-  //std::string fname="../data/anode_bx_offsets_362654.txt";
+  //std::string fname="../data/anode_bx_offset_Run2.txt";
+  std::string fname="../data/anode_bx_offsets_370717.txt";  // Anode corrections that are currently being applied
   std::ifstream f(fname);
   std::string line;
 
@@ -684,10 +684,10 @@ double CSCTimingAnalyzer::updateAnodeOffset(double twire, int endcap, int statio
   // This is where the new corrections get applied
   ///////////////////////////////////////////////////////////////////////////////////////////////////
   //std::string newCorr = "../macros/test_anode_corrections.txt";
-  std::string newCorr = "../data/anode_bx_offsets_362654.txt";
+  //std::string newCorr = "../data/anode_bx_offsets_362654.txt";
   //std::string newCorr = "../data/anode_bx_offsets_362654_perType.txt";
   //std::string newCorr = "../data/anode_bx_offsets_367229.txt";
-  //std::string newCorr = "../data/anode_bx_offsets_370717.txt";
+  std::string newCorr = "../data/anode_bx_offsets_385801.txt";
   std::ifstream c(newCorr);
   std::string line1;
 

@@ -37,7 +37,7 @@ struct CSCAnodeCorrDetId
 
 };
 
-std::tuple<int,int,int,int,double> get_current_bx_offset(int endcap, int station, int ring, int chamber, std::string fname="../test/anode_bx_offset.txt");
+std::tuple<int,int,int,int,double> get_current_bx_offset(int endcap, int station, int ring, int chamber, std::string fname="../data/anode_bx_offsets_370717.txt");
 
 void determineAnodeOffsets (std::string fname, std::string ofname){
 
