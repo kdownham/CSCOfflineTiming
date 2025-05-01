@@ -44,7 +44,7 @@ def replace_and_submit(config):
 
        condor_template_cfg = condor_template_cfg.replace('GLOBALTAG_REPLACETAG', globalTag)
        condor_template_cfg = condor_template_cfg.replace('FILENAME_REPLACETAG', input_files_str)
-       condor_template_cfg = condor_template_cfg.replace('MAXEVENTS_REPLACETAG', str(-1))  # Number of events per run number that you want to run over
+       condor_template_cfg = condor_template_cfg.replace('MAXEVENTS_REPLACETAG', str(600000))  # Number of events per run number that you want to run over
        #condor_template_cfg = condor_template_cfg.replace('OUTPUTNAME_REPLACETAG', outputdir+'/'+runNum+'/output')
        condor_template_cfg = condor_template_cfg.replace('OUTPUTNAME_REPLACETAG', 'output_'+runNum) # This is the name/location where the finished ntuples are sent
 

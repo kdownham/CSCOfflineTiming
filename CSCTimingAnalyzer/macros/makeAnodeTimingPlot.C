@@ -51,8 +51,8 @@ void makeAnodeTimingPlot (std::string fname, bool byStation, std::string outputd
     h1->SetTitle("Mean and RMS of anode hit time for each ring of CSC chambers");
     h1->SetTitleFont(42);
     h1->SetTitleSize(0.052);    
-    //h1->GetYaxis()->SetRangeUser(-25,25);
-    h1->GetYaxis()->SetRangeUser(-300,300);
+    h1->GetYaxis()->SetRangeUser(-25,25);
+    //h1->GetYaxis()->SetRangeUser(-300,300);
     h1->SetMarkerStyle(4);
     h1->GetXaxis()->SetTitleOffset(0.85);
     
@@ -269,7 +269,8 @@ void makeAnodeTimingPlot (std::string fname, bool byStation, std::string outputd
         //gSystem->Exec(Form("mkdir -p plots/all_plots/Run357900/%s",outputdir.c_str()));
         //
         //c1.Print(Form("plots/all_plots/Run357900/%s/mean_anodetime_Run357900_byStation.pdf",outputdir.c_str()));
-        c1.Print(Form("%s/mean_anodetime_Run357900_byStation.png",outputdir.c_str()));
+        //c1.Print(Form("%s/mean_anodetime_Run357900_byStation.png",outputdir.c_str()));
+	c1.Print("mean_anodetime_byStation.png");
         //c1.Print(Form("plots/all_plots/Run357900/%s/mean_anodetime_Run357900_byStation.root",outputdir.c_str()));
 
 	TCanvas c2("c2", "c2", 600, 400);

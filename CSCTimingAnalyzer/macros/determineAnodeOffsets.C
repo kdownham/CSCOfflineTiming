@@ -37,7 +37,7 @@ struct CSCAnodeCorrDetId
 
 };
 
-std::tuple<int,int,int,int,double> get_current_bx_offset(int endcap, int station, int ring, int chamber, std::string fname="../data/anode_bx_offsets_370717.txt");
+std::tuple<int,int,int,int,double> get_current_bx_offset(int endcap, int station, int ring, int chamber, std::string fname="../test/anode_bx_offset.txt");
 
 void determineAnodeOffsets (std::string fname, std::string ofname){
 
@@ -139,7 +139,8 @@ void determineAnodeOffsets (std::string fname, std::string ofname){
 	     if (print_to_file){
 		double offset = std::get<4>(old_bx_offsets);
 	        double new_offset = offset + anode_corr;
-	        outfile << endcap << "\t" << station << "\t" << ring << "\t" << chamber << "\t" << new_offset << std::endl;	
+		int new_offset_int = static_cast<int>(std::round(new_offset));
+	        outfile << endcap << "\t" << station << "\t" << ring << "\t" << chamber << "\t" << new_offset_int << std::endl;	
 	     }
 	     else{
 		double offset = std::get<4>(old_bx_offsets);
@@ -182,7 +183,7 @@ void determineAnodeOffsets (std::string fname, std::string ofname){
 } 
 
 
-std::tuple<int,int,int,int,double> get_current_bx_offset(int endcap, int station, int ring, int chamber, std::string fname="../test/anode_bx_offset.txt"){
+std::tuple<int,int,int,int,double> get_current_bx_offset(int endcap, int station, int ring, int chamber, std::string fname){
 
 	//std::vector<int> chambers;
 	double bx_offset;
