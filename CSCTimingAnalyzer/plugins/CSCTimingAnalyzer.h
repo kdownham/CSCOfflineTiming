@@ -100,6 +100,8 @@ private:
   bool readHeuristicCorrectionsFromFile ();
   void setTimingStudyBabyBranches (TTree* tree);
   double calculateSegmentTime (std::vector<double>& rhts, std::vector<double>& wts);
+  double calculateCathodeSegmentTime (std::vector<double>& rhts);
+  double calculateAnodeSegmentTime (std::vector<double>& wts);
 
   double updateAnodeOffset(double twire, int endcap, int station, int ring, int chamber);
     

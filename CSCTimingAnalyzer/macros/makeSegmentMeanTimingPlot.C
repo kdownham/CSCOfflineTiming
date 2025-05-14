@@ -36,7 +36,7 @@ int GetNumChambers (int s, int r)
     return 36;
 }
 
-void makeSegmentMeanTimingPlot (std::string fname, bool byStation, float kLumi = 0.0, bool no_legend = false)
+void makeSegmentMeanTimingPlot (std::string fname, bool byStation, std::string type, float kLumi = 0.0, bool no_legend = false)
 {    
     TFile file(fname.c_str());
     TDirectoryFile *dir;
@@ -47,8 +47,25 @@ void makeSegmentMeanTimingPlot (std::string fname, bool byStation, float kLumi =
     
     TH1F *h1 = new TH1F("h1", "h1", 18, 0, 18.);
     h1->GetXaxis()->SetTitle("Ring");
-    h1->GetYaxis()->SetTitle("Mean Segment Time (ns)");
-    h1->SetTitle("Mean and RMS of Segment Time for each ring of CSC chambers");
+    if (type == "Combined"){
+    	h1->GetYaxis()->SetTitle("Mean Segment Time (ns)");
+    	h1->SetTitle("Mean and RMS of Segment Time for CSC rings");
+    }
+    else if (type == "Anode"){
+	h1->GetYaxis()->SetTitle("Mean Anode-only Segment Time (ns)");
+    	h1->SetTitle("Mean and RMS of Anode-only Segment Time for CSC rings");
+    }
+    else if (type == "Cathode"){
+	h1->GetYaxis()->SetTitle("Mean Cathode-only Segment Time (ns)");
+    	h1->SetTitle("Mean and RMS of Cathode-only Segment Time for CSC rings");
+    }
+    else if (type == "Diff"){
+    	h1->GetYaxis()->SetTitle("Mean (Anode-Cathode) Segment Time (ns)");
+	h1->SetTitle("Mean and RMS of (Anode-Cathode) Segment Time for CSC rings");
+    }
+    else{
+	std::cout << "ERROR: value of 'type' must take one of the following values: {Combined, Anode, Cathode, Diff}" << std::endl;
+    }
     h1->GetYaxis()->SetRangeUser(-15,15);
     h1->SetMarkerStyle(4);
     h1->SetTitleFont(42);
@@ -62,12 +79,20 @@ void makeSegmentMeanTimingPlot (std::string fname, bool byStation, float kLumi =
     h1->SetLineWidth(2);
     
     std::map<std::string, TH1F*> mhist;    
+
+    std::string h_name = "";
+
+    if (type == "Combined") h_name += "hNewSegTime";
+    else if (type == "Anode") h_name += "hAnodeSegTime";
+    else if (type == "Cathode") h_name += "hCathodeSegTime";
+    else if (type == "Diff") h_name += "hDiffAnodeCathodeSegTime";
     
     TList *hlist = dir->GetListOfKeys();
     for (auto hist : *hlist)
     {
         TString name = hist->GetName();
-        if (!name.Contains("hNewSegTime")) continue;
+        //if (!name.Contains("hNewSegTime")) continue;
+	if (!name.Contains(h_name)) continue;
         TObject *obj = dir->Get(name.Data());
         if (!obj->InheritsFrom(TH1::Class())) continue;
 
@@ -141,8 +166,8 @@ void makeSegmentMeanTimingPlot (std::string fname, bool byStation, float kLumi =
             {
                 mhist[slabel] = new TH1F(slabel.c_str(), slabel.c_str(), GetNumChambers(station, ring), 0, GetNumChambers(station, ring));
                 mhist[slabel]->GetXaxis()->SetTitle("Chamber");
-                mhist[slabel]->GetYaxis()->SetTitle("Mean Segment Time (ns)");
-                mhist[slabel]->SetTitle(Form("Mean and RMS of Segment Time for %s", label.c_str()));
+                mhist[slabel]->GetYaxis()->SetTitle(Form("Mean %s Segment Time (ns)", type.c_str()));
+                mhist[slabel]->SetTitle(Form("Mean and RMS of %s Segment Time for %s", type.c_str(), label.c_str()));
                 mhist[slabel]->SetMarkerStyle(4);
                 mhist[slabel]->GetYaxis()->SetRangeUser(-15,15);
             }
@@ -215,7 +240,7 @@ void makeSegmentMeanTimingPlot (std::string fname, bool byStation, float kLumi =
         //c1.Print("plots/all_plots/Run357900_testAnodes/mean_segtime_Run357900_newCorr.pdf");
         //c1.Print("plots/all_plots/Run357900_testAnodes/mean_segtime_Run357900_newCorr.png");
         //c1.Print("plots/all_plots/Run357900_testAnodes/mean_segtime_Run357900_newCorr.root");
-        c1.Print("mean_segtime.png");
+        c1.Print(Form("mean_segtime_%s.png",type.c_str()));
     }
     else
     {
@@ -243,7 +268,7 @@ void makeSegmentMeanTimingPlot (std::string fname, bool byStation, float kLumi =
             title->SetTextAlign(11);
 
             // c1.Print(Form("plots/mean_segtime_%s.pdf", item.first.c_str()));
-            c1.Print(Form("mean_segtime_%s.root", item.first.c_str()));
+            c1.Print(Form("mean_segtime_%s_%s.png", type.c_str(), item.first.c_str()));
         }
     }
 }

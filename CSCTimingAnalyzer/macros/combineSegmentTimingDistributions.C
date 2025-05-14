@@ -8,10 +8,35 @@
 #include "TPaveText.h"
 #include "TLatex.h"
 
-void combineSegmentTimingDistributions(std::string fname, float kLumi = 0.0, bool no_legend = false)
+void combineSegmentTimingDistributions(std::string fname, std::string type, float kLumi = 0.0, bool no_legend = false)
 {
     TFile file(fname.c_str());
     TDirectoryFile *dir = (TDirectoryFile*)file.Get("Segments");
+
+    std::string h_name = "";
+    std::string h_xaxis = "";
+    std::string h_title = "";
+
+    if (type == "Combined"){ 
+	h_name += "hNewSegTime";
+	h_xaxis += "Combined segment time (ns)";
+	h_title += "CSC Combined Segment Time";
+    }
+    else if (type == "Anode"){ 
+	h_name += "hAnodeSegTime";
+	h_xaxis += "Anode segment time (ns)";
+	h_title += "CSC Anode Segment Time";
+    }
+    else if (type == "Cathode"){
+	h_name += "hCathodeSegTime";
+	h_xaxis += "Cathode segment time (ns)";
+	h_title += "CSC Cathode Segment Time";
+    }
+    else if (type == "Diff"){ 
+	h_name += "hDiffAnodeCathodeSegTime";
+	h_xaxis += "(Anode-Cathode) segment time (ns)";
+	h_title += "CSC (Anode-Cathode) Segment Time";
+    }
 
     TList *hlist = dir->GetListOfKeys();
     TH1F *h1;
@@ -19,7 +44,7 @@ void combineSegmentTimingDistributions(std::string fname, float kLumi = 0.0, boo
     for (auto hist : *hlist)    
     {
         TString name = hist->GetName();
-        if (!name.Contains("hNewSegTime")) continue;
+        if (!name.Contains(h_name)) continue;
 
         TH1F *h0 = (TH1F*)dir->Get(name.Data());        
         if (!foundHist)
@@ -35,11 +60,11 @@ void combineSegmentTimingDistributions(std::string fname, float kLumi = 0.0, boo
     }
 
     TH1F *h2 = new TH1F("h2", "h2", 200, -100, 100);
-    h2->GetXaxis()->SetTitle("segment time (ns)");
+    h2->GetXaxis()->SetTitle(Form("%s",h_xaxis.c_str()));
     h2->GetYaxis()->SetTitle("Fraction of Segments/ns");
     h2->GetYaxis()->SetTitleOffset(1.1);
     h2->GetXaxis()->SetTitleOffset(0.8);        
-    h2->SetTitle("CSC Segment Time");
+    h2->SetTitle(Form("%s",h_title.c_str()));
     h2->SetTitleFont(42);
     h2->SetTitleSize(0.052);    
 
@@ -127,6 +152,6 @@ void combineSegmentTimingDistributions(std::string fname, float kLumi = 0.0, boo
     title->SetTextAlign(11);
 
     //c1.Print("segment_time_combined.pdf");
-    c1.Print("segment_time_combined.png");
+    c1.Print(Form("segment_time_%s.png",type.c_str()));
     //c1.Print("segment_time_combined.root");    
 }

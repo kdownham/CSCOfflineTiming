@@ -206,19 +206,19 @@ void CSCTimingAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
 
           CSCDetId id(endcap, station, ring, chamber, layer);
           double rhtime_corr = rhtime;
-          double twire_corr = twire;  // Comment out for new wire corrections
+          //double twire_corr = twire;  // Comment out for new wire corrections
 	  // Need to write a function that applies the new anode_bx_offsets
 	  //
 	  ///////////////////////////////////////////////////////////////////
 	  // Uncomment full block below for new anode corrections!
 	  ///////////////////////////////////////////////////////////////////
-	  //int ring_mod;
-	  //if ( station == 1 && ( ring == 1 || ring == 4 ) ){
-	  //     ring_mod = 1;
-	  //} else {
-	  //     ring_mod = ring;
-	  //}
-	  //double twire_corr = updateAnodeOffset(twire,endcap,station,ring_mod,chamber);   // uncomment for new wire corrections
+	  int ring_mod;
+	  if ( station == 1 && ( ring == 1 || ring == 4 ) ){
+	       ring_mod = 1;
+	  } else {
+	       ring_mod = ring;
+	  }
+	  double twire_corr = updateAnodeOffset(twire,endcap,station,ring_mod,chamber);   // uncomment for new wire corrections
           ////////////////////////////////////////////////////////////////////
 
 
@@ -401,6 +401,19 @@ void CSCTimingAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
         double tseg = calculateSegmentTime(rhTimes_, wireTimes_);
         histos_->fill1DHistByType(tseg, "hNewSegTime", "new CSC segment time", segid, 200, -100., 100., "Segments");
 
+	// Cathode-only segment time
+	double tseg_cathode = calculateCathodeSegmentTime(rhTimes_);
+	histos_->fill1DHistByType(tseg_cathode, "hCathodeSegTime", "new CSC Cathode segment time", segid, 200, -100., 100., "Segments");
+	
+	// Anode-only segment time
+	double tseg_anode = calculateAnodeSegmentTime(wireTimes_);
+	histos_->fill1DHistByType(tseg_anode, "hAnodeSegTime", "new CSC Anode segment time", segid, 200, -100., 100., "Segments");
+
+	// Anode-Cathode segment time
+	double tseg_diff = (tseg_anode - tseg_cathode);
+	histos_->fill1DHistByType(tseg_diff, "hDiffAnodeCathodeSegTime", "new CSC (Anode-Cathode) segment time", segid, 200, -100., 100., "Segments");
+	
+
         // for (auto wt : wireTimes_) {
         //   histos_->fill1DHistByChamber(wt, "hwireTimes", "Anode Timing after tail cut", id, 200, -10, 10, "recHitsByChamber");
         //   histos_->fill1DHistByType(wt, "hwireTimes", "Anode Timing", id, 200, -10, 10, "recHits");
@@ -409,6 +422,9 @@ void CSCTimingAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
         if (makePlotsPerChamber_) {
           histos_->fill1DHistByChamber(segmentTime, "hSegTime", "CSC segment time", segid, 200, -100., 100., "SegmentsByChamber");
           histos_->fill1DHistByChamber(tseg, "hNewSegTime", "new CSC segment time", segid, 200, -100., 100., "SegmentsByChamber");
+	  histos_->fill1DHistByChamber(tseg_cathode, "hCathodeSegTime", "new CSC Cathode segment time", segid, 200, -100., 100., "SegmentsByChamber");
+	  histos_->fill1DHistByChamber(tseg_anode, "hAnodeSegTime", "new CSC Anode segment time", segid, 200, -100., 100., "SegmentsByChamber");
+	  histos_->fill1DHistByChamber(tseg_diff, "hDiffAnodeCathodeSegTime", "new CSC (Anode-Cathode) segment time", segid, 200, -100., 100., "SegmentsByChamber");
         }
       } // loop over segments
     } // loop over chambers
@@ -1369,6 +1385,47 @@ double CSCTimingAnalyzer::calculateSegmentTime (std::vector<double>& rhts, std::
     }
     if (maxDiff > 26) {
       int N=rhts.size()+wts.size();
+      averageTime=(averageTime*N-(wts.at(maxHit)))/(N-1);
+      wts.erase(wts.begin()+maxHit);
+      modified = true;
+    }
+  }
+  return averageTime;
+}
+
+double CSCTimingAnalyzer::calculateCathodeSegmentTime (std::vector<double>& rhts)
+{
+  float averageTime=0;
+  for (unsigned int idx = 0; idx < rhts.size(); idx++){
+    averageTime += rhts.at(idx);
+  }
+  averageTime=averageTime/(rhts.size());
+
+  return averageTime;
+}
+
+double CSCTimingAnalyzer::calculateAnodeSegmentTime (std::vector<double>& wts)
+{
+  float averageTime=0;
+  for (unsigned int idx = 0; idx < wts.size(); idx++){
+    averageTime += wts.at(idx);
+  }
+  averageTime=averageTime/(wts.size());
+
+  bool modified = true;
+  while (modified) {
+    modified = false;
+    double maxDiff = -1;
+    unsigned int maxHit = 0;
+    for (unsigned int idx = 0; idx < wts.size(); idx++) {
+      float diff = fabs(wts.at(idx) - averageTime);
+      if (diff > maxDiff) {
+        maxDiff = diff;
+        maxHit = idx;
+      }
+    }
+    if (maxDiff > 26) {
+      int N=wts.size();
       averageTime=(averageTime*N-(wts.at(maxHit)))/(N-1);
       wts.erase(wts.begin()+maxHit);
       modified = true;
